@@ -2,7 +2,6 @@ package fr.upem.devops.model;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Objects;
 
 @Entity
 public class Animal {
@@ -20,6 +19,13 @@ public class Animal {
     }
 
     public Animal(String name, AnimalGender gender, String distinctSign) {
+        this.name = name;
+        this.gender = gender;
+        this.distinctSign = distinctSign;
+    }
+
+    public Animal(Long id, String name, AnimalGender gender, String distinctSign) {
+        this.id = id;
         this.name = name;
         this.gender = gender;
         this.distinctSign = distinctSign;
@@ -74,16 +80,23 @@ public class Animal {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Animal animal = (Animal) o;
-        return id.equals(animal.id);
+    public boolean equals(Object obj) {
+        if (getClass() != obj.getClass())
+            return false;
+        Animal other = (Animal) obj;
+        if (id == null) {
+            if (other.id != null)
+                return false;
+        }
+        return true;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
+        return result;
     }
 
     @Override
