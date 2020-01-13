@@ -38,8 +38,8 @@ public class AnimalController {
         p.setName(allParams.get("name"));
         p.setGender(AnimalGender.valueOf(allParams.get("gender")));
         p.setDistinctSign(allParams.get("distinctSign"));
-        p.setArrivalDate(Date.valueOf(allParams.get("arrivalDate")));
-        p.setReturnDate(Date.valueOf(allParams.get("returnDate")));
+//        p.setArrivalDate(Date.valueOf(allParams.get("arrivalDate")));
+//        p.setReturnDate(Date.valueOf(allParams.get("returnDate")));
         return animalService.save(p);
     }
 
