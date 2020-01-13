@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-               bat 'mvn -f aquarium/pom.xml clean package'
+               bat 'mvn -f pom.xml clean package'
             }
         }
         stage('Stopping previous application'){
@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Deploying new application'){
         	steps{
-        		bat 'sh -c "java -jar aquarium/target/aquarium-0.0.1-SNAPSHOT.jar>log.txt &"'
+        		bat 'sh -c "java -jar target/aquarium-0.0.1-SNAPSHOT.jar>log.txt &"'
         	}
         }
         stage('Verify deployment'){
