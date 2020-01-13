@@ -10,13 +10,19 @@ public class Animal {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private AnimalGender gender;
     private String distinctSign;
     private Date arrivalDate;
     private Date returnDate;
 
     public Animal() {
+    }
+
+    public Animal(String name, AnimalGender gender, String distinctSign) {
+        this.name = name;
+        this.gender = gender;
+        this.distinctSign = distinctSign;
     }
 
     public Long getId() {
@@ -92,9 +98,4 @@ public class Animal {
                 '}';
     }
 
-    enum AnimalGender {
-        MALE,
-        FEMALE,
-        HERMAPHRODITE
-    }
 }
