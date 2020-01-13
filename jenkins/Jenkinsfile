@@ -18,7 +18,7 @@ pipeline {
         }
         stage('Deploying new application'){
         	steps{
-        		bat 'sh -c "java -jar target/aquarium-1.0-SNAPSHOT.jar>log2.txt &"'
+        		bat 'sh -c "java -jar target/aquarium-1.0-SNAPSHOT.jar>log.txt &"'
         	}
         }
         stage('Verify deployment'){
