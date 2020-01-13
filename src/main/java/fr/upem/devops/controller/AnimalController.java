@@ -6,7 +6,7 @@ import fr.upem.devops.service.AnimalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.Map;
 
 @RestController
@@ -27,8 +27,9 @@ public class AnimalController {
 
     @PostMapping("/animals")
     @ResponseBody
-    public Animal addAnimal(@RequestBody Animal Animal) {
-        return animalService.save(Animal);
+    public Animal addAnimal(@RequestBody Animal animal) {
+        animal.setArrivalDate(new Date());
+        return animalService.save(animal);
     }
 
     @PutMapping("/animals/{id}")

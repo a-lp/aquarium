@@ -1,4 +1,4 @@
-<app-creator></app-creator>
+<app-creator (onSave)="refresh($event)"></app-creator>
 <ul>
   <li *ngFor=" let p of animals">
     <p><b>{{p.name.toUpperCase()}}</b>-{{p.gender}}<br>{{p.distinctSign}}
