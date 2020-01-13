@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+               bat 'mvn -f aquarium/pom.xml clean package'
+            }
+        }
+        stage('Stopping previous application'){
+	        steps{
+	        	script{
+		        	try{
+			        	bat 'curl -X POST http://localhost:8080/actuator/shutdown'
+		        	}
+		        	catch(Exception e){	}
+	        	}
+	        }
+        }
+        stage('Deploying new application'){
+        	steps{
+        		bat 'sh -c "java -jar web-service/target/aquarium-0.0.1-SNAPSHOT.jar>log.txt &"'
+        	}
+        }
+        stage('Verify deployment'){
+        	steps{
+	        	script{
+	        		deployed = false
+	        		while(!deployed){
+	        			sleep(5)
+	        			response = httpRequest 'http://localhost:8080/actuator/health'
+				        if(response.getStatus()==200){
+				        	deployed=true
+				        }
+	        		}
+        		}
+        	}
+        }
+    }
+}
