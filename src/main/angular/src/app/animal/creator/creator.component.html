@@ -12,10 +12,9 @@
 
   <label>
     Gender:
-    <input list="gender" formControlName="gender">
-    <datalist id="gender">
+    <select formControlName="gender">
       <option *ngFor="let i of genders" [value]="i">{{i}}</option>
-    </datalist>
+    </select>
   </label>
 
   <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
