@@ -1,0 +1,22 @@
+<form [formGroup]="profileForm">
+
+  <label>
+    Name:
+    <input type="text" formControlName="name">
+  </label>
+
+  <label>
+    Distinct Sign:
+    <input type="text" formControlName="distinctSign">
+  </label>
+
+  <label>
+    Gender:
+    <input list="gender" formControlName="gender">
+    <datalist id="gender">
+      <option *ngFor="let i of genders" [value]="i">{{i}}</option>
+    </datalist>
+  </label>
+
+  <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
+</form>
