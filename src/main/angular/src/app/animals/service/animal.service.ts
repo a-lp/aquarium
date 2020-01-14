@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {Animal} from "./Animal";
+import {Animal} from "../model/Animal";
 
 @Injectable({
   providedIn: 'root'
@@ -21,5 +21,9 @@ export class AnimalService {
 
   delete(animal: Animal): Observable<any> {
     return this.http.delete("/animals/" + animal.id)
+  }
+
+  retireAnimal(animal: Animal) {
+    return this.http.get("/animals/retire/" + animal.id)
   }
 }

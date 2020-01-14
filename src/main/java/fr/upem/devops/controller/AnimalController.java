@@ -20,6 +20,13 @@ public class AnimalController {
         return animalService.getAll();
     }
 
+    @GetMapping("/animals/retire/{id}")
+    public Animal retireAnimal(@PathVariable String id) {
+        Animal animalUpdated = animalService.getById(id);
+        animalUpdated.setReturnDate(new Date());
+        return animalService.save(animalUpdated);
+    }
+
     @GetMapping("/animals/{id}")
     public Animal getById(@PathVariable String id) {
         return animalService.getById(id);

@@ -1,1 +1,7 @@
-<p>animal works!</p>
+<div *ngIf="animal!=null">
+  <p><b>{{animal.name.toUpperCase()}}</b>({{animal.gender}})
+  <p>Arrived: {{animal.arrivalDate}}</p>
+  <p>Returned: {{(animal.returnDate != null) ? animal.returnDate : "Not yet"}}</p>
+  <br>{{animal.distinctSign}}
+  <button (click)="retireAnimal()">RETIRE</button>
+</div>

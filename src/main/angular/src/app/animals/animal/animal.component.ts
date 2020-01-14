@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Animal} from "../model/Animal";
+import {AnimalService} from "../service/animal.service";
 
 @Component({
   selector: 'app-animal',
@@ -6,10 +8,24 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./animal.component.css']
 })
 export class AnimalComponent implements OnInit {
+  @Input()
+  animal: Animal;
+  @Output()
+  retireEvent: EventEmitter<Animal> = new EventEmitter<Animal>();
 
-  constructor() { }
+  constructor(private animalService: AnimalService) {
+
+  }
 
   ngOnInit() {
   }
 
+  retireAnimal() {
+    this.animalService.retireAnimal(this.animal).subscribe(
+      data => {
+        this.retireEvent.emit()
+      },
+      error => console.log(error)
+    );
+  }
 }

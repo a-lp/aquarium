@@ -1,8 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Animal} from "../Animal";
-import {AnimalService} from "../animal.service";
-import {AnimalGender} from "../AnimalGender";
+import {Animal} from "../model/Animal";
+import {AnimalService} from "../service/animal.service";
+import {AnimalGender} from "../model/AnimalGender";
 
 @Component({
   selector: 'app-creator',

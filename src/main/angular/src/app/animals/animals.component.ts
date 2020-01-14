@@ -1,14 +1,15 @@
 import {Component, OnInit} from '@angular/core';
-import {Animal} from "./Animal";
-import {AnimalService} from "./animal.service";
+import {Animal} from "./model/Animal";
+import {AnimalService} from "./service/animal.service";
 
 @Component({
-  selector: 'app-animal',
-  templateUrl: './animal.component.html',
-  styleUrls: ['./animal.component.css']
+  selector: 'app-animals',
+  templateUrl: './animals.component.html',
+  styleUrls: ['./animals.component.css']
 })
-export class AnimalComponent implements OnInit {
+export class AnimalsComponent implements OnInit {
   animals: Array<Animal>
+  retiredAnimals: Array<Animal>
 
   constructor(private animalService: AnimalService) {
   }
@@ -19,8 +20,19 @@ export class AnimalComponent implements OnInit {
 
   refresh($event: Animal) {
     this.animalService.getAll().subscribe(
-      data => this.animals = data,
-      error => console.log(error))
+      data => {
+        if (data != null) {
+          this.retiredAnimals = data.filter(element => {
+            return element.returnDate != null;
+          })
+          this.animals = data.filter(element => {
+            return !this.retiredAnimals.includes(element);
+          })
+        }
+      },
+      error => console.log(error)
+    )
+
   }
 
 }
