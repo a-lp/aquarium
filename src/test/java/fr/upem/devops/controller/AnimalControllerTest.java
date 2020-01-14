@@ -2,6 +2,7 @@ package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Animal;
 import fr.upem.devops.model.AnimalGender;
+import fr.upem.devops.model.Specie;
 import fr.upem.devops.service.AnimalService;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,9 +39,9 @@ public class AnimalControllerTest {
 
     @Before
     public void init() {
-        Animal p1 = new Animal(1L, "Shark", AnimalGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi");
-        Animal p2 = new Animal(2L, "Codfish", AnimalGender.MALE, "buono da fare al forno");
-        Animal p3 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato");
+        Animal p1 = new Animal(1L, "Shark", AnimalGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", new Specie());
+        Animal p2 = new Animal(2L, "Codfish", AnimalGender.MALE, "buono da fare al forno", new Specie());
+        Animal p3 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato", new Specie());
 
         animals.add(p1);
         animals.add(p2);
@@ -66,8 +67,8 @@ public class AnimalControllerTest {
 
     @Test
     public void addAnimal() throws URISyntaxException {
-        Animal animal = new Animal("Lesso", AnimalGender.HERMAPHRODITE, "buono da fare al forno con le patate");
-        Mockito.when(animalService.save(animal)).thenReturn(new Animal(4L, "Lesso", AnimalGender.HERMAPHRODITE, "buono da fare al forno con le patate"));
+        Animal animal = new Animal("Lesso", AnimalGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie());
+        Mockito.when(animalService.save(animal)).thenReturn(new Animal(4L, "Lesso", AnimalGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie()));
         Animal request = this.restTemplate.postForObject("http://localhost:" + port + "/animals", animal,
                 Animal.class);
         assertEquals("Lesso", request.getName());
@@ -78,8 +79,8 @@ public class AnimalControllerTest {
 
     @Test
     public void updateAnimal() {
-        Animal updateP1 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato");
-        Mockito.when(animalService.save(updateP1)).thenReturn(new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato"));
+        Animal updateP1 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato", new Specie());
+        Mockito.when(animalService.save(updateP1)).thenReturn(new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato", new Specie()));
         updateP1.setName("MauriceColdfish");
         HttpEntity<Animal> updated = new HttpEntity<Animal>(updateP1);
         Animal request = this.restTemplate.exchange("http://localhost:" + port + "/animals/3", HttpMethod.PUT,
@@ -90,7 +91,7 @@ public class AnimalControllerTest {
 
     @Test
     public void deleteAnimal() {
-        Animal p1 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato");
+        Animal p1 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato", new Specie());
         Mockito.when(animalService.remove(p1)).thenReturn(p1);
         Animal response = this.restTemplate
                 .exchange("http://localhost:" + port + "/animals/3", HttpMethod.DELETE, null, Animal.class)

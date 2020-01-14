@@ -1,5 +1,7 @@
 package fr.upem.devops.model;
 
-public enum Alimentation {
+import java.io.Serializable;
+
+public enum Alimentation implements Serializable {
     CARNIVORE, HERBIVORE, LIMNIVORE, OMNIVORE
 }

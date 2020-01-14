@@ -1,11 +1,12 @@
 package fr.upem.devops.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Specie {
+public class Specie implements Serializable {
     @Id
     @Column(unique = true)
     private String name;

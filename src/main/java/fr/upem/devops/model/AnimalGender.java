@@ -1,6 +1,8 @@
 package fr.upem.devops.model;
 
-public enum AnimalGender {
+import java.io.Serializable;
+
+public enum AnimalGender implements Serializable {
     MALE,
     FEMALE,
     HERMAPHRODITE
