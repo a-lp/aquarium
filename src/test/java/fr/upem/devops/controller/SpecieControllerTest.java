@@ -2,7 +2,6 @@ package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Alimentation;
 import fr.upem.devops.model.Animal;
-import fr.upem.devops.model.AnimalGender;
 import fr.upem.devops.model.Specie;
 import fr.upem.devops.service.SpecieService;
 import org.junit.Before;
@@ -38,17 +37,17 @@ public class SpecieControllerTest {
     @Before
     public void init() {
         short lf = 1;
-        Specie s1 = new Specie("Specie1", lf++, Alimentation.CARNIVORE, lf);
-        Specie s2 = new Specie("Specie2", lf++, Alimentation.HERBIVORE, lf);
-        Specie s3 = new Specie("Specie3", lf++, Alimentation.OMNIVORE, lf);
+        Specie s1 = new Specie(1L, "Specie1", lf++, Alimentation.CARNIVORE, lf, new ArrayList<>());
+        Specie s2 = new Specie(2L, "Specie2", lf++, Alimentation.HERBIVORE, lf, new ArrayList<>());
+        Specie s3 = new Specie(3L, "Specie3", lf++, Alimentation.OMNIVORE, lf, new ArrayList<>());
 
-        Animal a1 = new Animal(1L, "Shark", AnimalGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", s1);
-        Animal a2 = new Animal(2L, "Codfish", AnimalGender.MALE, "buono da fare al forno", s2);
-        Animal a3 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato", s3);
-
-        s1.addAnimal(a1);
-        s2.addAnimal(a2);
-        s3.addAnimal(a3);
+//        Animal a1 = new Animal(1L, "Shark", AnimalGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", s1);
+//        Animal a2 = new Animal(2L, "Codfish", AnimalGender.MALE, "buono da fare al forno", s2);
+//        Animal a3 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato", s3);
+//
+//        s1.addAnimal(a1);
+//        s2.addAnimal(a2);
+//        s3.addAnimal(a3);
 
         species.add(s1);
         species.add(s2);
@@ -75,8 +74,8 @@ public class SpecieControllerTest {
     @Test
     public void addSpecie() {
         short lf = 1;
-        Specie specie = new Specie("Specie4", lf++, Alimentation.OMNIVORE, lf);
-        Mockito.when(specieService.save(specie)).thenReturn(specie);
+        Specie specie = new Specie("Specie5", lf, Alimentation.OMNIVORE, lf, new ArrayList<>());
+        Mockito.when(specieService.save(specie)).thenReturn(new Specie(5L, "Specie5", lf, Alimentation.OMNIVORE, lf, new ArrayList<>()));
         Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
                 Specie.class);
         assertEquals(request.getName(), specie.getName());
@@ -85,7 +84,7 @@ public class SpecieControllerTest {
     @Test
     public void addExistentSpecie() {
         short lf = 1;
-        Specie specie = new Specie("Specie3", lf++, Alimentation.OMNIVORE, lf);
+        Specie specie = new Specie(4L, "Specie3", lf++, Alimentation.OMNIVORE, lf, new ArrayList<>());
         Mockito.when(specieService.save(specie)).thenReturn(null);
         Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
                 Specie.class);

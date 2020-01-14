@@ -2,6 +2,7 @@ package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Animal;
 import fr.upem.devops.model.AnimalGender;
+import fr.upem.devops.model.Specie;
 import fr.upem.devops.service.AnimalService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

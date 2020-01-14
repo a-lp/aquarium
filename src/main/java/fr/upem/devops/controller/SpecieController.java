@@ -23,6 +23,7 @@ public class SpecieController {
     @PostMapping("/species")
     @ResponseBody
     public Specie addSpecie(@RequestBody Specie specie) {
+
         return specieService.save(specie);
     }
 }

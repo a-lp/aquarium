@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class Animal implements Serializable {
+public class Animal implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -19,7 +19,6 @@ public class Animal implements Serializable {
     private Date returnDate;
     @ManyToOne
     @JoinColumn(name = "animal_id")
-    @JsonBackReference
     private Specie specie;
 
     public Animal() {
