@@ -1,5 +1,7 @@
 package fr.upem.devops.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,19 +12,20 @@ public class Specie implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @Column(unique = true)
+    @Column(name = "name", unique = true)
     private String name;
     private Short lifeSpan;
     private Short extinctionLevel;
     @Enumerated(EnumType.STRING)
     private Alimentation alimentation;
     @OneToMany(mappedBy = "specie")
+    @JsonManagedReference
     private List<Animal> animalList = new ArrayList<>();
 
     public Specie() {
     }
 
-    public Specie(String name, Short lifeSpan, Alimentation alimentation, Short exctintionLevel, ArrayList<Animal> animalList) {
+    public Specie(String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, ArrayList<Animal> animalList) {
         this.name = name;
         this.lifeSpan = lifeSpan;
         this.alimentation = alimentation;
@@ -30,7 +33,7 @@ public class Specie implements Serializable {
         this.animalList = animalList;
     }
 
-    public Specie(Long id, String name, Short lifeSpan, Alimentation alimentation, Short exctintionLevel, ArrayList<Animal> animalList) {
+    public Specie(Long id, String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, ArrayList<Animal> animalList) {
         this.id = id;
         this.name = name;
         this.lifeSpan = lifeSpan;
@@ -108,5 +111,9 @@ public class Specie implements Serializable {
                 ", exctintionLevel=" + extinctionLevel +
                 ", alimentation=" + alimentation +
                 '}';
+    }
+
+    public Long getId() {
+        return this.id;
     }
 }

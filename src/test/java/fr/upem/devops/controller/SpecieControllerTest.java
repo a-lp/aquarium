@@ -37,9 +37,9 @@ public class SpecieControllerTest {
     @Before
     public void init() {
         short lf = 1;
-        Specie s1 = new Specie(1L, "Specie1", lf++, Alimentation.CARNIVORE, lf, new ArrayList<>());
-        Specie s2 = new Specie(2L, "Specie2", lf++, Alimentation.HERBIVORE, lf, new ArrayList<>());
-        Specie s3 = new Specie(3L, "Specie3", lf++, Alimentation.OMNIVORE, lf, new ArrayList<>());
+        Specie s1 = new Specie(1L, "Specie1", lf++, lf, Alimentation.CARNIVORE, new ArrayList<>());
+        Specie s2 = new Specie(2L, "Specie2", lf++, lf, Alimentation.HERBIVORE, new ArrayList<>());
+        Specie s3 = new Specie(3L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new ArrayList<>());
 
 //        Animal a1 = new Animal(1L, "Shark", AnimalGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", s1);
 //        Animal a2 = new Animal(2L, "Codfish", AnimalGender.MALE, "buono da fare al forno", s2);
@@ -74,8 +74,8 @@ public class SpecieControllerTest {
     @Test
     public void addSpecie() {
         short lf = 1;
-        Specie specie = new Specie("Specie5", lf, Alimentation.OMNIVORE, lf, new ArrayList<>());
-        Mockito.when(specieService.save(specie)).thenReturn(new Specie(5L, "Specie5", lf, Alimentation.OMNIVORE, lf, new ArrayList<>()));
+        Specie specie = new Specie("Specie5", lf, lf, Alimentation.OMNIVORE, new ArrayList<>());
+        Mockito.when(specieService.save(specie)).thenReturn(new Specie(5L, "Specie5", lf, lf, Alimentation.OMNIVORE, new ArrayList<>()));
         Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
                 Specie.class);
         assertEquals(request.getName(), specie.getName());
@@ -84,7 +84,7 @@ public class SpecieControllerTest {
     @Test
     public void addExistentSpecie() {
         short lf = 1;
-        Specie specie = new Specie(4L, "Specie3", lf++, Alimentation.OMNIVORE, lf, new ArrayList<>());
+        Specie specie = new Specie(4L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new ArrayList<>());
         Mockito.when(specieService.save(specie)).thenReturn(null);
         Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
                 Specie.class);

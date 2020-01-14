@@ -14,6 +14,10 @@ public class SpecieService {
         return specieRepository.findAll();
     }
 
+    public Specie getById(Long id) {
+        return specieRepository.findById(id).get();
+    }
+
     public Specie save(Specie specie) {
         return specieRepository.save(specie);
     }
