@@ -1,5 +1,7 @@
 package fr.upem.devops.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -15,17 +17,21 @@ public class Specie implements Serializable {
     @Enumerated(EnumType.STRING)
     private Alimentation alimentation;
     @OneToMany(mappedBy = "specie")
+    @JsonManagedReference
     private List<Animal> animalList = new ArrayList<>();
 
     public Specie() {
     }
 
-    public Specie(String name, List<Animal> animalList, Short lifeSpan, Alimentation alimentation, Short exctintionLevel) {
+    public Specie(String name, Short lifeSpan, Alimentation alimentation, Short exctintionLevel) {
         this.name = name;
-        this.animalList = animalList;
         this.lifeSpan = lifeSpan;
         this.alimentation = alimentation;
         this.extinctionLevel = exctintionLevel;
+    }
+
+    public void addAnimal(Animal animal) {
+        this.animalList.add(animal);
     }
 
     public Short getLifeSpan() {

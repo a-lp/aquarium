@@ -1,5 +1,7 @@
 package fr.upem.devops.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -17,6 +19,7 @@ public class Animal implements Serializable {
     private Date returnDate;
     @ManyToOne
     @JoinColumn(name = "animal_id")
+    @JsonBackReference
     private Specie specie;
 
     public Animal() {
