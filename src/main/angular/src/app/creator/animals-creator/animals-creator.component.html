@@ -17,5 +17,12 @@
     </select>
   </label>
 
+  <label>
+    Specie:
+    <select formControlName="specie">
+      <option *ngFor="let i of species" [value]="i.name">{{i.name}}</option>
+    </select>
+  </label>
+
   <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
 </form>

@@ -1,4 +1,4 @@
-<app-creator (onSave)="refresh($event)"></app-creator>
+<app-form-creator (refreshEvent)="refresh(null)"></app-form-creator>
 <ul>
   <li *ngFor=" let a of animals">
     <app-animal [animal]="a" (retireEvent)="refresh($event)"></app-animal>

@@ -1,0 +1,28 @@
+<form [formGroup]="profileForm">
+
+  <label>
+    Name:
+    <input type="text" formControlName="name">
+  </label>
+
+  <label>
+    Life Span:
+    <input type="number" formControlName="lifeSpan">
+  </label>
+
+  <label>
+    Extinction level:
+    <select formControlName="extinctionLevel">
+      <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">{{i}}</option>
+    </select>
+  </label>
+
+  <label>
+    Alimentation:
+    <select formControlName="alimentation">
+      <option *ngFor="let a of alimentations" [value]="a">{{a}}</option>
+    </select>
+  </label>
+
+  <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
+</form>

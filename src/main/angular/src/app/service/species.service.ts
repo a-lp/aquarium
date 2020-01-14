@@ -1,7 +1,6 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {Animal} from "../model/Animal";
 import {Specie} from "../model/Specie";
 
 @Injectable({
@@ -9,18 +8,26 @@ import {Specie} from "../model/Specie";
 })
 export class SpeciesService {
 
-  constructor(private http: HttpClient) { }
+  save(specie: Specie): Specie {
+    this.http.post("/species", specie).subscribe(data => {
+        return data;
+      }
+    );
+    return null;
+  }
+
+  constructor(private http: HttpClient) {
+  }
 
   getAll(): Observable<any> {
     return this.http.get("/species")
-  }
-
-  save(specie: Specie): Observable<any> {
-    return this.http.post("/species", specie)
   }
 
   delete(specie: Specie): Observable<any> {
     return this.http.delete("/species/" + specie.name)
   }
 
+  getSpecie(name: string): Observable<any> {
+    return this.http.get("/species/" + name);
+  }
 }
