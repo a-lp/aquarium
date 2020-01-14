@@ -8,12 +8,8 @@ import {Specie} from "../model/Specie";
 })
 export class SpeciesService {
 
-  save(specie: Specie): Specie {
-    this.http.post("/species", specie).subscribe(data => {
-        return data;
-      }
-    );
-    return null;
+  save(specie: Specie): Observable<any> {
+    return this.http.post("/species", specie)
   }
 
   constructor(private http: HttpClient) {

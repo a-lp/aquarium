@@ -1,6 +1,5 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Animal} from "../../model/Animal";
 import {Alimentation} from "../../model/Alimentation";
 import {SpeciesService} from "../../service/species.service";
 import {Specie} from "../../model/Specie";
@@ -29,7 +28,8 @@ export class SpeciesCreatorComponent implements OnInit {
   }
 
   save($event: Event) {
-    this.speciesService.save(this.profileForm.value)
-    this.onSaveSpecie.emit()
+    this.speciesService.save(this.profileForm.value).subscribe(data => {
+      this.onSaveSpecie.emit()
+    })
   }
 }
