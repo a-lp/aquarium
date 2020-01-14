@@ -1,6 +1,6 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Animal} from "../model/Animal";
-import {AnimalService} from "../service/animal.service";
+import {Animal} from "../../model/Animal";
+import {AnimalService} from "../../service/animal.service";
 
 @Component({
   selector: 'app-animal',

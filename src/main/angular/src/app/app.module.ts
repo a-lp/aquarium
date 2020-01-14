@@ -8,13 +8,15 @@ import {CreatorComponent} from './animals/creator/creator.component';
 import {ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {AnimalComponent} from './animals/animal/animal.component';
+import { SpeciesComponent } from './species/species.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AnimalsComponent,
     CreatorComponent,
-    AnimalComponent
+    AnimalComponent,
+    SpeciesComponent
   ],
   imports: [
     BrowserModule,
