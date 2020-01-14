@@ -14,21 +14,34 @@ public class Animal {
     private String distinctSign;
     private Date arrivalDate;
     private Date returnDate;
+    @ManyToOne
+    @JoinColumn(name = "animal_id")
+    private Specie specie;
 
     public Animal() {
     }
 
-    public Animal(String name, AnimalGender gender, String distinctSign) {
+    public Animal(String name, AnimalGender gender, String distinctSign, Specie specie) {
         this.name = name;
         this.gender = gender;
         this.distinctSign = distinctSign;
+        this.specie = specie;
     }
 
-    public Animal(Long id, String name, AnimalGender gender, String distinctSign) {
+    public Animal(Long id, String name, AnimalGender gender, String distinctSign, Specie specie) {
         this.id = id;
         this.name = name;
         this.gender = gender;
         this.distinctSign = distinctSign;
+        this.specie = specie;
+    }
+
+    public Specie getSpecie() {
+        return specie;
+    }
+
+    public void setSpecie(Specie specie) {
+        this.specie = specie;
     }
 
     public Long getId() {
