@@ -20,13 +20,6 @@ public class AnimalController {
         return animalService.getAll();
     }
 
-    @GetMapping("/animals/retire/{id}")
-    public Animal retireAnimal(@PathVariable String id) {
-        Animal animalUpdated = animalService.getById(id);
-        animalUpdated.setReturnDate(new Date());
-        return animalService.save(animalUpdated);
-    }
-
     @GetMapping("/animals/{id}")
     public Animal getById(@PathVariable String id) {
         return animalService.getById(id);
@@ -39,6 +32,14 @@ public class AnimalController {
         return animalService.save(animal);
     }
 
+    @PutMapping("/animals/retire/{id}")
+    @ResponseBody
+    public Animal retireAnimal(@PathVariable String id) {
+        Animal animalUpdated = animalService.getById(id);
+        animalUpdated.setReturnDate(new Date());
+        return animalService.save(animalUpdated);
+    }
+
     @PutMapping("/animals/{id}")
     @ResponseBody
     public Animal updateAnimal(@PathVariable String id, @RequestBody Map<String, String> allParams) {
@@ -48,6 +49,7 @@ public class AnimalController {
         p.setDistinctSign(allParams.get("distinctSign"));
 //        p.setArrivalDate(Date.valueOf(allParams.get("arrivalDate")));
 //        p.setReturnDate(Date.valueOf(allParams.get("returnDate")));
+//        p.setSpecie(allParams.get("specie"));
         return animalService.save(p);
     }
 

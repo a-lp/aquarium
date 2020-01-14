@@ -24,6 +24,6 @@ export class AnimalService {
   }
 
   retireAnimal(animal: Animal) {
-    return this.http.get("/animals/retire/" + animal.id)
+    return this.http.put("/animals/retire/" + animal.id, animal)
   }
 }

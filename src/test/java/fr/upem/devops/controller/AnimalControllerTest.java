@@ -19,6 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -68,13 +69,27 @@ public class AnimalControllerTest {
     @Test
     public void addAnimal() throws URISyntaxException {
         Animal animal = new Animal("Lesso", AnimalGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie());
-        Mockito.when(animalService.save(animal)).thenReturn(new Animal(4L, "Lesso", AnimalGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie()));
+        Animal animal_new = new Animal(4L, "Lesso", AnimalGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie());
+        animal_new.setArrivalDate(new Date());
+        Mockito.when(animalService.save(animal)).thenReturn(animal_new);
         Animal request = this.restTemplate.postForObject("http://localhost:" + port + "/animals", animal,
                 Animal.class);
         assertEquals("Lesso", request.getName());
         assertEquals("buono da fare al forno con le patate", request.getDistinctSign());
         assertEquals(AnimalGender.HERMAPHRODITE, request.getGender());
+        assertNotNull(request.getArrivalDate());
         assertNotNull(request.getId());
+    }
+
+    @Test
+    public void retireAnimal() {
+        Animal updateP1 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato", new Specie());
+        updateP1.setReturnDate(new Date());
+        Mockito.when(animalService.save(updateP1)).thenReturn(updateP1);
+        HttpEntity<Animal> updated = new HttpEntity<Animal>(updateP1);
+        Animal request = this.restTemplate.exchange("http://localhost:" + port + "/animals/retire/3", HttpMethod.PUT,
+                updated, Animal.class).getBody();
+        assertNotNull(request.getReturnDate());
     }
 
     @Test
