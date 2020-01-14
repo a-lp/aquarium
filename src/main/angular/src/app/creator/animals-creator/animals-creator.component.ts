@@ -33,9 +33,7 @@ export class AnimalsCreatorComponent implements OnInit {
   }
 
   save($event: Event) {
-    var t: Animal = this.profileForm.value
-    this.speciesService.getSpecie(this.profileForm.value["specie"]).subscribe(data => t.specie = data)
-    this.animalService.save(t).subscribe(
+    this.animalService.save(this.profileForm.value).subscribe(
       data => {
         this.onSave.emit()
       },

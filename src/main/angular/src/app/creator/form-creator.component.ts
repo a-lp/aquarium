@@ -21,9 +21,9 @@ export class FormCreatorComponent implements OnInit {
   }
 
   refresh($event: any) {
-    this.refreshEvent.emit(null);
     this.speciesService.getAll().subscribe(data => {
       this.species = data
+      this.refreshEvent.emit(null);
     });
   }
 }

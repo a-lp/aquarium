@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Animal} from "../../model/Animal";
 import {Alimentation} from "../../model/Alimentation";
 import {SpeciesService} from "../../service/species.service";
+import {Specie} from "../../model/Specie";
 
 @Component({
   selector: 'app-species-creator',
@@ -17,7 +18,7 @@ export class SpeciesCreatorComponent implements OnInit {
     alimentation: new FormControl("")
   });
   @Output()
-  onSaveSpecie: EventEmitter<Animal> = new EventEmitter<Animal>()
+  onSaveSpecie: EventEmitter<Specie> = new EventEmitter<Specie>()
 
   alimentations = Object.values(Alimentation);
 
