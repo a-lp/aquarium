@@ -1,6 +1,6 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -17,7 +17,7 @@ public class Pool implements Serializable {
     @Enumerated(EnumType.STRING)
     private WaterCondition condition;
     @OneToMany(mappedBy = "pool")
-    @JsonManagedReference(value = "fish-pool")
+    @JsonIgnoreProperties("pool")
     private List<Fish> fishes = new ArrayList<>();
 
     public Pool() {

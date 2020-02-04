@@ -1,6 +1,6 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,11 +19,11 @@ public class Fish implements Serializable {
     private Date returnDate;
     @ManyToOne
     @JoinColumn(name = "fish_specie_id")
-    @JsonBackReference(value = "fish-specie")
+    @JsonIgnoreProperties("fishList")
     private Specie specie;
     @ManyToOne
     @JoinColumn(name = "fish_pool_id")
-    @JsonBackReference(value = "fish-pool")
+    @JsonIgnoreProperties("fishes")
     private Pool pool;
 
     public Fish() {

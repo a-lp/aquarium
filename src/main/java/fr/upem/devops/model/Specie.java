@@ -1,6 +1,6 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,7 +19,7 @@ public class Specie implements Serializable {
     @Enumerated(EnumType.STRING)
     private Alimentation alimentation;
     @OneToMany(mappedBy = "specie")
-    @JsonManagedReference(value = "fish-specie")
+    @JsonIgnoreProperties("specie")
     private List<Fish> fishList = new ArrayList<>();
 
     public Specie() {
