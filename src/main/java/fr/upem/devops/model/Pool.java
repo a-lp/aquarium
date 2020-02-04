@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Pool {
+public class Pool implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -16,9 +16,9 @@ public class Pool {
     private Double volume;
     @Enumerated(EnumType.STRING)
     private WaterCondition condition;
-//    @OneToMany(mappedBy = "pool")
-//    @JsonManagedReference
-//    private List<Fish> fish = new ArrayList<>();
+    @OneToMany(mappedBy = "pool")
+    @JsonManagedReference
+    private List<Fish> fish = new ArrayList<>();
 
     public Pool() {
     }
@@ -54,14 +54,14 @@ public class Pool {
     public void setCondition(WaterCondition condition) {
         this.condition = condition;
     }
-//
-//    public List<Fish> getFish() {
-//        return fish;
-//    }
-//
-//    public void setFish(List<Fish> fish) {
-//        this.fish = fish;
-//    }
+
+    public List<Fish> getFish() {
+        return fish;
+    }
+
+    public void setFish(List<Fish> fish) {
+        this.fish = fish;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -82,6 +82,17 @@ public class Pool {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Pool{" +
+                "id=" + id +
+                ", maxCapacity=" + maxCapacity +
+                ", volume=" + volume +
+                ", condition=" + condition +
+                ", fish=" + fish +
+                '}';
     }
 
     public enum WaterCondition implements Serializable {
