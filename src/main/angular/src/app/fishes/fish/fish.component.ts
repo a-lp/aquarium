@@ -1,9 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Fish} from "../../model/Fish";
-import {FishService} from "../../service/fish.service";
+import {Fish} from '../../model/Fish';
+import {FishService} from '../../service/fish.service';
 
 @Component({
-  selector: 'app-fish',
+  selector: 'tr [app-fish]',
   templateUrl: './fish.component.html',
   styleUrls: ['./fish.component.css']
 })

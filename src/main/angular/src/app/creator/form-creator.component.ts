@@ -1,6 +1,6 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {SpeciesService} from "../service/species.service";
-import {Specie} from "../model/Specie";
+import {SpeciesService} from '../service/species.service';
+import {Specie} from '../model/Specie';
 
 @Component({
   selector: 'app-form-creator',
@@ -22,7 +22,7 @@ export class FormCreatorComponent implements OnInit {
 
   refresh($event: any) {
     this.speciesService.getAll().subscribe(data => {
-      this.species = data
+      this.species = data;
       this.refreshEvent.emit(null);
     });
   }

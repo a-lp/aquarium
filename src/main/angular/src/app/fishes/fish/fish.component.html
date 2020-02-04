@@ -1,7 +1,10 @@
-<div *ngIf="fish!=null">
-  <p><b>{{fish.name.toUpperCase()}}</b>({{fish.gender}})
-  <p>Arrived: {{fish.arrivalDate}}</p>
-  <p>Returned: {{(fish.returnDate != null) ? fish.returnDate : "Not yet"}}</p>
-  <br>{{fish.distinctSign}}
-  <button (click)="retireAnimal()">RETIRE</button>
-</div>
+<td>{{fish.id}}</td>
+<td>{{fish.name}}</td>
+<td>({{fish.gender}})</td>
+<td>{{fish.distinctSign}}</td>
+<td>{{fish.arrivalDate}}</td>
+<td>{{(fish.returnDate != null) ? fish.returnDate : "Not yet"}}</td>
+<td>{{(fish.specie != null) ? fish.specie.name : "Unknown"}}</td>
+<td>{{(fish.pool != null) ? fish.pool.id : "Not assigned to a pool"}}</td>
+<button (click)="retireAnimal()">RETIRE</button>
+
