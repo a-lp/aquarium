@@ -8,11 +8,12 @@ import {FishesCreatorComponent} from './creator/fishes/fishes-creator.component'
 import {ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule} from "@angular/common/http";
 import {FishComponent} from './fishes/fish/fish.component';
-import { SpeciesComponent } from './species/species.component';
-import { SpeciesCreatorComponent } from './creator/species/species-creator.component';
-import { FormCreatorComponent } from './creator/form-creator.component';
-import { PoolsCreatorComponent } from './creator/pools/pools-creator/pools-creator.component';
+import {SpeciesComponent} from './species/species.component';
+import {SpeciesCreatorComponent} from './creator/species/species-creator.component';
+import {FormCreatorComponent} from './creator/form-creator.component';
+import {PoolsCreatorComponent} from './creator/pools/pools-creator/pools-creator.component';
 import {DatePipe} from "@angular/common";
+import {RouterModule} from "@angular/router";
 
 @NgModule({
   declarations: [
@@ -30,6 +31,12 @@ import {DatePipe} from "@angular/common";
     AppRoutingModule,
     HttpClientModule,
     ReactiveFormsModule,
+    RouterModule.forRoot([
+      {
+        path: 'view-fishes',
+        component: FishesComponent
+      }
+    ])
   ],
   providers: [DatePipe],
   bootstrap: [AppComponent]
