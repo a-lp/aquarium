@@ -33,16 +33,14 @@ export class FishesCreatorComponent implements OnInit {
   }
 
   save($event: Event) {
-    console.log(this.profileForm.value);
     this.speciesService.getSpecie(this.profileForm.value.specie).subscribe(specie => {
       this.profileForm.value.specie = specie;
+      this.fishService.save(this.profileForm.value).subscribe(
+        data => {
+          this.onSave.emit();
+        },
+        error => console.log(error)
+      );
     });
-    console.log(this.profileForm.value);
-    this.fishService.save(this.profileForm.value).subscribe(
-      data => {
-        this.onSave.emit();
-      },
-      error => console.log(error)
-    );
   }
 }

@@ -31,27 +31,27 @@ public class FishController {
         return fishService.getById(id);
     }
 
-//    @PostMapping("/fishes")
-//    @ResponseBody
-//    public Fish addFish(@RequestBody Fish fish) {
-//        fish.setArrivalDate(new Date());
-//        if (fish.getSpecie() != null) fish.setSpecie(specieService.getById(fish.getSpecie().getId()));
-//        if (fish.getPool() != null) fish.setPool(poolService.getById(fish.getPool().getId()));
-//        return fishService.save(fish);
-//    }
-
     @PostMapping("/fishes")
     @ResponseBody
-    public Fish addFish(@RequestBody Map<String, String> allParams) {
-        Fish p = new Fish();
-        p.setName(allParams.get("name"));
-        p.setGender(FishGender.valueOf(allParams.get("gender")));
-        p.setDistinctSign(allParams.get("distinctSign"));
-        p.setArrivalDate(new Date());
-        p.setSpecie(specieService.getByName(allParams.get("specie")));
-
-        return fishService.save(p);
+    public Fish addFish(@RequestBody Fish fish) {
+        fish.setArrivalDate(new Date());
+        if (fish.getSpecie() != null) fish.setSpecie(specieService.getById(fish.getSpecie().getId()));
+        if (fish.getPool() != null) fish.setPool(poolService.getById(fish.getPool().getId()));
+        return fishService.save(fish);
     }
+
+//    @PostMapping("/fishes")
+//    @ResponseBody
+//    public Fish addFish(@RequestBody Map<String, String> allParams) {
+//        Fish p = new Fish();
+//        p.setName(allParams.get("name"));
+//        p.setGender(FishGender.valueOf(allParams.get("gender")));
+//        p.setDistinctSign(allParams.get("distinctSign"));
+//        p.setArrivalDate(new Date());
+//        p.setSpecie(specieService.getByName(allParams.get("specie")));
+//
+//        return fishService.save(p);
+//    }
 
     @PutMapping("/fishes/retire/{id}")
     @ResponseBody
