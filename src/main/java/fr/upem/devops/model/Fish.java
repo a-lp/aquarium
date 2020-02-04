@@ -19,29 +19,40 @@ public class Fish implements Serializable {
     private Date returnDate;
     @ManyToOne
     @JoinColumn(name = "fish_specie_id")
-    @JsonBackReference
+    @JsonBackReference(value = "fish-specie")
     private Specie specie;
-//    @ManyToOne
-//    @JoinColumn(name = "fish_pool_id")
-//    @JsonBackReference
-//    private Pool pool;
+    @ManyToOne
+    @JoinColumn(name = "fish_pool_id")
+    @JsonBackReference(value = "fish-pool")
+    private Pool pool;
 
     public Fish() {
     }
 
-    public Fish(String name, FishGender gender, String distinctSign, Specie specie) {
+    /* Test constructors */
+    public Fish(String name, FishGender gender, String distinctSign, Specie specie, Pool pool) {
         this.name = name;
         this.gender = gender;
         this.distinctSign = distinctSign;
         this.specie = specie;
+        this.pool = pool;
     }
 
-    public Fish(Long id, String name, FishGender gender, String distinctSign, Specie specie) {
+    public Fish(Long id, String name, FishGender gender, String distinctSign, Specie specie, Pool pool) {
         this.id = id;
         this.name = name;
         this.gender = gender;
         this.distinctSign = distinctSign;
         this.specie = specie;
+        this.pool = pool;
+    }
+
+    public Pool getPool() {
+        return pool;
+    }
+
+    public void setPool(Pool pool) {
+        this.pool = pool;
     }
 
     public Specie getSpecie() {
@@ -130,7 +141,8 @@ public class Fish implements Serializable {
                 ", distinctSign='" + distinctSign + '\'' +
                 ", arrivalDate=" + arrivalDate +
                 ", returnDate=" + returnDate +
-                ", specie=" + specie +
+                ", specie=" + (specie != null ? specie.getName() : "null") +
+                ", pool=" + (pool != null ? pool.getId() : "null") +
                 '}';
     }
 }

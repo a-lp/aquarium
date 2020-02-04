@@ -2,6 +2,7 @@ package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Alimentation;
 import fr.upem.devops.model.Fish;
+import fr.upem.devops.model.FishGender;
 import fr.upem.devops.model.Specie;
 import fr.upem.devops.service.SpecieService;
 import org.junit.Before;
@@ -41,13 +42,13 @@ public class SpecieControllerTest {
         Specie s2 = new Specie(2L, "Specie2", lf++, lf, Alimentation.HERBIVORE, new ArrayList<>());
         Specie s3 = new Specie(3L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new ArrayList<>());
 
-//        Fish a1 = new Fish(1L, "Shark", FishGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", s1);
-//        Fish a2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", s2);
-//        Fish a3 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", s3);
-//
-//        s1.addAnimal(a1);
-//        s2.addAnimal(a2);
-//        s3.addAnimal(a3);
+        Fish a1 = new Fish(1L, "Shark", FishGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", s1, null);
+        Fish a2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", s2, null);
+        Fish a3 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", s3, null);
+
+        s1.addAnimal(a1);
+        s2.addAnimal(a2);
+        s3.addAnimal(a3);
 
         species.add(s1);
         species.add(s2);
@@ -67,8 +68,13 @@ public class SpecieControllerTest {
     @Test
     public void getByName() {
         List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/species", List.class);
-        Fish output = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1", Fish.class);
+        Specie output = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1", Specie.class);
+        assertEquals(lista.get(0).get("id").toString(), output.getId().toString());
         assertEquals(lista.get(0).get("name"), output.getName());
+        assertEquals(lista.get(0).get("alimentation"), output.getAlimentation().name());
+        assertEquals(lista.get(0).get("extinctionLevel").toString(), output.getExtinctionLevel().toString());
+        assertEquals(lista.get(0).get("lifeSpan").toString(), output.getLifeSpan().toString());
+        assertEquals(((List<Fish>) lista.get(0).get("fishList")).size(), output.getFishList().size());
     }
 
     @Test
@@ -78,7 +84,12 @@ public class SpecieControllerTest {
         Mockito.when(specieService.save(specie)).thenReturn(new Specie(5L, "Specie5", lf, lf, Alimentation.OMNIVORE, new ArrayList<>()));
         Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
                 Specie.class);
+        assertEquals(request.getId(), Long.valueOf(5l));
         assertEquals(request.getName(), specie.getName());
+        assertEquals(request.getAlimentation(), specie.getAlimentation());
+        assertEquals(request.getExtinctionLevel(), specie.getExtinctionLevel());
+        assertEquals(request.getLifeSpan(), specie.getLifeSpan());
+        assertEquals(request.getFishList(), specie.getFishList());
     }
 
     @Test

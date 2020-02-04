@@ -45,6 +45,7 @@ public class FishController {
         p.setDistinctSign(allParams.get("distinctSign"));
         p.setArrivalDate(new Date());
         p.setSpecie(specieService.getByName(allParams.get("specie")));
+
         return fishService.save(p);
     }
 

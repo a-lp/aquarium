@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-public class Pool implements Serializable{
+public class Pool implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -17,10 +17,25 @@ public class Pool implements Serializable{
     @Enumerated(EnumType.STRING)
     private WaterCondition condition;
     @OneToMany(mappedBy = "pool")
-    @JsonManagedReference
-    private List<Fish> fish = new ArrayList<>();
+    @JsonManagedReference(value = "fish-pool")
+    private List<Fish> fishes = new ArrayList<>();
 
     public Pool() {
+    }
+
+    public Pool(Long id, Long maxCapacity, Double volume, WaterCondition waterCondition, List<Fish> fishes) {
+        this.id = id;
+        this.maxCapacity = maxCapacity;
+        this.volume = volume;
+        this.condition = waterCondition;
+        this.fishes = fishes;
+    }
+
+    public Pool(Long maxCapacity, Double volume, WaterCondition waterCondition, List<Fish> fishes) {
+        this.maxCapacity = maxCapacity;
+        this.volume = volume;
+        this.condition = waterCondition;
+        this.fishes = fishes;
     }
 
     public Long getId() {
@@ -55,12 +70,12 @@ public class Pool implements Serializable{
         this.condition = condition;
     }
 
-    public List<Fish> getFish() {
-        return fish;
+    public List<Fish> getFishes() {
+        return fishes;
     }
 
-    public void setFish(List<Fish> fish) {
-        this.fish = fish;
+    public void setFishes(List<Fish> fish) {
+        this.fishes = fish;
     }
 
     @Override
@@ -91,7 +106,7 @@ public class Pool implements Serializable{
                 ", maxCapacity=" + maxCapacity +
                 ", volume=" + volume +
                 ", condition=" + condition +
-                ", fish=" + fish +
+                ", fish=" + fishes +
                 '}';
     }
 

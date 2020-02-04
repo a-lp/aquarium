@@ -19,7 +19,7 @@ public class Specie implements Serializable {
     @Enumerated(EnumType.STRING)
     private Alimentation alimentation;
     @OneToMany(mappedBy = "specie")
-    @JsonManagedReference
+    @JsonManagedReference(value = "fish-specie")
     private List<Fish> fishList = new ArrayList<>();
 
     public Specie() {

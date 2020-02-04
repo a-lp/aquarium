@@ -14,8 +14,8 @@ public class PoolService {
         return poolRepository.findAll();
     }
 
-    public Pool getById(String id) {
-        return poolRepository.findById(Long.parseLong(id)).get();
+    public Pool getById(Long id) {
+        return poolRepository.findById(id).get();
     }
 
     public Pool save(Pool specie) {

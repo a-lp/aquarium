@@ -2,6 +2,7 @@ package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.FishGender;
+import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Specie;
 import fr.upem.devops.service.FishService;
 import org.junit.Before;
@@ -40,9 +41,9 @@ public class FishControllerTest {
 
     @Before
     public void init() {
-        Fish p1 = new Fish(1L, "Shark", FishGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", new Specie());
-        Fish p2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", new Specie());
-        Fish p3 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie());
+        Fish p1 = new Fish(1L, "Shark", FishGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", new Specie(), new Pool());
+        Fish p2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", new Specie(), new Pool());
+        Fish p3 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool());
 
         fish.add(p1);
         fish.add(p2);
@@ -68,22 +69,22 @@ public class FishControllerTest {
 
     @Test
     public void addFish() throws URISyntaxException {
-        Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie());
-        Fish fish_new = new Fish(4L, "Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie());
+        Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie(), new Pool());
+        Fish fish_new = new Fish(4L, "Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie(), new Pool());
         fish_new.setArrivalDate(new Date());
         Mockito.when(fishService.save(fish)).thenReturn(fish_new);
         Fish request = this.restTemplate.postForObject("http://localhost:" + port + "/fishes", fish,
                 Fish.class);
-        assertEquals("Lesso", request.getName());
-        assertEquals("buono da fare al forno con le patate", request.getDistinctSign());
-        assertEquals(FishGender.HERMAPHRODITE, request.getGender());
+        assertEquals(fish_new.getName(), request.getName());
+        assertEquals(fish_new.getDistinctSign(), request.getDistinctSign());
+        assertEquals(fish_new.getGender(), request.getGender());
+        assertEquals(fish_new.getId(), request.getId());
         assertNotNull(request.getArrivalDate());
-        assertNotNull(request.getId());
     }
 
     @Test
     public void retireFish() {
-        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie());
+        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool());
         updateP1.setReturnDate(new Date());
         Mockito.when(fishService.save(updateP1)).thenReturn(updateP1);
         HttpEntity<Fish> updated = new HttpEntity<Fish>(updateP1);
@@ -94,8 +95,8 @@ public class FishControllerTest {
 
     @Test
     public void updateFish() {
-        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie());
-        Mockito.when(fishService.save(updateP1)).thenReturn(new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie()));
+        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool());
+        Mockito.when(fishService.save(updateP1)).thenReturn(new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool()));
         updateP1.setName("MauriceColdfish");
         HttpEntity<Fish> updated = new HttpEntity<Fish>(updateP1);
         Fish request = this.restTemplate.exchange("http://localhost:" + port + "/fishes/3", HttpMethod.PUT,
@@ -106,7 +107,7 @@ public class FishControllerTest {
 
     @Test
     public void deleteFish() {
-        Fish p1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie());
+        Fish p1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool());
         Mockito.when(fishService.remove(p1)).thenReturn(p1);
         Fish response = this.restTemplate
                 .exchange("http://localhost:" + port + "/fishes/3", HttpMethod.DELETE, null, Fish.class)

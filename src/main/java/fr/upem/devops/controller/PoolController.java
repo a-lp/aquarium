@@ -18,12 +18,12 @@ public class PoolController {
 
     @GetMapping("/pools/{id}")
     public Pool getById(@PathVariable String id) {
-        return poolService.getById(id);
+        return poolService.getById(Long.parseLong(id));
     }
 
     @PostMapping("/pools")
     @ResponseBody
-    public Pool addSpecie(@RequestBody Pool pool) {
+    public Pool addPool(@RequestBody Pool pool) {
         return poolService.save(pool);
     }
 }
