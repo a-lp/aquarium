@@ -12,6 +12,7 @@ import { SpeciesComponent } from './species/species.component';
 import { SpeciesCreatorComponent } from './creator/species/species-creator.component';
 import { FormCreatorComponent } from './creator/form-creator.component';
 import { PoolsCreatorComponent } from './creator/pools/pools-creator/pools-creator.component';
+import {DatePipe} from "@angular/common";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,7 @@ import { PoolsCreatorComponent } from './creator/pools/pools-creator/pools-creat
     HttpClientModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [DatePipe],
   bootstrap: [AppComponent]
 })
 export class AppModule {

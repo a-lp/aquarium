@@ -40,6 +40,7 @@ export class FishesCreatorComponent implements OnInit {
         data => {
           console.log(data)
           this.onSave.emit(data);
+          this.profileForm.reset();
         },
         error => console.log(error)
       );

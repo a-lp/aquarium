@@ -1,28 +1,28 @@
 <form [formGroup]="profileForm">
-
-  <label>
-    Name:
-    <input type="text" formControlName="name">
-  </label>
-
-  <label>
-    Distinct Sign:
-    <input type="text" formControlName="distinctSign">
-  </label>
-
-  <label>
-    Gender:
-    <select formControlName="gender">
-      <option *ngFor="let i of genders" [value]="i">{{i}}</option>
-    </select>
-  </label>
-
-  <label>
-    Specie:
-    <select formControlName="specie">
-      <option *ngFor="let i of species" [value]="i.name">{{i.name}}</option>
-    </select>
-  </label>
-
-  <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Distinct Sign</th>
+      <th>Gender</th>
+      <th>Specie</th>
+      <th>Save</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <th><input type="text" formControlName="name"></th>
+      <th><input type="text" formControlName="distinctSign"></th>
+      <th><select formControlName="gender">
+        <option *ngFor="let i of genders" [value]="i">{{i}}</option>
+      </select></th>
+      <th><select formControlName="specie">
+        <option *ngFor="let i of species" [value]="i.name">{{i.name}}</option>
+      </select></th>
+      <th>
+        <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
+      </th>
+    </tr>
+    </tbody>
+  </table>
 </form>

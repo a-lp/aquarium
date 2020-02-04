@@ -1,5 +1,19 @@
-.content {
+.navigation-menu {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: flex-end;
+  margin: 2em 5em;
+}
+
+.navigation-menu li {
+  list-style: none;
+  padding: 0 1em;
+}
+
+.navigation-menu a {
+  text-decoration: none;
+}
+
+.content{
+  padding: 2em;
 }

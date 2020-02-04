@@ -1,6 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Fish} from '../../model/Fish';
 import {FishService} from '../../service/fish.service';
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'tr [app-fish]',
@@ -13,7 +14,7 @@ export class FishComponent implements OnInit {
   @Output()
   retireEvent: EventEmitter<Fish> = new EventEmitter<Fish>();
 
-  constructor(private fishService: FishService) {
+  constructor(private fishService: FishService, private datePipe: DatePipe) {
 
   }
 
