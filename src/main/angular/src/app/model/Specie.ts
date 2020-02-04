@@ -1,8 +1,8 @@
-import {Fish} from "./Fish";
-import {Alimentation} from "./Alimentation";
+import {Fish} from './Fish';
+import {Alimentation} from './Alimentation';
 
 export class Specie {
-  private _id: number;
+  id: number;
   name: string;
   lifeSpan: number;
   extinctionLevel: number;

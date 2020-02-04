@@ -1,5 +1,6 @@
-import {FishGender} from "./FishGender";
-import {Specie} from "./Specie";
+import {FishGender} from './FishGender';
+import {Specie} from './Specie';
+import {Pool} from './Pool';
 
 export class Fish {
   id: number;
@@ -9,4 +10,5 @@ export class Fish {
   arrivalDate: Date;
   returnDate: Date;
   specie: Specie;
+  pool: Pool|null;
 }

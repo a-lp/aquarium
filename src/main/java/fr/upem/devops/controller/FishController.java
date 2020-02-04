@@ -3,6 +3,7 @@ package fr.upem.devops.controller;
 import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.FishGender;
 import fr.upem.devops.service.FishService;
+import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.SpecieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,8 @@ public class FishController {
     private FishService fishService;
     @Autowired
     private SpecieService specieService;
+    @Autowired
+    private PoolService poolService;
 
     @GetMapping("/fishes")
     public Iterable<Fish> getAll() {
@@ -32,8 +35,9 @@ public class FishController {
 //    @ResponseBody
 //    public Fish addFish(@RequestBody Fish fish) {
 //        fish.setArrivalDate(new Date());
-//        System.out.println(fish);
-//        return fisheservice.save(fish);
+//        if (fish.getSpecie() != null) fish.setSpecie(specieService.getById(fish.getSpecie().getId()));
+//        if (fish.getPool() != null) fish.setPool(poolService.getById(fish.getPool().getId()));
+//        return fishService.save(fish);
 //    }
 
     @PostMapping("/fishes")
