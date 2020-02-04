@@ -1,7 +1,7 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Alimentation;
-import fr.upem.devops.model.Animal;
+import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.Specie;
 import fr.upem.devops.service.SpecieService;
 import org.junit.Before;
@@ -41,9 +41,9 @@ public class SpecieControllerTest {
         Specie s2 = new Specie(2L, "Specie2", lf++, lf, Alimentation.HERBIVORE, new ArrayList<>());
         Specie s3 = new Specie(3L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new ArrayList<>());
 
-//        Animal a1 = new Animal(1L, "Shark", AnimalGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", s1);
-//        Animal a2 = new Animal(2L, "Codfish", AnimalGender.MALE, "buono da fare al forno", s2);
-//        Animal a3 = new Animal(3L, "Swordfish", AnimalGender.FEMALE, "in padella panato", s3);
+//        Fish a1 = new Fish(1L, "Shark", FishGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", s1);
+//        Fish a2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", s2);
+//        Fish a3 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", s3);
 //
 //        s1.addAnimal(a1);
 //        s2.addAnimal(a2);
@@ -67,7 +67,7 @@ public class SpecieControllerTest {
     @Test
     public void getByName() {
         List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/species", List.class);
-        Animal output = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1", Animal.class);
+        Fish output = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1", Fish.class);
         assertEquals(lista.get(0).get("name"), output.getName());
     }
 

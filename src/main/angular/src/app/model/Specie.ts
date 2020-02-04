@@ -1,4 +1,4 @@
-import {Animal} from "./Animal";
+import {Fish} from "./Fish";
 import {Alimentation} from "./Alimentation";
 
 export class Specie {
@@ -7,5 +7,5 @@ export class Specie {
   lifeSpan: number;
   extinctionLevel: number;
   alimentation: Alimentation;
-  animalList: Array<Animal>;
+  animalList: Array<Fish>;
 }

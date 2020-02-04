@@ -20,30 +20,30 @@ public class Specie implements Serializable {
     private Alimentation alimentation;
     @OneToMany(mappedBy = "specie")
     @JsonManagedReference
-    private List<Animal> animalList = new ArrayList<>();
+    private List<Fish> fishList = new ArrayList<>();
 
     public Specie() {
     }
 
-    public Specie(String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, ArrayList<Animal> animalList) {
+    public Specie(String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, ArrayList<Fish> fishList) {
         this.name = name;
         this.lifeSpan = lifeSpan;
         this.alimentation = alimentation;
         this.extinctionLevel = exctintionLevel;
-        this.animalList = animalList;
+        this.fishList = fishList;
     }
 
-    public Specie(Long id, String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, ArrayList<Animal> animalList) {
+    public Specie(Long id, String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, ArrayList<Fish> fishList) {
         this.id = id;
         this.name = name;
         this.lifeSpan = lifeSpan;
         this.alimentation = alimentation;
         this.extinctionLevel = exctintionLevel;
-        this.animalList = animalList;
+        this.fishList = fishList;
     }
 
-    public void addAnimal(Animal animal) {
-        this.animalList.add(animal);
+    public void addAnimal(Fish fish) {
+        this.fishList.add(fish);
     }
 
     public Short getLifeSpan() {
@@ -74,12 +74,12 @@ public class Specie implements Serializable {
         return name;
     }
 
-    public List<Animal> getAnimalList() {
-        return animalList;
+    public List<Fish> getFishList() {
+        return fishList;
     }
 
-    public void setAnimalList(List<Animal> animalList) {
-        this.animalList = animalList;
+    public void setFishList(List<Fish> fishList) {
+        this.fishList = fishList;
     }
 
     @Override

@@ -1,6 +1,6 @@
 import {Component, OnInit} from '@angular/core';
-import {Specie} from "../model/Specie";
-import {SpeciesService} from "../service/species.service";
+import {Specie} from '../model/Specie';
+import {SpeciesService} from '../service/species.service';
 
 @Component({
   selector: 'app-species',
@@ -8,13 +8,13 @@ import {SpeciesService} from "../service/species.service";
   styleUrls: ['./species.component.css']
 })
 export class SpeciesComponent implements OnInit {
-  species: Array<Specie>
+  species: Array<Specie>;
 
   constructor(private speciesService: SpeciesService) {
   }
 
   ngOnInit() {
-    this.refresh(null)
+    this.refresh(null);
   }
 
   refresh($event: Specie) {
@@ -22,7 +22,7 @@ export class SpeciesComponent implements OnInit {
       data => this.species = data
       ,
       error => console.log(error)
-    )
+    );
 
   }
 

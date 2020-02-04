@@ -1,10 +1,10 @@
-import {AnimalGender} from "./AnimalGender";
+import {FishGender} from "./FishGender";
 import {Specie} from "./Specie";
 
-export class Animal {
+export class Fish {
   id: number;
   name: string;
-  gender: AnimalGender;
+  gender: FishGender;
   distinctSign: string;
   arrivalDate: Date;
   returnDate: Date;

@@ -1,0 +1,14 @@
+<app-form-creator (refreshEvent)="refresh(null)"></app-form-creator>
+<ul>
+  <li *ngFor=" let a of fishes">
+    <app-fish [fish]="a" (retireEvent)="refresh($event)"></app-fish>
+  </li>
+</ul>
+<br>
+<h2>Retired</h2>
+<br>
+<ul>
+  <li *ngFor=" let a of retiredFishes">
+    <app-fish [fish]="a" (retireEvent)="refresh($event)"></app-fish>
+  </li>
+</ul>

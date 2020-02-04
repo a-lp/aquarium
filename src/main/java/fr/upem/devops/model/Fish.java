@@ -7,32 +7,36 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class Animal implements Serializable {
+public class Fish implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
     @Enumerated(EnumType.STRING)
-    private AnimalGender gender;
+    private FishGender gender;
     private String distinctSign;
     private Date arrivalDate;
     private Date returnDate;
     @ManyToOne
-    @JoinColumn(name = "animal_id")
+    @JoinColumn(name = "fish_specie_id")
     @JsonBackReference
     private Specie specie;
+//    @ManyToOne
+//    @JoinColumn(name = "fish_pool_id")
+//    @JsonBackReference
+//    private Pool pool;
 
-    public Animal() {
+    public Fish() {
     }
 
-    public Animal(String name, AnimalGender gender, String distinctSign, Specie specie) {
+    public Fish(String name, FishGender gender, String distinctSign, Specie specie) {
         this.name = name;
         this.gender = gender;
         this.distinctSign = distinctSign;
         this.specie = specie;
     }
 
-    public Animal(Long id, String name, AnimalGender gender, String distinctSign, Specie specie) {
+    public Fish(Long id, String name, FishGender gender, String distinctSign, Specie specie) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -64,11 +68,11 @@ public class Animal implements Serializable {
         this.name = name;
     }
 
-    public AnimalGender getGender() {
+    public FishGender getGender() {
         return gender;
     }
 
-    public void setGender(AnimalGender gender) {
+    public void setGender(FishGender gender) {
         this.gender = gender;
     }
 
@@ -100,7 +104,7 @@ public class Animal implements Serializable {
     public boolean equals(Object obj) {
         if (getClass() != obj.getClass())
             return false;
-        Animal other = (Animal) obj;
+        Fish other = (Fish) obj;
         if (id == null) {
             if (other.id != null)
                 return false;
@@ -119,7 +123,7 @@ public class Animal implements Serializable {
 
     @Override
     public String toString() {
-        return "Animal{" +
+        return "Fish{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", gender=" + gender +

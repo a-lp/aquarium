@@ -1,3 +1,3 @@
-export enum AnimalGender {
+export enum FishGender {
   MALE = "MALE", FEMALE = "FEMALE", HERMAPHRODITE = "HERMAPHRODITE"
 }
