@@ -12,7 +12,7 @@
     <tr>
       <th><input type="number" formControlName="maxCapacity"></th>
       <th><input type="number" formControlName="volume"></th>
-      <th><select formControlName="condition" ngModel="{{conditions[0]}}">
+      <th><select formControlName="condition">
         <option *ngFor="let i of conditions" [value]="i">{{i}}</option>
       </select></th>
       <th>

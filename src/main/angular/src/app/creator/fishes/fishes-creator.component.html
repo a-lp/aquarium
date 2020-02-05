@@ -6,6 +6,7 @@
       <th>Distinct Sign</th>
       <th>Gender</th>
       <th>Specie</th>
+      <th>Pool</th>
       <th>Save</th>
     </tr>
     </thead>
@@ -13,11 +14,14 @@
     <tr>
       <th><input type="text" formControlName="name"></th>
       <th><input type="text" formControlName="distinctSign"></th>
-      <th><select formControlName="gender" ngModel="{{genders[0]}}">
+      <th><select formControlName="gender">
         <option *ngFor="let i of genders" [value]="i">{{i}}</option>
       </select></th>
-      <th><select formControlName="specie" ngModel="{{species!=undefined?species[0]:''}}">
+      <th><select formControlName="specie">
         <option *ngFor="let i of species" [value]="i.name">{{i.name}}</option>
+      </select></th>
+      <th><select formControlName="pool">
+        <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
       </select></th>
       <th>
         <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>

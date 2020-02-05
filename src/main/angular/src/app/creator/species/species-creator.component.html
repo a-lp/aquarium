@@ -18,12 +18,12 @@
         <input type="number" formControlName="lifeSpan">
       </th>
       <th>
-        <select formControlName="extinctionLevel" ngModel="1">
+        <select formControlName="extinctionLevel">
           <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">{{i}}</option>
         </select>
       </th>
       <th>
-        <select formControlName="alimentation" ngModel="{{alimentations[0]}}">
+        <select formControlName="alimentation">
           <option *ngFor="let a of alimentations" [value]="a">{{a}}</option>
         </select>
       </th>

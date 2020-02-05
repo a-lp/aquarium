@@ -1,6 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {SpeciesService} from '../service/species.service';
 import {Specie} from '../model/Specie';
+import {PoolService} from "../service/pool.service";
+import {Pool} from '../model/Pool';
 
 @Component({
   selector: 'app-form-creator',
@@ -12,8 +14,9 @@ export class FormCreatorComponent implements OnInit {
   @Output()
   refreshEvent = new EventEmitter();
   species: Array<Specie>;
+  pools: Array<Pool>;
 
-  constructor(private speciesService: SpeciesService) {
+  constructor(private speciesService: SpeciesService, private poolService: PoolService) {
   }
 
   ngOnInit() {
@@ -23,6 +26,10 @@ export class FormCreatorComponent implements OnInit {
   refresh($event: any) {
     this.speciesService.getAll().subscribe(data => {
       this.species = data;
+      this.refreshEvent.emit(null);
+    });
+    this.poolService.getAll().subscribe(pools => {
+      this.pools = pools;
       this.refreshEvent.emit(null);
     });
   }

@@ -5,6 +5,7 @@ import {FishService} from '../../service/fish.service';
 import {FishGender} from '../../model/FishGender';
 import {Specie} from '../../model/Specie';
 import {SpeciesService} from '../../service/species.service';
+import {PoolService} from "../../service/pool.service";
 
 
 @Component({
@@ -13,38 +14,55 @@ import {SpeciesService} from '../../service/species.service';
   styleUrls: ['./fishes-creator.component.css']
 })
 export class FishesCreatorComponent implements OnInit {
-  profileForm = new FormGroup({
-    name: new FormControl('', Validators.required),
-    distinctSign: new FormControl('', Validators.required),
-    gender: new FormControl('', Validators.required),
-    specie: new FormControl('', Validators.required)
-  });
-
   @Output()
   onSave: EventEmitter<Fish> = new EventEmitter<Fish>();
   genders = Object.values(FishGender);
   @Input()
   species: Array<Specie>;
+  @Input()
+  pools: Array<Specie>;
+  defaulSpecie: string;
 
-  constructor(private fishService: FishService, private speciesService: SpeciesService) {
+  profileForm = new FormGroup({
+    name: new FormControl('', Validators.required),
+    distinctSign: new FormControl('', Validators.required),
+    gender: new FormControl('', Validators.required),
+    specie: new FormControl(null, Validators.required),
+    pool: new FormControl(null)
+  });
+
+
+  constructor(private fishService: FishService, private speciesService: SpeciesService, private poolService: PoolService) {
   }
 
   ngOnInit() {
-
   }
 
   save($event: Event) {
     this.speciesService.getSpecie(this.profileForm.value.specie).subscribe(specie => {
       this.profileForm.value.specie = specie;
-      console.log(this.profileForm.value)
-      this.fishService.save(this.profileForm.value).subscribe(
-        data => {
-          console.log(data)
-          this.onSave.emit(data);
-          this.profileForm.reset();
-        },
-        error => console.log(error)
-      );
+      if (this.profileForm.value.pool != undefined) {
+        this.poolService.getPool(this.profileForm.value.pool).subscribe(pool => {
+          this.profileForm.value.pool = pool;
+          this.fishService.save(this.profileForm.value).subscribe(
+            data => {
+              console.log(data);
+              this.onSave.emit(data);
+              this.profileForm.reset();
+            },
+            error => console.log(error)
+          );
+        });
+      } else {
+        this.fishService.save(this.profileForm.value).subscribe(
+          data => {
+            console.log(data);
+            this.onSave.emit(data);
+            this.profileForm.reset();
+          },
+          error => console.log(error)
+        );
+      }
     });
   }
 }
