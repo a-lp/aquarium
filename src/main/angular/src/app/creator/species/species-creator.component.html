@@ -1,28 +1,36 @@
 <form [formGroup]="profileForm">
-
-  <label>
-    Name:
-    <input type="text" formControlName="name">
-  </label>
-
-  <label>
-    Life Span:
-    <input type="number" formControlName="lifeSpan">
-  </label>
-
-  <label>
-    Extinction level:
-    <select formControlName="extinctionLevel">
-      <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">{{i}}</option>
-    </select>
-  </label>
-
-  <label>
-    Alimentation:
-    <select formControlName="alimentation">
-      <option *ngFor="let a of alimentations" [value]="a">{{a}}</option>
-    </select>
-  </label>
-
-  <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Life Span</th>
+      <th>Extinction Level</th>
+      <th>Alimentation</th>
+      <th>Save</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <th>
+        <input type="text" formControlName="name">
+      </th>
+      <th>
+        <input type="number" formControlName="lifeSpan">
+      </th>
+      <th>
+        <select formControlName="extinctionLevel" ngModel="1">
+          <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">{{i}}</option>
+        </select>
+      </th>
+      <th>
+        <select formControlName="alimentation" ngModel="{{alimentations[0]}}">
+          <option *ngFor="let a of alimentations" [value]="a">{{a}}</option>
+        </select>
+      </th>
+      <th>
+        <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
+      </th>
+    </tr>
+    </tbody>
+  </table>
 </form>

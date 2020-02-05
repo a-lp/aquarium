@@ -13,10 +13,10 @@
     <tr>
       <th><input type="text" formControlName="name"></th>
       <th><input type="text" formControlName="distinctSign"></th>
-      <th><select formControlName="gender">
+      <th><select formControlName="gender" ngModel="{{genders[0]}}">
         <option *ngFor="let i of genders" [value]="i">{{i}}</option>
       </select></th>
-      <th><select formControlName="specie">
+      <th><select formControlName="specie" ngModel="{{species!=undefined?species[0]:''}}">
         <option *ngFor="let i of species" [value]="i.name">{{i.name}}</option>
       </select></th>
       <th>

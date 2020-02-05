@@ -1,0 +1,24 @@
+<form [formGroup]="profileForm">
+  <table>
+    <thead>
+    <tr>
+      <th>Max Capacity</th>
+      <th>Volume</th>
+      <th>Condition</th>
+      <th>Save</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <th><input type="number" formControlName="maxCapacity"></th>
+      <th><input type="number" formControlName="volume"></th>
+      <th><select formControlName="condition" ngModel="{{conditions[0]}}">
+        <option *ngFor="let i of conditions" [value]="i">{{i}}</option>
+      </select></th>
+      <th>
+        <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
+      </th>
+    </tr>
+    </tbody>
+  </table>
+</form>
