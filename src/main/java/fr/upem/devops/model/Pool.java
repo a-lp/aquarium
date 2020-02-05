@@ -10,7 +10,7 @@ import java.util.List;
 @Entity
 public class Pool implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long maxCapacity;
     private Double volume;

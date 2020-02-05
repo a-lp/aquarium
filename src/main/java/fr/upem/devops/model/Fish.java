@@ -9,7 +9,7 @@ import java.util.Date;
 @Entity
 public class Fish implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     @Enumerated(EnumType.STRING)

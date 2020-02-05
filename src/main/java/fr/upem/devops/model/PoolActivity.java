@@ -9,7 +9,7 @@ import java.util.List;
 @Entity
 public class PoolActivity implements Serializable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
     private Date startActivity;
