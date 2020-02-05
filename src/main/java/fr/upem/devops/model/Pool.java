@@ -19,6 +19,11 @@ public class Pool implements Serializable {
     @OneToMany(mappedBy = "pool")
     @JsonIgnoreProperties("pool")
     private List<Fish> fishes = new ArrayList<>();
+//    @ManyToMany(mappedBy = "pools")
+//    private List<PoolActivity> activities = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "pool_sector")
+    private Sector sector;
 
     public Pool() {
     }
