@@ -1,6 +1,26 @@
 <h1>Species</h1>
-<ul>
-  <li *ngFor=" let a of species">
-    {{a.name}} - {{a.alimentation}} - {{a.extinctionLevel}} - {{a.lifeSpan}}
-  </li>
-</ul>
+<table class="species-table">
+  <thead>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Name
+    </th>
+    <th>
+      Alimentation
+    </th>
+    <th>
+      Extinction Level
+    </th>
+    <th>
+      Life Span
+    </th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr app-specie *ngFor=" let a of species" [specie]="a"></tr>
+  </tbody>
+</table>

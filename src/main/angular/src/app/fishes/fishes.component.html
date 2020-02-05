@@ -1,5 +1,4 @@
 <h1>Fishes</h1>
-<app-form-creator (refreshEvent)="refresh(null)"></app-form-creator>
 <table class="fish-table">
   <thead>
   <tr>
@@ -36,40 +35,40 @@
   <tr app-fish *ngFor=" let a of fishes" [fish]="a" (retireEvent)="refresh($event)"></tr>
   </tbody>
 </table>
-<h2>Retired</h2>
-<table class="fish-table">
-  <thead>
-  <tr>
-    <th>
-      ID
-    </th>
-    <th>
-      Name
-    </th>
-    <th>
-      Gender
-    </th>
-    <th>
-      Distinct Sign
-    </th>
-    <th>
-      Arrival Date
-    </th>
-    <th>
-      Return Date
-    </th>
-    <th>
-      Specie
-    </th>
-    <th>
-      Pool
-    </th>
-    <th>
-      Retire
-    </th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr app-fish *ngFor=" let a of retiredFishes" [fish]="a" (retireEvent)="refresh($event)"></tr>
-  </tbody>
-</table>
+<!--<h2>Retired</h2>-->
+<!--<table class="fish-table">-->
+<!--  <thead>-->
+<!--  <tr>-->
+<!--    <th>-->
+<!--      ID-->
+<!--    </th>-->
+<!--    <th>-->
+<!--      Name-->
+<!--    </th>-->
+<!--    <th>-->
+<!--      Gender-->
+<!--    </th>-->
+<!--    <th>-->
+<!--      Distinct Sign-->
+<!--    </th>-->
+<!--    <th>-->
+<!--      Arrival Date-->
+<!--    </th>-->
+<!--    <th>-->
+<!--      Return Date-->
+<!--    </th>-->
+<!--    <th>-->
+<!--      Specie-->
+<!--    </th>-->
+<!--    <th>-->
+<!--      Pool-->
+<!--    </th>-->
+<!--    <th>-->
+<!--      Retire-->
+<!--    </th>-->
+<!--  </tr>-->
+<!--  </thead>-->
+<!--  <tbody>-->
+<!--  <tr app-fish *ngFor=" let a of retiredFishes" [fish]="a" (retireEvent)="refresh($event)"></tr>-->
+<!--  </tbody>-->
+<!--</table>-->

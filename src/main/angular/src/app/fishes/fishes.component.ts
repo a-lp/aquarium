@@ -9,7 +9,8 @@ import {FishService} from '../service/fish.service';
 })
 export class FishesComponent implements OnInit {
   fishes: Array<Fish>;
-  retiredFishes: Array<Fish>;
+
+  // retiredFishes: Array<Fish>;
 
   constructor(private animalService: FishService) {
   }
@@ -22,12 +23,13 @@ export class FishesComponent implements OnInit {
     this.animalService.getAll().subscribe(
       data => {
         if (data != null) {
-          this.retiredFishes = data.filter(element => {
-            return element.returnDate != null;
-          });
-          this.fishes = data.filter(element => {
-            return !this.retiredFishes.includes(element);
-          });
+          this.fishes = data;
+          // this.retiredFishes = data.filter(element => {
+          //   return element.returnDate != null;
+          // });
+          // this.fishes = data.filter(element => {
+          //   return !this.retiredFishes.includes(element);
+          // });
         }
       },
       error => console.log(error)

@@ -1,3 +1,6 @@
+<h3>Fish</h3>
 <app-fishes-creator [pools]="pools" [species]="species" (onSave)="refresh($event)"></app-fishes-creator>
+<h3>Species</h3>
 <app-species-creator (onSaveSpecie)="refresh($event)"></app-species-creator>
+<h3>Pools</h3>
 <app-pools-creator (onSavePool)="refresh($event)"></app-pools-creator>

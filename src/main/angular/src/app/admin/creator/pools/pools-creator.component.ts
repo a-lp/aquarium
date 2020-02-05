@@ -1,7 +1,7 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Pool, WaterCondition} from '../../model/Pool';
-import {PoolService} from '../../service/pool.service';
+import {Pool, WaterCondition} from '../../../model/Pool';
+import {PoolService} from '../../../service/pool.service';
 
 @Component({
   selector: 'app-pools-creator',

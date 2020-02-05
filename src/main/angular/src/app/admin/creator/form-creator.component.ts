@@ -1,8 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {SpeciesService} from '../service/species.service';
-import {Specie} from '../model/Specie';
-import {PoolService} from "../service/pool.service";
-import {Pool} from '../model/Pool';
+import {SpeciesService} from '../../service/species.service';
+import {Specie} from '../../model/Specie';
+import {PoolService} from '../../service/pool.service';
+import {Pool} from '../../model/Pool';
 
 @Component({
   selector: 'app-form-creator',

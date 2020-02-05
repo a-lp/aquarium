@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Fish} from '../../model/Fish';
-import {FishService} from '../../service/fish.service';
-import {FishGender} from '../../model/FishGender';
-import {Specie} from '../../model/Specie';
-import {SpeciesService} from '../../service/species.service';
-import {PoolService} from "../../service/pool.service";
+import {Fish} from '../../../model/Fish';
+import {FishService} from '../../../service/fish.service';
+import {FishGender} from '../../../model/FishGender';
+import {Specie} from '../../../model/Specie';
+import {SpeciesService} from '../../../service/species.service';
+import {PoolService} from "../../../service/pool.service";
 
 
 @Component({

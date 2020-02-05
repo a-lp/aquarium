@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Alimentation} from '../../model/Alimentation';
-import {SpeciesService} from '../../service/species.service';
-import {Specie} from '../../model/Specie';
+import {Alimentation} from '../../../model/Alimentation';
+import {SpeciesService} from '../../../service/species.service';
+import {Specie} from '../../../model/Specie';
 
 @Component({
   selector: 'app-species-creator',
