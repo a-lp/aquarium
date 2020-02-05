@@ -68,7 +68,7 @@ public class FishControllerTest {
     }
 
     @Test
-    public void addFish() throws URISyntaxException {
+    public void addFish(){
         Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie(), new Pool());
         Fish fish_new = new Fish(4L, "Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie(), new Pool());
         fish_new.setArrivalDate(new Date());

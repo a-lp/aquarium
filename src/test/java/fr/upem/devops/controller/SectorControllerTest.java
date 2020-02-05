@@ -30,7 +30,7 @@ public class SectorControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    private List<Sector> pools = new ArrayList<>();
+    private List<Sector> sectors = new ArrayList<>();
 
     @Before
     public void init() {
@@ -47,10 +47,10 @@ public class SectorControllerTest {
         s2.addPool(a2);
         s3.addPool(a3);
 
-        pools.add(s1);
-        pools.add(s2);
-        pools.add(s3);
-        Mockito.when(sectorService.getAll()).thenReturn(pools);
+        sectors.add(s1);
+        sectors.add(s2);
+        sectors.add(s3);
+        Mockito.when(sectorService.getAll()).thenReturn(sectors);
         Mockito.when(sectorService.getByName("Sector1")).thenReturn(s1);
         Mockito.when(sectorService.getByName("Sector2")).thenReturn(s2);
         Mockito.when(sectorService.getByName("Sector3")).thenReturn(s3);
@@ -77,6 +77,20 @@ public class SectorControllerTest {
         Sector sec = new Sector(4L, "Sector4", "Location4");
         Mockito.when(sectorService.save(sec)).thenReturn(new Sector(4L, "Sector4", "Location4"));
         Sector request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors", sec,
+                Sector.class);
+        assertEquals(request.getId(), sec.getId());
+        assertEquals(request.getName(), sec.getName());
+        assertEquals(request.getLocation(), sec.getLocation());
+        assertEquals(request.getPools(), sec.getPools());
+    }
+
+    @Test
+    public void addPoolToSector() {
+        Sector sec = this.sectors.get(0);
+        Pool pool = new Pool(4L, 4L, 4.0, Pool.WaterCondition.CLEAN, null);
+        sec.addPool(pool);
+        Mockito.when(sectorService.save(sec)).thenReturn(new Sector(1L, "Sector1", "Location1", sec.getPools()));
+        Sector request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/Sector1", pool,
                 Sector.class);
         assertEquals(request.getId(), sec.getId());
         assertEquals(request.getName(), sec.getName());

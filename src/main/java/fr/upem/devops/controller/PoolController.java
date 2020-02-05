@@ -1,7 +1,7 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.Specie;
 import fr.upem.devops.service.PoolService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +24,15 @@ public class PoolController {
     @PostMapping("/pools")
     @ResponseBody
     public Pool addPool(@RequestBody Pool pool) {
+        return poolService.save(pool);
+    }
+
+    @PostMapping("/pools/{id}")
+    @ResponseBody
+    public Pool addFishToPool(@RequestBody Fish fish, @PathVariable String id) {
+        Pool pool = getById(id);
+        if (pool == null) return null;
+        pool.addFish(fish);
         return poolService.save(pool);
     }
 }

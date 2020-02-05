@@ -26,6 +26,12 @@ public class Sector implements Serializable {
         this.name = name;
         this.location = location;
     }
+    public Sector(Long id, String name, String location, List<Pool> pools) {
+        this.id = id;
+        this.name = name;
+        this.location = location;
+        this.pools = pools;
+    }
 
     public Long getId() {
         return id;

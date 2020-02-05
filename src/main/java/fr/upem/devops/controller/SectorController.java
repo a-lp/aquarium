@@ -1,5 +1,6 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.service.SectorService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,15 @@ public class SectorController {
     @PostMapping("/sectors")
     @ResponseBody
     public Sector addSector(@RequestBody Sector sector) {
+        return sectorService.save(sector);
+    }
+
+    @PostMapping("/sectors/{name}")
+    @ResponseBody
+    public Sector addPoolToSector(@RequestBody Pool pool, @PathVariable String name) {
+        Sector sector = getByName(name);
+        if (sector == null) return null;
+        sector.addPool(pool);
         return sectorService.save(sector);
     }
 }

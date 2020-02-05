@@ -19,7 +19,7 @@ public class Pool implements Serializable {
     @OneToMany(mappedBy = "pool")
     @JsonIgnoreProperties("pool")
     private List<Fish> fishes = new ArrayList<>();
-//    @ManyToMany(mappedBy = "pools")
+    //    @ManyToMany(mappedBy = "pools")
 //    private List<PoolActivity> activities = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "pool_sector")
@@ -113,6 +113,10 @@ public class Pool implements Serializable {
                 ", condition=" + condition +
                 ", fish=" + fishes +
                 '}';
+    }
+
+    public void addFish(Fish fish) {
+        this.fishes.add(fish);
     }
 
     public enum WaterCondition implements Serializable {
