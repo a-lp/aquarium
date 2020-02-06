@@ -28,7 +28,7 @@ public class FishController {
 
     @GetMapping("/fishes/{id}")
     public Fish getById(@PathVariable String id) {
-        return fishService.getById(id);
+        return fishService.getById(Long.parseLong(id));
     }
 
     @PostMapping("/fishes")
@@ -56,7 +56,7 @@ public class FishController {
     @PutMapping("/fishes/retire/{id}")
     @ResponseBody
     public Fish retireFish(@PathVariable String id) {
-        Fish fishUpdated = fishService.getById(id);
+        Fish fishUpdated = getById(id);
         fishUpdated.setReturnDate(new Date());
         return fishService.save(fishUpdated);
     }
@@ -64,7 +64,7 @@ public class FishController {
     @PutMapping("/fishes/{id}")
     @ResponseBody
     public Fish updateFish(@PathVariable String id, @RequestBody Map<String, String> allParams) {
-        Fish p = fishService.getById(id);
+        Fish p = getById(id);
         p.setName(allParams.get("name"));
         p.setGender(FishGender.valueOf(allParams.get("gender")));
         p.setDistinctSign(allParams.get("distinctSign"));
@@ -76,7 +76,7 @@ public class FishController {
 
     @DeleteMapping("/fishes/{id}")
     public Fish deleteFish(@PathVariable String id) {
-        return fishService.remove(fishService.getById(id));
+        return fishService.remove(getById(id));
     }
 
 }

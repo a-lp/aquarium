@@ -24,6 +24,10 @@ public class Pool implements Serializable {
     @ManyToOne
     @JoinColumn(name = "pool_sector")
     private Sector sector;
+    @ManyToOne
+    @JoinColumn(name = "pool_responsible")
+    @JsonIgnoreProperties("poolsResponsabilities")
+    private Staff responsible;
 
     public Pool() {
     }
@@ -81,6 +85,22 @@ public class Pool implements Serializable {
 
     public void setFishes(List<Fish> fish) {
         this.fishes = fish;
+    }
+
+    public Sector getSector() {
+        return sector;
+    }
+
+    public void setSector(Sector sector) {
+        this.sector = sector;
+    }
+
+    public Staff getResponsible() {
+        return responsible;
+    }
+
+    public void setResponsible(Staff responsible) {
+        this.responsible = responsible;
     }
 
     @Override

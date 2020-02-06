@@ -23,8 +23,8 @@ public class FishService {
         fishRepository.save(fish);
     }
 
-    public Fish getById(String id) {
-        return fishRepository.findById(Long.parseLong(id)).get();
+    public Fish getById(Long id) {
+        return fishRepository.findById(id).get();
     }
 
     public Fish remove(Fish fish) {

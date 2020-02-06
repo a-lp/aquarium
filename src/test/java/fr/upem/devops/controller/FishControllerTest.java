@@ -18,7 +18,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -49,9 +48,9 @@ public class FishControllerTest {
         fish.add(p2);
         fish.add(p3);
         Mockito.when(fishService.getAll()).thenReturn(fish);
-        Mockito.when(fishService.getById("1")).thenReturn(p1);
-        Mockito.when(fishService.getById("2")).thenReturn(p2);
-        Mockito.when(fishService.getById("3")).thenReturn(p3);
+        Mockito.when(fishService.getById(1L)).thenReturn(p1);
+        Mockito.when(fishService.getById(2L)).thenReturn(p2);
+        Mockito.when(fishService.getById(3L)).thenReturn(p3);
     }
 
     @Test
@@ -68,9 +67,9 @@ public class FishControllerTest {
     }
 
     @Test
-    public void addFish(){
-        Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie(), new Pool());
-        Fish fish_new = new Fish(4L, "Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", new Specie(), new Pool());
+    public void addFish() {
+        Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
+        Fish fish_new = new Fish(4L, "Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
         fish_new.setArrivalDate(new Date());
         Mockito.when(fishService.save(fish)).thenReturn(fish_new);
         Fish request = this.restTemplate.postForObject("http://localhost:" + port + "/fishes", fish,
@@ -95,8 +94,8 @@ public class FishControllerTest {
 
     @Test
     public void updateFish() {
-        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool());
-        Mockito.when(fishService.save(updateP1)).thenReturn(new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool()));
+        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, null);
+        Mockito.when(fishService.save(updateP1)).thenReturn(new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, null));
         updateP1.setName("MauriceColdfish");
         HttpEntity<Fish> updated = new HttpEntity<Fish>(updateP1);
         Fish request = this.restTemplate.exchange("http://localhost:" + port + "/fishes/3", HttpMethod.PUT,

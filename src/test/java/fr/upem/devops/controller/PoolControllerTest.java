@@ -70,7 +70,7 @@ public class PoolControllerTest {
         assertEquals(lista.get(0).get("maxCapacity").toString(), output.getMaxCapacity().toString());
         assertEquals(lista.get(0).get("volume"), output.getVolume());
         assertEquals(lista.get(0).get("condition"), output.getCondition().name());
-        assertEquals(lista.get(0).get("fishes"), output.getFishes());
+        assertEquals(((List<Fish>) (lista.get(0).get("fishes"))).size(), output.getFishes().size());
     }
 
     @Test
