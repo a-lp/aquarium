@@ -2,6 +2,7 @@ package fr.upem.devops.controller;
 
 import fr.upem.devops.model.PoolActivity;
 import fr.upem.devops.model.Schedule;
+import fr.upem.devops.service.PoolActivityService;
 import fr.upem.devops.service.ScheduleService;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -23,9 +25,12 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@MockBeans({@MockBean(ScheduleService.class), @MockBean(PoolActivityService.class)})
 public class ScheduleControllerTest {
-    @MockBean
+    @Autowired
     private ScheduleService service;
+    @Autowired
+    private PoolActivityService poolActivityService;
     @LocalServerPort
     private int port = 8080;
     @Autowired
@@ -80,6 +85,7 @@ public class ScheduleControllerTest {
         PoolActivity pa1 = new PoolActivity(1L, new Date(), new Date(), true, new ArrayList<>(), schedule);
         schedule.assignActivity(pa1);
         Mockito.when(service.save(schedule)).thenReturn(schedule);
+        Mockito.when(poolActivityService.getById(1L)).thenReturn(pa1);
         Schedule request = this.restTemplate.postForObject("http://localhost:" + port + "/schedules/1/assign-activity", pa1,
                 Schedule.class);
         assertEquals(schedule.getId(), request.getId());
@@ -88,5 +94,8 @@ public class ScheduleControllerTest {
         assertEquals(schedule.getEndPeriod(), request.getEndPeriod());
         assertEquals(schedule.getStartPeriod(), request.getStartPeriod());
         assertEquals(schedule.getPool(), request.getPool());
+        /* Testing bidirectional relation */
+        PoolActivity poolActivityRequest = this.restTemplate.getForObject("http://localhost:" + port + "/activities/1", PoolActivity.class);
+        assertEquals(pa1.getSchedule(), poolActivityRequest.getSchedule());
     }
 }
