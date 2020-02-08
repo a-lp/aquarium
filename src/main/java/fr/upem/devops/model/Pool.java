@@ -140,7 +140,8 @@ public class Pool implements Serializable {
                 ", maxCapacity=" + maxCapacity +
                 ", volume=" + volume +
                 ", condition=" + condition +
-                ", fish=" + fishes +
+                ", sector=" + (sector == null ? "null" : sector.getName()) +
+                ", responsible=" + (responsible == null ? "null" : responsible.getName()) +
                 '}';
     }
 

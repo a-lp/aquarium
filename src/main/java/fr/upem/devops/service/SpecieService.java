@@ -2,6 +2,7 @@ package fr.upem.devops.service;
 
 import fr.upem.devops.model.Specie;
 import fr.upem.devops.repository.SpecieRepository;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -34,6 +35,7 @@ public class SpecieService {
     }
 
     public Specie remove(Specie specie) {
+        Hibernate.initialize(specie.getFishList()); // Make EAGER
         specieRepository.delete(specie);
         return specie;
     }

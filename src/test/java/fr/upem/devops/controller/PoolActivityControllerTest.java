@@ -87,7 +87,7 @@ public class PoolActivityControllerTest {
     @Test
     public void assignStaffToPoolActivity() {
         PoolActivity pa = this.activities.get(0);
-        Staff s1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date().getTime(), "SocSec1", Staff.StaffRole.ADMIN);
+        Staff s1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
         pa.assignStaff(s1);
         Mockito.when(service.save(pa)).thenReturn(pa);
         PoolActivity request = this.restTemplate.postForObject("http://localhost:" + port + "/activities/1/assign-staff", pa, PoolActivity.class);

@@ -3,6 +3,7 @@ package fr.upem.devops.model;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -13,7 +14,7 @@ public class Staff implements Serializable {
     private String name;
     private String surname;
     private String address;
-    private Long birthday;
+    private Date birthday;
     private String socialSecurity;
     private StaffRole role;
     @OneToMany(mappedBy = "responsible")
@@ -29,7 +30,7 @@ public class Staff implements Serializable {
     public Staff() {
     }
 
-    public Staff(Long id, String name, String surname, String address, Long birthday, String socialSecurity, StaffRole role) {
+    public Staff(Long id, String name, String surname, String address, Date birthday, String socialSecurity, StaffRole role) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -39,7 +40,7 @@ public class Staff implements Serializable {
         this.role = role;
     }
 
-    public Staff(String name, String surname, String address, Long birthday, String socialSecurity, StaffRole role) {
+    public Staff(String name, String surname, String address, Date birthday, String socialSecurity, StaffRole role) {
         this.name = name;
         this.surname = surname;
         this.address = address;
@@ -81,11 +82,11 @@ public class Staff implements Serializable {
         this.address = address;
     }
 
-    public Long getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Long birthday) {
+    public void setBirthday(Date birthday) {
         this.birthday = birthday;
     }
 
