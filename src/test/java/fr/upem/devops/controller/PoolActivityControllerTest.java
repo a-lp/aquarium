@@ -1,6 +1,7 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.model.PoolActivity;
+import fr.upem.devops.model.Schedule;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.PoolActivityService;
 import org.junit.Before;
@@ -12,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -95,5 +98,25 @@ public class PoolActivityControllerTest {
         assertEquals(pa.getEndActivity(), request.getEndActivity());
         assertEquals(pa.getStartActivity(), request.getStartActivity());
         assertEquals(pa.getStaffList(), request.getStaffList());
+    }
+
+    @Test
+    public void updatePoolActivity() {
+        PoolActivity poolActivity = this.activities.get(0);
+        Mockito.when(service.save(poolActivity)).thenReturn(poolActivity);
+        poolActivity.setDescription("new desc");
+        poolActivity.setSchedule(new Schedule());
+        HttpEntity<PoolActivity> httpEntity = new HttpEntity<>(poolActivity);
+        PoolActivity request = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT, httpEntity, PoolActivity.class).getBody();
+        assertEquals(poolActivity, request);
+    }
+
+    @Test
+    public void deleteActivity() {
+        PoolActivity poolActivity = this.activities.get(0);
+        Mockito.when(service.remove(poolActivity)).thenReturn(poolActivity);
+        PoolActivity response = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.DELETE, null, PoolActivity.class).getBody();
+        assertEquals(Long.valueOf(1L), response.getId());
+        assertEquals(poolActivity, response);
     }
 }

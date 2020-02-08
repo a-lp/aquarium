@@ -42,7 +42,7 @@ public class Specie implements Serializable {
         this.fishList = fishList;
     }
 
-    public void addAnimal(Fish fish) {
+    public void addFish(Fish fish) {
         this.fishList.add(fish);
     }
 

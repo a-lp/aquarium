@@ -15,7 +15,7 @@ public class PoolService {
     }
 
     public Pool getById(Long id) {
-        return poolRepository.findById(id).get();
+        return poolRepository.findById(id).orElse(null);
     }
 
     public Pool save(Pool specie) {

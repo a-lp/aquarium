@@ -45,4 +45,24 @@ public class StaffController {
         staff.assignSector(sector);
         return service.save(staff);
     }
+
+    @PutMapping("/staff/{id}")
+    @ResponseBody
+    public Staff updateStaff(@PathVariable String id, @RequestBody Staff staff) {
+        Staff p = getById(id);
+        p.setName(staff.getName());
+        p.setAddress(staff.getAddress());
+        p.setBirthday(staff.getBirthday());
+        p.setPoolsResponsabilities(staff.getPoolsResponsabilities());
+        p.setRole(staff.getRole());
+        p.setSectors(staff.getSectors());
+        p.setSocialSecurity(staff.getSocialSecurity());
+        p.setSurname(staff.getSurname());
+        return service.save(p);
+    }
+
+    @DeleteMapping("/staff/{id}")
+    public Staff deleteStaff(@PathVariable String id) {
+        return service.remove(getById(id));
+    }
 }

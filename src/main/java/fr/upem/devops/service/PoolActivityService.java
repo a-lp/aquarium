@@ -25,7 +25,7 @@ public class PoolActivityService {
     }
 
     public PoolActivity getById(Long id) {
-        return poolActivityRepository.findById(id).get();
+        return poolActivityRepository.findById(id).orElse(null);
     }
 
     public PoolActivity remove(PoolActivity poolActivity) {

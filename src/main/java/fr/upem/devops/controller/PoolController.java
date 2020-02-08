@@ -35,4 +35,23 @@ public class PoolController {
         pool.addFish(fish);
         return poolService.save(pool);
     }
+
+    @PutMapping("/pools/{id}")
+    @ResponseBody
+    public Pool updatePool(@PathVariable String id, @RequestBody Pool pool) {
+        Pool p = getById(id);
+        p.setVolume(pool.getVolume());
+        p.setMaxCapacity(pool.getMaxCapacity());
+        p.setCondition(pool.getCondition());
+        p.setResponsible(p.getResponsible());
+        p.setFishes(pool.getFishes());
+        p.setScheduledActivities(pool.getScheduledActivities());
+        p.setSector(p.getSector());
+        return poolService.save(p);
+    }
+
+    @DeleteMapping("/pools/{id}")
+    public Pool deletePool(@PathVariable String id) {
+        return poolService.remove(getById(id));
+    }
 }

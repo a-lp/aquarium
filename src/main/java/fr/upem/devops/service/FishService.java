@@ -24,7 +24,7 @@ public class FishService {
     }
 
     public Fish getById(Long id) {
-        return fishRepository.findById(id).get();
+        return fishRepository.findById(id).orElse(null);
     }
 
     public Fish remove(Fish fish) {

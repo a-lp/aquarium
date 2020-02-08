@@ -1,7 +1,6 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Fish;
-import fr.upem.devops.model.FishGender;
 import fr.upem.devops.service.FishService;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.SpecieService;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.Map;
 
 @RestController
 public class FishController {
@@ -63,14 +61,15 @@ public class FishController {
 
     @PutMapping("/fishes/{id}")
     @ResponseBody
-    public Fish updateFish(@PathVariable String id, @RequestBody Map<String, String> allParams) {
+    public Fish updateFish(@PathVariable String id, @RequestBody Fish fish) {
         Fish p = getById(id);
-        p.setName(allParams.get("name"));
-        p.setGender(FishGender.valueOf(allParams.get("gender")));
-        p.setDistinctSign(allParams.get("distinctSign"));
-//        p.setArrivalDate(Date.valueOf(allParams.get("arrivalDate")));
-//        p.setReturnDate(Date.valueOf(allParams.get("returnDate")));
-//        p.setSpecie(allParams.get("specie"));
+        p.setName(fish.getName());
+        p.setGender(fish.getGender());
+        p.setDistinctSign(fish.getDistinctSign());
+        p.setArrivalDate(fish.getArrivalDate());
+        p.setReturnDate(fish.getReturnDate());
+        p.setSpecie(fish.getSpecie());
+        p.setPool(fish.getPool());
         return fishService.save(p);
     }
 

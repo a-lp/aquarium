@@ -15,7 +15,7 @@ public class SectorService {
     }
 
     public Sector getById(Long id) {
-        return sectorRepository.findById(id).get();
+        return sectorRepository.findById(id).orElse(null);
     }
 
     public Sector save(Sector specie) {

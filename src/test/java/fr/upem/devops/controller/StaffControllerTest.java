@@ -13,9 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -37,7 +38,6 @@ public class StaffControllerTest {
 
     @Before
     public void init() {
-        short lf = 1;
         Staff s1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date().getTime(), "SocSec1", Staff.StaffRole.ADMIN);
         Staff s2 = new Staff(2L, "Nome2", "Cognome2", "Address2", new Date().getTime(), "SocSec2", Staff.StaffRole.MANAGER);
         Staff s3 = new Staff(3L, "Nome3", "Cognome3", "Address3", new Date().getTime(), "SocSec3", Staff.StaffRole.WORKER);
@@ -141,5 +141,24 @@ public class StaffControllerTest {
         assertEquals(request.getRole(), staff.getRole());
         assertEquals(request.getPoolsResponsabilities().size(), staff.getPoolsResponsabilities().size());
         assertEquals(request.getSectors().size(), staff.getSectors().size());
+    }
+
+    @Test
+    public void updateStaff() {
+        Staff staff = this.staffList.get(0);
+        Mockito.when(staffService.save(staff)).thenReturn(staff);
+        staff.setSurname("New Surname");
+        staff.assignSector(new Sector());
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(staff);
+        Staff request = this.restTemplate.exchange("http://localhost:" + port + "/staff/1", HttpMethod.PUT, httpEntity, Staff.class).getBody();
+        assertEquals(staff, request);
+    }
+
+    @Test
+    public void deleteStaff() {
+        Staff staff = this.staffList.get(0);
+        Mockito.when(staffService.remove(staff)).thenReturn(staff);
+        Staff request = this.restTemplate.exchange("http://localhost:" + port + "/staff/1", HttpMethod.DELETE, null, Staff.class).getBody();
+        assertEquals(staff, request);
     }
 }

@@ -25,4 +25,20 @@ public class SpecieController {
     public Specie addSpecie(@RequestBody Specie specie) {
         return specieService.save(specie);
     }
+
+    @PutMapping("/species/{name}")
+    @ResponseBody
+    public Specie updateSpecie(@PathVariable String name, @RequestBody Specie specie) {
+        Specie p = getByName(name);
+        p.setAlimentation(specie.getAlimentation());
+        p.setExtinctionLevel(specie.getExtinctionLevel());
+        p.setFishList(specie.getFishList());
+        p.setLifeSpan(specie.getLifeSpan());
+        return specieService.save(p);
+    }
+
+    @DeleteMapping("/species/{name}")
+    public Specie deleteSpecie(@PathVariable String name) {
+        return specieService.remove(getByName(name));
+    }
 }

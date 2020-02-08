@@ -13,6 +13,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -99,5 +101,24 @@ public class PoolControllerTest {
         assertEquals(request.getMaxCapacity(), pool.getMaxCapacity());
         assertEquals(request.getCondition(), pool.getCondition());
         assertEquals(request.getFishes(), pool.getFishes());
+    }
+
+    @Test
+    public void updatePool() {
+        Pool pool = this.pools.get(0);
+        Mockito.when(poolService.save(pool)).thenReturn(pool);
+        pool.addFish(new Fish());
+        HttpEntity<Pool> httpEntity = new HttpEntity<>(pool);
+        Pool request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT, httpEntity, Pool.class).getBody();
+        assertEquals(pool, request);
+        assertEquals(pool.getFishes(), request.getFishes());
+    }
+
+    @Test
+    public void deletePool() {
+        Pool pool = this.pools.get(0);
+        Mockito.when(poolService.remove(pool)).thenReturn(pool);
+        Pool request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.DELETE, null, Pool.class).getBody();
+        assertEquals(pool, request);
     }
 }

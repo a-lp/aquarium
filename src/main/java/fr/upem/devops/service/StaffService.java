@@ -25,7 +25,7 @@ public class StaffService {
     }
 
     public Staff getById(Long id) {
-        return staffRepository.findById(id).get();
+        return staffRepository.findById(id).orElse(null);
     }
 
     public Staff remove(Staff staff) {

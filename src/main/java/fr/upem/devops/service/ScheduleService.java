@@ -25,7 +25,7 @@ public class ScheduleService {
     }
 
     public Schedule getById(Long id) {
-        return scheduleRepository.findById(id).get();
+        return scheduleRepository.findById(id).orElse(null);
     }
 
     public Schedule remove(Schedule schedule) {

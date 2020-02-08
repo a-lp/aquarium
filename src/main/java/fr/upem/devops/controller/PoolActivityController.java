@@ -18,6 +18,7 @@ public class PoolActivityController {
 
     @GetMapping("/activities/{id}")
     public PoolActivity getById(@PathVariable String id) {
+        //TODO: manage null
         return service.getById(Long.parseLong(id));
     }
 
@@ -34,5 +35,24 @@ public class PoolActivityController {
         if (activities == null) return null;
         activities.assignStaff(staff);
         return service.save(activities);
+    }
+
+    @PutMapping("/activities/{id}")
+    @ResponseBody
+    public PoolActivity updatePoolActivity(@PathVariable String id, @RequestBody PoolActivity poolActivityRequest) {
+        System.out.println(poolActivityRequest);
+        PoolActivity poolActivity = getById(poolActivityRequest.getId().toString());
+        poolActivity.setSchedule(poolActivityRequest.getSchedule());
+        poolActivity.setDescription(poolActivityRequest.getDescription());
+        poolActivity.setOpenToPublic(poolActivityRequest.getOpenToPublic());
+        poolActivity.setEndActivity(poolActivityRequest.getEndActivity());
+        poolActivity.setStartActivity(poolActivityRequest.getStartActivity());
+        poolActivity.setStaffList(poolActivityRequest.getStaffList());
+        return service.save(poolActivity);
+    }
+
+    @DeleteMapping("/activities/{id}")
+    public PoolActivity deleteActivity(@PathVariable String id) {
+        return service.remove(getById(id));
     }
 }

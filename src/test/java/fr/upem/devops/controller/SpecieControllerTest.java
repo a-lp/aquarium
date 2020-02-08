@@ -14,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -46,9 +48,9 @@ public class SpecieControllerTest {
         Fish a2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", s2, null);
         Fish a3 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", s3, null);
 
-        s1.addAnimal(a1);
-        s2.addAnimal(a2);
-        s3.addAnimal(a3);
+        s1.addFish(a1);
+        s2.addFish(a2);
+        s3.addFish(a3);
 
         species.add(s1);
         species.add(s2);
@@ -100,5 +102,24 @@ public class SpecieControllerTest {
         Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
                 Specie.class);
         assertNull(request);
+    }
+
+    @Test
+    public void updateSpecie() {
+        Specie specie = this.species.get(0);
+        Mockito.when(specieService.save(specie)).thenReturn(specie);
+        specie.addFish(new Fish());
+        HttpEntity<Specie> httpEntity = new HttpEntity<>(specie);
+        Specie request = this.restTemplate.exchange("http://localhost:" + port + "/species/Specie1", HttpMethod.PUT, httpEntity, Specie.class).getBody();
+        assertEquals(specie, request);
+        assertEquals(specie.getFishList(), request.getFishList());
+    }
+
+    @Test
+    public void deleteSpecie() {
+        Specie specie = this.species.get(0);
+        Mockito.when(specieService.remove(specie)).thenReturn(specie);
+        Specie request = this.restTemplate.exchange("http://localhost:" + port + "/species/Specie1", HttpMethod.DELETE, null, Specie.class).getBody();
+        assertEquals(specie, request);
     }
 }

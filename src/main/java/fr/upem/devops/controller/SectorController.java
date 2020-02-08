@@ -35,4 +35,18 @@ public class SectorController {
         sector.addPool(pool);
         return sectorService.save(sector);
     }
+
+    @PutMapping("/sectors/{name}")
+    @ResponseBody
+    public Sector updateSector(@PathVariable String name, @RequestBody Sector sector) {
+        Sector p = getByName(name);
+        p.setLocation(sector.getLocation());
+        p.setPools(sector.getPools());
+        return sectorService.save(p);
+    }
+
+    @DeleteMapping("/sectors/{name}")
+    public Sector deleteSector(@PathVariable String name) {
+        return sectorService.remove(getByName(name));
+    }
 }

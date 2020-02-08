@@ -36,4 +36,21 @@ public class ScheduleController {
         return service.save(schedule);
     }
 
+    @PutMapping("/schedules/{id}")
+    @ResponseBody
+    public Schedule updateSchedule(@PathVariable String id, @RequestBody Schedule schedule) {
+        Schedule p = getById(id);
+        p.setActivities(schedule.getActivities());
+        p.setEndPeriod(schedule.getEndPeriod());
+        p.setPool(schedule.getPool());
+        p.setRepeated(schedule.getRepeated());
+        p.setStartPeriod(schedule.getStartPeriod());
+        return service.save(p);
+    }
+
+    @DeleteMapping("/schedules/{id}")
+    public Schedule deleteSchedule(@PathVariable String id) {
+        return service.remove(getById(id));
+    }
+
 }

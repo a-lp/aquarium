@@ -100,7 +100,6 @@ public class FishControllerTest {
         HttpEntity<Fish> updated = new HttpEntity<Fish>(updateP1);
         Fish request = this.restTemplate.exchange("http://localhost:" + port + "/fishes/3", HttpMethod.PUT,
                 updated, Fish.class).getBody();
-        System.out.println(request);
         assertEquals(updateP1, request);
     }
 

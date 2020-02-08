@@ -14,6 +14,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -44,9 +46,9 @@ public class ScheduleControllerTest {
             this.schedules.add(new Schedule(Long.parseLong(i + ""), new Date(), new Date(), (i % 2 == 0), new ArrayList<>()));
         }
         Mockito.when(service.getAll()).thenReturn(schedules);
-        Mockito.when(service.getById(1l)).thenReturn(this.schedules.get(0));
-        Mockito.when(service.getById(2l)).thenReturn(this.schedules.get(0));
-        Mockito.when(service.getById(3l)).thenReturn(this.schedules.get(0));
+        Mockito.when(service.getById(1L)).thenReturn(this.schedules.get(0));
+        Mockito.when(service.getById(2L)).thenReturn(this.schedules.get(0));
+        Mockito.when(service.getById(3L)).thenReturn(this.schedules.get(0));
     }
 
     @Test
@@ -97,5 +99,29 @@ public class ScheduleControllerTest {
         /* Testing bidirectional relation */
         PoolActivity poolActivityRequest = this.restTemplate.getForObject("http://localhost:" + port + "/activities/1", PoolActivity.class);
         assertEquals(pa1.getSchedule(), poolActivityRequest.getSchedule());
+    }
+
+    @Test
+    public void updateSchedule() {
+        Schedule schedule = this.schedules.get(0);
+        Mockito.when(service.save(schedule)).thenReturn(schedule);
+        PoolActivity pa1 = new PoolActivity(1L, new Date(), new Date(), true, new ArrayList<>(), schedule);
+        schedule.assignActivity(pa1);
+        HttpEntity<Schedule> httpEntity = new HttpEntity<>(schedule);
+        Schedule request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.PUT, httpEntity, Schedule.class).getBody();
+        assertEquals(schedule, request);
+        assertEquals(schedule.getActivities(), request.getActivities());
+        /* Testing bidirectional relation */
+        Mockito.when(poolActivityService.getById(1L)).thenReturn(pa1);
+        PoolActivity poolActivityRequest = this.restTemplate.getForObject("http://localhost:" + port + "/activities/1", PoolActivity.class);
+        assertEquals(poolActivityRequest.getSchedule(), schedule);
+    }
+
+    @Test
+    public void deleteSchedule() {
+        Schedule schedule = this.schedules.get(0);
+        Mockito.when(service.remove(schedule)).thenReturn(schedule);
+        Schedule request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.DELETE, null, Schedule.class).getBody();
+        assertEquals(schedule, request);
     }
 }

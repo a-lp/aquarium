@@ -133,7 +133,8 @@ public class PoolActivity implements Serializable {
                 ", description='" + description + '\'' +
                 ", startActivity=" + startActivity +
                 ", endActivity=" + endActivity +
-//                ", pools=" + pools +
+                ", openToPublic=" + openToPublic +
+                ", schedule=" + (schedule == null ? "null" : schedule.getId()) +
                 '}';
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -96,5 +98,24 @@ public class SectorControllerTest {
         assertEquals(request.getName(), sec.getName());
         assertEquals(request.getLocation(), sec.getLocation());
         assertEquals(request.getPools(), sec.getPools());
+    }
+
+    @Test
+    public void updateSector() {
+        Sector sector = this.sectors.get(0);
+        Mockito.when(sectorService.save(sector)).thenReturn(sector);
+        sector.addPool(new Pool());
+        HttpEntity<Sector> httpEntity = new HttpEntity<>(sector);
+        Sector request = this.restTemplate.exchange("http://localhost:" + port + "/sectors/Sector1", HttpMethod.PUT, httpEntity, Sector.class).getBody();
+        assertEquals(sector, request);
+        assertEquals(sector.getPools(), request.getPools());
+    }
+
+    @Test
+    public void deleteSector() {
+        Sector sector = this.sectors.get(0);
+        Mockito.when(sectorService.remove(sector)).thenReturn(sector);
+        Sector request = this.restTemplate.exchange("http://localhost:" + port + "/sectors/Sector1", HttpMethod.DELETE, null, Sector.class).getBody();
+        assertEquals(sector, request);
     }
 }
