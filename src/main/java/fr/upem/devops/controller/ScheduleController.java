@@ -11,23 +11,23 @@ public class ScheduleController {
     @Autowired
     private ScheduleService service;
 
-    @GetMapping("/schedule")
+    @GetMapping("/schedules")
     public Iterable<Schedule> getAll() {
         return service.getAll();
     }
 
-    @GetMapping("/schedule/{id}")
+    @GetMapping("/schedules/{id}")
     public Schedule getById(@PathVariable String id) {
         return service.getById(Long.parseLong(id));
     }
 
-    @PostMapping("/schedule")
+    @PostMapping("/schedules")
     @ResponseBody
     public Schedule addSchedule(@RequestBody Schedule schedule) {
         return service.save(schedule);
     }
 
-    @PostMapping("/schedule/{id}/assign-activity")
+    @PostMapping("/schedules/{id}/assign-activity")
     @ResponseBody
     public Schedule assignPoolActivityToSchedule(@RequestBody PoolActivity poolActivity, @PathVariable String id) {
         Schedule schedule = getById(id);

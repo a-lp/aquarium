@@ -19,8 +19,9 @@ public class Pool implements Serializable {
     @OneToMany(mappedBy = "pool")
     @JsonIgnoreProperties("pool")
     private List<Fish> fishes = new ArrayList<>();
-    //    @ManyToMany(mappedBy = "pools")
-//    private List<PoolActivity> activities = new ArrayList<>();
+    @OneToMany(mappedBy = "pool")
+    @JsonIgnoreProperties("pool")
+    private List<Schedule> scheduledActivities = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "pool_sector")
     private Sector sector;
@@ -101,6 +102,14 @@ public class Pool implements Serializable {
 
     public void setResponsible(Staff responsible) {
         this.responsible = responsible;
+    }
+
+    public List<Schedule> getScheduledActivities() {
+        return scheduledActivities;
+    }
+
+    public void setScheduledActivities(List<Schedule> scheduledActivities) {
+        this.scheduledActivities = scheduledActivities;
     }
 
     @Override

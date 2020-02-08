@@ -1,5 +1,7 @@
 package fr.upem.devops.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,9 +20,25 @@ public class Schedule implements Serializable {
     @JoinColumn(name = "calendar_pool")
     private Pool pool;
     @OneToMany(mappedBy = "schedule")
+    @JsonIgnoreProperties("schedule")
     private List<PoolActivity> activities = new ArrayList<>();
 
     public Schedule() {
+    }
+
+    public Schedule(Long id, Date startPeriod, Date endPeriod, Boolean repeated, List<PoolActivity> activities) {
+        this.id = id;
+        this.startPeriod = startPeriod;
+        this.endPeriod = endPeriod;
+        this.repeated = repeated;
+        this.activities = activities;
+    }
+
+    public Schedule(Date startPeriod, Date endPeriod, Boolean repeated, List<PoolActivity> activities) {
+        this.startPeriod = startPeriod;
+        this.endPeriod = endPeriod;
+        this.repeated = repeated;
+        this.activities = activities;
     }
 
     public Long getId() {
