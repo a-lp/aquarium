@@ -72,7 +72,6 @@ public class StaffControllerTest {
 
     @Test
     public void getById() {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
         List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/staff", List.class);
         Staff output = this.restTemplate.getForObject("http://localhost:" + port + "/staff/1", Staff.class);
         assertEquals(lista.get(0).get("id").toString(), output.getId().toString());
@@ -81,8 +80,8 @@ public class StaffControllerTest {
         assertEquals(lista.get(0).get("birthday"), output.getBirthday());
         assertEquals(lista.get(0).get("socialSecurity"), output.getSocialSecurity());
         assertEquals(Staff.StaffRole.valueOf(lista.get(0).get("role").toString()), output.getRole());
-        assertEquals(((List<Pool>) lista.get(0).get("poolsResponsabilities")).size(), output.getPoolsResponsabilities().size());
-        assertEquals(((List<Sector>) lista.get(0).get("sectors")).size(), output.getSectors().size());
+        assertEquals(((List) lista.get(0).get("poolsResponsabilities")).size(), output.getPoolsResponsabilities().size());
+        assertEquals(((List) lista.get(0).get("sectors")).size(), output.getSectors().size());
     }
 
     @Test

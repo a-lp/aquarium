@@ -14,16 +14,35 @@ public class PoolActivity implements Serializable {
     private String description;
     private Date startActivity;
     private Date endActivity;
-    private Date day;
-//    @ManyToMany
-//    @JoinTable(
-//            name = "pool_activities",
-//            joinColumns = @JoinColumn(name = "activity_id"),
-//            inverseJoinColumns = @JoinColumn(name = "pool_id")
-//    )
-//    private List<Pool> pools = new ArrayList<>();
+    private Boolean openToPublic;
+    @ManyToMany
+    @JoinTable(
+            name = "activity_staff",
+            joinColumns = @JoinColumn(name = "activity_id"),
+            inverseJoinColumns = @JoinColumn(name = "staff_id")
+    )
+    private List<Staff> staffList = new ArrayList<>();
+    @ManyToOne
+    private Schedule schedule;
 
     public PoolActivity() {
+    }
+
+    public PoolActivity(Long id, Date startActivity, Date endActivity, Boolean openToPublic, List<Staff> staffList, Schedule schedule) {
+        this.id = id;
+        this.startActivity = startActivity;
+        this.endActivity = endActivity;
+        this.openToPublic = openToPublic;
+        this.staffList = staffList;
+        this.schedule = schedule;
+    }
+
+    public PoolActivity(Date startActivity, Date endActivity, Boolean openToPublic, List<Staff> staffList, Schedule schedule) {
+        this.startActivity = startActivity;
+        this.endActivity = endActivity;
+        this.openToPublic = openToPublic;
+        this.staffList = staffList;
+        this.schedule = schedule;
     }
 
     public Long getId() {
@@ -58,21 +77,33 @@ public class PoolActivity implements Serializable {
         this.endActivity = endActivity;
     }
 
-    public Date getDay() {
-        return day;
+    public List<Staff> getStaffList() {
+        return staffList;
     }
 
-    public void setDay(Date day) {
-        this.day = day;
+    public void setStaffList(List<Staff> staffList) {
+        this.staffList = staffList;
     }
-//
-//    public List<Pool> getPools() {
-//        return pools;
-//    }
-//
-//    public void setPools(List<Pool> pools) {
-//        this.pools = pools;
-//    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
+
+    public void assignStaff(Staff staff) {
+        this.staffList.add(staff);
+    }
+
+    public Boolean getOpenToPublic() {
+        return openToPublic;
+    }
+
+    public void setOpenToPublic(Boolean openToPublic) {
+        this.openToPublic = openToPublic;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -102,7 +133,6 @@ public class PoolActivity implements Serializable {
                 ", description='" + description + '\'' +
                 ", startActivity=" + startActivity +
                 ", endActivity=" + endActivity +
-                ", day=" + day +
 //                ", pools=" + pools +
                 '}';
     }
