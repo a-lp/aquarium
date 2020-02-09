@@ -1,3 +1,18 @@
+
+.homepage {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+nav {
+  flex: .05;
+}
+
+main {
+  flex: .9;
+}
+
 .navigation-menu {
   display: flex;
   flex-direction: row;
@@ -14,6 +29,5 @@
   text-decoration: none;
 }
 
-.content{
-  padding: 2em;
-}
+
+

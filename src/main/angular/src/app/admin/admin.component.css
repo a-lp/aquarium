@@ -1,0 +1,44 @@
+.content{
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.sidebar{
+  flex: .1;
+  background: lightgray;
+}
+
+.sidebar li, a{
+  list-style: none;
+  text-decoration: none;
+}
+
+.sidebar ul{
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  display: grid;
+}
+
+.sidebar li{
+  height: 100%;
+  width: 100%;
+  border-bottom: 1px solid black;
+}
+
+li a{
+  display: block;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.creator-content{
+  flex: .9;
+  background: blue;
+}
+

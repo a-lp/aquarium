@@ -10,7 +10,6 @@ import {HttpClientModule} from '@angular/common/http';
 import {FishComponent} from './fishes/fish/fish.component';
 import {SpeciesComponent} from './species/species.component';
 import {SpeciesCreatorComponent} from './admin/creator/species/species-creator.component';
-import {FormCreatorComponent} from './admin/creator/form-creator.component';
 import {PoolsCreatorComponent} from './admin/creator/pools/pools-creator.component';
 import {DatePipe, HashLocationStrategy, LocationStrategy} from '@angular/common';
 import {RouterModule} from '@angular/router';
@@ -18,6 +17,10 @@ import {AdminComponent} from './admin/admin.component';
 import {SpecieComponent} from './species/specie/specie.component';
 import {PoolsComponent} from './pools/pools.component';
 import {PoolComponent} from './pools/pool/pool.component';
+import { ActivitiesComponent } from './admin/creator/activities/activities.component';
+import { ScheduleComponent } from './admin/creator/schedule/schedule.component';
+import { StaffComponent } from './admin/creator/staff/staff.component';
+import { SectorComponent } from './admin/creator/sector/sector.component';
 
 @NgModule({
   declarations: [
@@ -27,12 +30,15 @@ import {PoolComponent} from './pools/pool/pool.component';
     FishComponent,
     SpeciesComponent,
     SpeciesCreatorComponent,
-    FormCreatorComponent,
     PoolsCreatorComponent,
     AdminComponent,
     SpecieComponent,
     PoolsComponent,
-    PoolComponent
+    PoolComponent,
+    ActivitiesComponent,
+    ScheduleComponent,
+    StaffComponent,
+    SectorComponent
   ],
   imports: [
     BrowserModule,

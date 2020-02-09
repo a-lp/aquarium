@@ -27,7 +27,7 @@ public class SectorController {
         return sectorService.save(sector);
     }
 
-    @PostMapping("/sectors/{name}")
+    @PostMapping("/sectors/{name}/assign-pool")
     @ResponseBody
     public Sector addPoolToSector(@RequestBody Pool pool, @PathVariable String name) {
         Sector sector = getByName(name);

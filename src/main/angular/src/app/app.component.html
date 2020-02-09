@@ -1,14 +1,16 @@
-<nav>
-  <ul class="navigation-menu">
-    <li><a routerLink="/view-fishes">Fishes</a></li>
-    <li><a routerLink="/view-species">Species</a></li>
-    <li><a routerLink="/view-pools">Pools</a></li>
-    <li><a href="">Login</a></li>
-    <li><a routerLink="/view-admin">Admin</a></li>
-  </ul>
-</nav>
-<main class="content">
-<!--  <app-fishes></app-fishes>-->
-<!--  <app-species></app-species>-->
-  <router-outlet></router-outlet>
-</main>
+<div class="homepage">
+  <nav>
+    <ul class="navigation-menu">
+      <li><a routerLink="/view-fishes">Fishes</a></li>
+      <li><a routerLink="/view-species">Species</a></li>
+      <li><a routerLink="/view-pools">Pools</a></li>
+      <li><a href="">Login</a></li>
+      <li><a routerLink="/view-admin">Admin</a></li>
+    </ul>
+  </nav>
+  <main class="content">
+    <!--  <app-fishes></app-fishes>-->
+    <!--  <app-species></app-species>-->
+    <router-outlet></router-outlet>
+  </main>
+</div>
