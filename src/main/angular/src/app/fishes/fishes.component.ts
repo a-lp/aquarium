@@ -9,7 +9,6 @@ import {FishService} from '../service/fish.service';
 })
 export class FishesComponent implements OnInit {
   fishes: Array<Fish>;
-
   field: number = 0; // Sorting field
   ascendent: boolean = true;
 

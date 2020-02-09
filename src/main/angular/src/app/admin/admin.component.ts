@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {Specie} from '../model/Specie';
 import {Pool} from '../model/Pool';
 import {SpeciesService} from '../service/species.service';
@@ -15,12 +15,17 @@ export class AdminComponent implements OnInit {
   refreshEvent = new EventEmitter();
   species: Array<Specie>;
   pools: Array<Pool>;
+  @ViewChild('components', {static: false})
+  components: ElementRef;
+
+  shown: number = 0;
 
   constructor(private speciesService: SpeciesService, private poolService: PoolService) {
   }
 
   ngOnInit() {
     this.refresh(null);
+
   }
 
   refresh($event: any) {
@@ -32,5 +37,9 @@ export class AdminComponent implements OnInit {
       this.pools = pools;
       this.refreshEvent.emit(null);
     });
+  }
+
+  showComponent(position: number) {
+    this.shown = position;
   }
 }

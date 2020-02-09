@@ -5,7 +5,7 @@ import {FishService} from '../../../service/fish.service';
 import {FishGender} from '../../../model/FishGender';
 import {Specie} from '../../../model/Specie';
 import {SpeciesService} from '../../../service/species.service';
-import {PoolService} from "../../../service/pool.service";
+import {PoolService} from '../../../service/pool.service';
 
 
 @Component({
@@ -21,7 +21,7 @@ export class FishesCreatorComponent implements OnInit {
   species: Array<Specie>;
   @Input()
   pools: Array<Specie>;
-  defaulSpecie: string;
+  defaultSpecie: string;
 
   profileForm = new FormGroup({
     name: new FormControl('', Validators.required),

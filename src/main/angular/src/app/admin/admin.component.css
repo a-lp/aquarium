@@ -1,33 +1,34 @@
-.content{
+.content {
   display: flex;
   flex-direction: row;
   height: 100%;
 }
 
-.sidebar{
+.sidebar {
   flex: .1;
   background: lightgray;
+  border: 1px solid black;
 }
 
-.sidebar li, a{
+.sidebar li, a {
   list-style: none;
   text-decoration: none;
 }
 
-.sidebar ul{
+.sidebar ul {
   height: 100%;
   margin: 0;
   padding: 0;
   display: grid;
 }
 
-.sidebar li{
+.sidebar li {
   height: 100%;
   width: 100%;
   border-bottom: 1px solid black;
 }
 
-li a{
+li a {
   display: block;
   height: 100%;
   width: 100%;
@@ -37,8 +38,20 @@ li a{
   justify-content: center;
 }
 
-.creator-content{
+.creator-content {
   flex: .9;
-  background: blue;
+  background: whitesmoke;
 }
 
+.hidden {
+  display: none;
+}
+
+.selected{
+  background: darkgray;
+}
+
+a:hover{
+  cursor: pointer;
+  background: darkgray;
+}

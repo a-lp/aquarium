@@ -1,26 +1,35 @@
 <div class="content">
   <nav class="sidebar">
     <ul>
-      <li><a href="#/view-admin"><img src="../../assets/fish.svg" width="50px" height="50px">Fishes</a></li>
-      <li><a href="#/view-admin"><img src="../../assets/fish.svg" width="50px" height="50px">Species</a></li>
-      <li><a href="#/view-admin"><img src="../../assets/fish.svg" width="50px" height="50px">Pools</a></li>
-      <li><a href="#/view-admin"><img src="../../assets/fish.svg" width="50px" height="50px">Staff</a></li>
-      <li><a href="#/view-admin"><img src="../../assets/fish.svg" width="50px" height="50px">Schedules</a></li>
-      <li><a href="#/view-admin"><img src="../../assets/fish.svg" width="50px" height="50px">Activities</a></li>
+      <li [class]="shown==0?'selected':''"><a (click)="showComponent(0)"><img src="../../assets/fish.svg" width="50px"
+                                                                              height="50px">Fishes</a></li>
+      <li [class]="shown==1?'selected':''"><a (click)="showComponent(1)"><img src="../../assets/species.svg"
+                                                                              width="50px"
+                                                                              height="50px">Species</a></li>
+      <li [class]="shown==2?'selected':''"><a (click)="showComponent(2)"><img src="../../assets/pools.svg" width="50px"
+                                                                              height="50px">Pools</a></li>
+      <li [class]="shown==3?'selected':''"><a (click)="showComponent(3)"><img src="../../assets/staff.svg" width="50px"
+                                                                              height="50px">Staff</a></li>
+      <li [class]="shown==4?'selected':''"><a (click)="showComponent(4)"><img src="../../assets/schedule.svg"
+                                                                              width="50px"
+                                                                              height="50px">Schedules</a></li>
+      <li [class]="shown==5?'selected':''"><a (click)="showComponent(5)"><img src="../../assets/activities.svg"
+                                                                              width="50px"
+                                                                              height="50px">Activities</a></li>
     </ul>
   </nav>
-  <div class="creator-content">
-    <div id="fishes">
-      <h3>Fish</h3>
+  <div #components class="creator-content">
+    <div [class]="shown!=0?'hidden':''">
       <app-fishes-creator [pools]="pools" [species]="species" (onSave)="refresh($event)"></app-fishes-creator>
+      <app-fishes></app-fishes>
     </div>
-    <div id="species">
-      <h3>Species</h3>
+    <div [class]="shown!=1?'hidden':''">
       <app-species-creator (onSaveSpecie)="refresh($event)"></app-species-creator>
+      <app-species></app-species>
     </div>
-    <div id="pools">
-      <h3>Pools</h3>
+    <div [class]="shown!=2?'hidden':''">
       <app-pools-creator (onSavePool)="refresh($event)"></app-pools-creator>
+      <app-pools></app-pools>
     </div>
   </div>
 </div>
