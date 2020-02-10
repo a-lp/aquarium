@@ -1,0 +1,31 @@
+<form [formGroup]="form">
+  <table>
+    <thead>
+    <tr>
+      <th>Name</th>
+      <th>Surname</th>
+      <th>Address</th>
+      <th>Birthday</th>
+      <th>Social Security</th>
+      <th>Role</th>
+      <th>Save</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <th><input type="text" formControlName="name"></th>
+      <th><input type="text" formControlName="surname"></th>
+      <th><input type="text" formControlName="address"></th>
+      <th><input type="date" formControlName="birthday"></th>
+      <th><input type="text" formControlName="socialSecurity"></th>
+      <th><select formControlName="role">
+        <option *ngFor="let i of roles" [value]="i">{{i}}</option>
+      </select></th>
+      <th>
+        <button (click)="save($event)" [disabled]="!form.valid">Save</button>
+      </th>
+    </tr>
+    </tbody>
+  </table>
+</form>
+

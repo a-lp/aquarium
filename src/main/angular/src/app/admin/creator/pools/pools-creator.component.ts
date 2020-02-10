@@ -16,7 +16,7 @@ export class PoolsCreatorComponent implements OnInit {
   });
   conditions = Object.values(WaterCondition);
   @Output()
-  onSavePool: EventEmitter<Pool> = new EventEmitter<Pool>();
+  onSave: EventEmitter<Pool> = new EventEmitter<Pool>();
 
   constructor(private poolService: PoolService) {
   }
@@ -26,7 +26,7 @@ export class PoolsCreatorComponent implements OnInit {
 
   save($event: Event) {
     this.poolService.save(this.profileForm.value).subscribe(value => {
-        this.onSavePool.emit(value);
+        this.onSave.emit(value);
       }
     );
   }

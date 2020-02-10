@@ -17,7 +17,7 @@ export class SpeciesCreatorComponent implements OnInit {
     alimentation: new FormControl('')
   });
   @Output()
-  onSaveSpecie: EventEmitter<Specie> = new EventEmitter<Specie>();
+  onSave: EventEmitter<Specie> = new EventEmitter<Specie>();
 
   alimentations = Object.values(Alimentation);
 
@@ -29,7 +29,7 @@ export class SpeciesCreatorComponent implements OnInit {
 
   save($event: Event) {
     this.speciesService.save(this.profileForm.value).subscribe(data => {
-      this.onSaveSpecie.emit();
+      this.onSave.emit();
     });
   }
 }

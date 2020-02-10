@@ -24,12 +24,15 @@
       <app-fishes></app-fishes>
     </div>
     <div [class]="shown!=1?'hidden':''">
-      <app-species-creator (onSaveSpecie)="refresh($event)"></app-species-creator>
+      <app-species-creator (onSave)="refresh($event)"></app-species-creator>
       <app-species></app-species>
     </div>
     <div [class]="shown!=2?'hidden':''">
-      <app-pools-creator (onSavePool)="refresh($event)"></app-pools-creator>
+      <app-pools-creator (onSave)="refresh($event)"></app-pools-creator>
       <app-pools></app-pools>
+    </div>
+    <div [class]="shown!=3?'hidden':''">
+      <app-staff-creator (onSave)="refresh($event)"></app-staff-creator>
     </div>
     <div [class]="shown!=4?'hidden': ''">
       <app-schedule-creator [pools]="pools" (onSave)="refresh($event)"></app-schedule-creator>
