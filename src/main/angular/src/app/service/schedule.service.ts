@@ -14,7 +14,7 @@ export class ScheduleService {
 
 
   getAll(): Observable<any> {
-    return this.http.get('/');
+    return this.http.get('/schedules');
   }
 
   getById(id: number): Observable<any> {

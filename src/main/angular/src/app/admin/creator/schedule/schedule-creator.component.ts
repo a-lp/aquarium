@@ -7,10 +7,10 @@ import {Schedule} from "../../../model/Schedule";
 
 @Component({
   selector: 'app-schedule-creator',
-  templateUrl: './schedule.component.html',
-  styleUrls: ['./schedule.component.css']
+  templateUrl: './schedule-creator.component.html',
+  styleUrls: ['./schedule-creator.component.css']
 })
-export class ScheduleComponent implements OnInit {
+export class ScheduleCreatorComponent implements OnInit {
   @Input()
   pools: Array<Specie>;
   @Output()

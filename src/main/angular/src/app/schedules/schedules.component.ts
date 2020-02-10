@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Schedule} from "../model/Schedule";
+import {Specie} from "../model/Specie";
+import {ScheduleService} from "../service/schedule.service";
 
 @Component({
   selector: 'app-schedules',
@@ -6,10 +9,21 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./schedules.component.css']
 })
 export class SchedulesComponent implements OnInit {
+  schedules: Array<Schedule>;
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor(private scheduleService: ScheduleService) {
   }
 
+  ngOnInit() {
+    this.refresh(null);
+  }
+
+  refresh($event: Specie) {
+    this.scheduleService.getAll().subscribe(
+      data => {
+        this.schedules = data;
+      },
+      error => console.log(error)
+    );
+  }
 }

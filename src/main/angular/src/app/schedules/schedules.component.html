@@ -1,1 +1,26 @@
-<p>schedules works!</p>
+<h1>Schedules</h1>
+<table>
+  <thead>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Start Period
+    </th>
+    <th>
+      End Period
+    </th>
+    <th>
+      Repeated
+    </th>
+    <th>
+      Pool
+    </th>
+    <th>Activities</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr app-schedule *ngFor=" let a of schedules" [schedule]="a"></tr>
+  </tbody>
+</table>
