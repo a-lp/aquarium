@@ -1,1 +1,28 @@
-<p>schedule works!</p>
+<form [formGroup]="form">
+  <table>
+    <thead>
+    <tr>
+      <th>Description</th>
+      <th>Start Period</th>
+      <th>End Period</th>
+      <th>Repeated</th>
+      <th>Pool</th>
+      <th>Save</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <th><input type="text" formControlName="description"></th>
+      <th><input type="date" formControlName="startPeriod"></th>
+      <th><input type="date" formControlName="endPeriod"></th>
+      <th><input type="checkbox" formControlName="repeated"></th>
+      <th><select formControlName="pool">
+        <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
+      </select></th>
+      <th>
+        <button (click)="save($event)" [disabled]="!form.valid">Save</button>
+      </th>
+    </tr>
+    </tbody>
+  </table>
+</form>

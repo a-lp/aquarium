@@ -21,6 +21,7 @@ import { ActivitiesComponent } from './admin/creator/activities/activities.compo
 import { ScheduleComponent } from './admin/creator/schedule/schedule.component';
 import { StaffComponent } from './admin/creator/staff/staff.component';
 import { SectorComponent } from './admin/creator/sector/sector.component';
+import { SchedulesComponent } from './schedules/schedules.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { SectorComponent } from './admin/creator/sector/sector.component';
     ActivitiesComponent,
     ScheduleComponent,
     StaffComponent,
-    SectorComponent
+    SectorComponent,
+    SchedulesComponent
   ],
   imports: [
     BrowserModule,

@@ -31,5 +31,10 @@
       <app-pools-creator (onSavePool)="refresh($event)"></app-pools-creator>
       <app-pools></app-pools>
     </div>
+    <div [class]="shown!=4?'hidden': ''">
+      <app-schedule-creator [pools]="pools" (onSave)="refresh($event)"></app-schedule-creator>
+      <app-schedules></app-schedules>
+    </div>
+
   </div>
 </div>
