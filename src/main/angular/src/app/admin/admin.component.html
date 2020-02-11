@@ -21,23 +21,23 @@
   <div #components class="creator-content">
     <div [class]="shown!=0?'hidden':''">
       <app-fishes-creator [pools]="pools" [species]="species" (onSave)="refresh($event)"></app-fishes-creator>
-      <app-fishes></app-fishes>
+      <app-fishes [fishes]="fishes"></app-fishes>
     </div>
     <div [class]="shown!=1?'hidden':''">
       <app-species-creator (onSave)="refresh($event)"></app-species-creator>
-      <app-species></app-species>
+      <app-species [species]="species"></app-species>
     </div>
     <div [class]="shown!=2?'hidden':''">
       <app-pools-creator (onSave)="refresh($event)"></app-pools-creator>
-      <app-pools></app-pools>
+      <app-pools [pools]="pools"></app-pools>
     </div>
     <div [class]="shown!=3?'hidden':''">
       <app-staff-creator (onSave)="refresh($event)"></app-staff-creator>
-      <app-staffs></app-staffs>
+      <app-staffs [staffs]="staffs"></app-staffs>
     </div>
     <div [class]="shown!=4?'hidden': ''">
       <app-schedule-creator [pools]="pools" (onSave)="refresh($event)"></app-schedule-creator>
-      <app-schedules></app-schedules>
+      <app-schedules [schedules] = "schedules"></app-schedules>
     </div>
 
   </div>

@@ -6,6 +6,7 @@ import {FishGender} from '../../../model/FishGender';
 import {Specie} from '../../../model/Specie';
 import {SpeciesService} from '../../../service/species.service';
 import {PoolService} from '../../../service/pool.service';
+import {Pool} from "../../../model/Pool";
 
 
 @Component({
@@ -20,8 +21,7 @@ export class FishesCreatorComponent implements OnInit {
   @Input()
   species: Array<Specie>;
   @Input()
-  pools: Array<Specie>;
-  defaultSpecie: string;
+  pools: Array<Pool>;
 
   profileForm = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -39,10 +39,13 @@ export class FishesCreatorComponent implements OnInit {
   }
 
   save($event: Event) {
+    console.log(this.profileForm.value)
     this.speciesService.getSpecie(this.profileForm.value.specie).subscribe(specie => {
+      console.log(specie)
       this.profileForm.value.specie = specie;
       if (this.profileForm.value.pool != undefined) {
         this.poolService.getPool(this.profileForm.value.pool).subscribe(pool => {
+          console.log(pool)
           this.profileForm.value.pool = pool;
           this.fishService.save(this.profileForm.value).subscribe(
             data => {

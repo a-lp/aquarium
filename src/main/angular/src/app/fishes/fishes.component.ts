@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Fish} from '../model/Fish';
 import {FishService} from '../service/fish.service';
 
@@ -8,6 +8,7 @@ import {FishService} from '../service/fish.service';
   styleUrls: ['./fishes.component.css']
 })
 export class FishesComponent implements OnInit {
+  @Input()
   fishes: Array<Fish>;
   field: number = 0; // Sorting field
   ascendent: boolean = true;

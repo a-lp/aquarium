@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Pool} from "../model/Pool";
 import {PoolService} from "../service/pool.service";
 import {Specie} from "../model/Specie";
@@ -9,6 +9,7 @@ import {Specie} from "../model/Specie";
   styleUrls: ['./pools.component.css']
 })
 export class PoolsComponent implements OnInit {
+  @Input()
   pools: Array<Pool>
 
   constructor(private poolService: PoolService) {

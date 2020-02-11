@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Staff} from "../model/Staff";
 import {StaffService} from "../service/staff.service";
 
@@ -8,6 +8,7 @@ import {StaffService} from "../service/staff.service";
   styleUrls: ['./staffs.component.css']
 })
 export class StaffsComponent implements OnInit {
+  @Input()
   staffs: Array<Staff> = [];
 
   constructor(private staffService: StaffService) {

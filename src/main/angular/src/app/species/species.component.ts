@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Specie} from '../model/Specie';
 import {SpeciesService} from '../service/species.service';
 
@@ -8,6 +8,7 @@ import {SpeciesService} from '../service/species.service';
   styleUrls: ['./species.component.css']
 })
 export class SpeciesComponent implements OnInit {
+  @Input()
   species: Array<Specie>;
 
   constructor(private speciesService: SpeciesService) {

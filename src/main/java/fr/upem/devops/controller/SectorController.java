@@ -24,6 +24,8 @@ public class SectorController {
     @PostMapping("/sectors")
     @ResponseBody
     public Sector addSector(@RequestBody Sector sector) {
+        //TODO: manage duplicate HTTP
+        if (getByName(sector.getName()) != null) return null;
         return sectorService.save(sector);
     }
 

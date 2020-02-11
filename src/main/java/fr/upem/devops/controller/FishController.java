@@ -33,8 +33,6 @@ public class FishController {
     @ResponseBody
     public Fish addFish(@RequestBody Fish fish) {
         fish.setArrivalDate(new Date());
-        if (fish.getSpecie() != null) fish.setSpecie(specieService.getByName(fish.getSpecie().getName()));
-        if (fish.getPool() != null) fish.setPool(poolService.getById(fish.getPool().getId()));
         return fishService.save(fish);
     }
 

@@ -23,6 +23,8 @@ public class SpecieController {
     @PostMapping("/species")
     @ResponseBody
     public Specie addSpecie(@RequestBody Specie specie) {
+        if(getByName(specie.getName())!=null) return null;
+        //TODO: manage duplicate name
         return specieService.save(specie);
     }
 
