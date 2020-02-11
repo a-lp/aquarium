@@ -1,5 +1,7 @@
 package fr.upem.devops.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -26,6 +28,9 @@ public class Staff implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "sector_id")
     )
     private List<Sector> sectors = new ArrayList<>();
+    @ManyToMany
+    @JsonIgnoreProperties("staffList")
+    private List<PoolActivity> activities = new ArrayList<>();
 
     public Staff() {
     }
@@ -128,6 +133,18 @@ public class Staff implements Serializable {
 
     public void setRole(StaffRole role) {
         this.role = role;
+    }
+
+    public List<PoolActivity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<PoolActivity> activities) {
+        this.activities = activities;
+    }
+
+    public void assignActivity(PoolActivity activity) {
+        this.activities.add(activity);
     }
 
     @Override

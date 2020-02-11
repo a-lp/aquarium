@@ -23,6 +23,8 @@ import {StaffCreatorComponent} from './admin/creator/staff/staff-creator.compone
 import {SectorComponent} from './admin/creator/sector/sector.component';
 import {SchedulesComponent} from './schedules/schedules.component';
 import {ScheduleComponent} from './schedules/schedule/schedule.component';
+import { StaffsComponent } from './staffs/staffs.component';
+import { StaffComponent } from './staffs/staff/staff.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import {ScheduleComponent} from './schedules/schedule/schedule.component';
     StaffCreatorComponent,
     SectorComponent,
     SchedulesComponent,
-    ScheduleComponent
+    ScheduleComponent,
+    StaffsComponent,
+    StaffComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,7 @@
 import {StaffRole} from './StaffRole';
 import {Pool} from './Pool';
 import {Sector} from './Sector';
+import {PoolActivity} from "./PoolActivity";
 
 export class Staff {
   id: number;
@@ -12,4 +13,5 @@ export class Staff {
   role: StaffRole = StaffRole.WORKER;
   poolResponsabilities: Array<Pool> = [];
   sectors: Array<Sector> = [];
+  activities: Array<PoolActivity> = [];
 }

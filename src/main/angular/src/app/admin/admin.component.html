@@ -33,6 +33,7 @@
     </div>
     <div [class]="shown!=3?'hidden':''">
       <app-staff-creator (onSave)="refresh($event)"></app-staff-creator>
+      <app-staffs></app-staffs>
     </div>
     <div [class]="shown!=4?'hidden': ''">
       <app-schedule-creator [pools]="pools" (onSave)="refresh($event)"></app-schedule-creator>

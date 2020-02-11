@@ -1,6 +1,7 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Pool;
+import fr.upem.devops.model.PoolActivity;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.StaffService;
@@ -17,10 +18,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -160,5 +158,26 @@ public class StaffControllerTest {
         Mockito.when(staffService.remove(staff)).thenReturn(staff);
         Staff request = this.restTemplate.exchange("http://localhost:" + port + "/staff/1", HttpMethod.DELETE, null, Staff.class).getBody();
         assertEquals(staff, request);
+    }
+
+    @Test
+    public void assignActivityToStaff() {
+        Staff staff = this.staffList.get(0);
+        PoolActivity activity = new PoolActivity(1L, new Date(), new Date(), true, Collections.singletonList(staff), null);
+        staff.assignActivity(activity);
+        Staff response = staff;
+        response.assignActivity(activity);
+        Mockito.when(staffService.save(staff)).thenReturn(response);
+        Staff request = this.restTemplate.postForObject("http://localhost:" + port + "/staff", staff,
+                Staff.class);
+        assertEquals(request.getId(), staff.getId());
+        assertEquals(request.getName(), staff.getName());
+        assertEquals(request.getSurname(), staff.getSurname());
+        assertEquals(request.getBirthday().getTime(), staff.getBirthday().getTime());
+        assertEquals(request.getSocialSecurity(), staff.getSocialSecurity());
+        assertEquals(request.getRole(), staff.getRole());
+        assertEquals(request.getPoolsResponsabilities().size(), staff.getPoolsResponsabilities().size());
+        assertEquals(request.getSectors().size(), staff.getSectors().size());
+        assertEquals(request.getActivities().size(), staff.getActivities().size());
     }
 }

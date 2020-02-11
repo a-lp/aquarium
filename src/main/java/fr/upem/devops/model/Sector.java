@@ -72,6 +72,18 @@ public class Sector implements Serializable {
         this.pools.add(pool);
     }
 
+    public List<Staff> getStaffList() {
+        return staffList;
+    }
+
+    public void setStaffList(List<Staff> staffList) {
+        this.staffList = staffList;
+    }
+
+    public void assignStaff(Staff staff) {
+        this.staffList.add(staff);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

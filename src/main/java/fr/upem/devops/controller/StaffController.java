@@ -1,6 +1,7 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Pool;
+import fr.upem.devops.model.PoolActivity;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.StaffService;
@@ -43,6 +44,15 @@ public class StaffController {
         Staff staff = getById(id);
         if (staff == null) return null;
         staff.assignSector(sector);
+        return service.save(staff);
+    }
+
+    @PostMapping("/staff/{id}/assign-activity")
+    @ResponseBody
+    public Staff assignActivityToStaff(@RequestBody PoolActivity activity, @PathVariable String id) {
+        Staff staff = getById(id);
+        if (staff == null) return null;
+        staff.assignActivity(activity);
         return service.save(staff);
     }
 
