@@ -27,7 +27,9 @@ public class SectorController {
 
     @GetMapping("/sectors/{name}")
     public Sector getByName(@PathVariable String name) {
-        return sectorService.getByName(name);
+        Sector sector = sectorService.getByName(name);
+        if(sector==null) throw new ResourceNotFoundException("Sector named '" + name + "' not found!");
+        return sector;
     }
 
     @PostMapping("/sectors/responsible/{ids}")
