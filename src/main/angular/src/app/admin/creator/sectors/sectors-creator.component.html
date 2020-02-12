@@ -1,0 +1,49 @@
+<form [formGroup]="form">
+  <!--  <table>-->
+  <!--    <thead>-->
+  <!--    <tr>-->
+  <!--      <th>Name</th>-->
+  <!--      <th>Location</th>-->
+  <!--      <th>Pools</th>-->
+  <!--      <th>Staffs</th>-->
+  <!--      <th>Save</th>-->
+  <!--    </thead>-->
+  <!--    <tbody>-->
+  <!--    <tr>-->
+  <!--      <th><input type="number" formControlName="name"></th>-->
+  <!--      <th><input type="number" formControlName="location"></th>-->
+  <!--      <th><input type="checkbox" *ngFor="let i of pools" [value]="i" formControlName="pool"></th>-->
+  <!--      <th><input type="checkbox" *ngFor="let i of staffs" [value]="i" formControlName="pool"></th>-->
+  <!--      <th>-->
+  <!--        <button (click)="save($event)" [disabled]="!form.valid">Save</button>-->
+  <!--      </th>-->
+  <!--    </tr>-->
+  <!--    </tbody>-->
+  <!--  </table>-->
+
+  <div class="single-choice">
+    <div>
+      <label>Sector Name: </label><input type="text" formControlName="name">
+    </div>
+    <div>
+      <label>Location: </label><input type="text" formControlName="location">
+    </div>
+  </div>
+  <div class="multiple-choice">
+    <div id="pools">
+      <h3>Pools</h3>
+      <div class="input-entry" *ngFor="let i of pools">
+        <input type="checkbox" [value]="i" [checked]="this.selectedPool.includes(i)" (change)="selectElement(i,false)">
+        <label>{{'ID: ' + i.id + ' capacity: ' + i.maxCapacity}}</label>
+      </div>
+    </div>
+    <div id="staffs">
+      <h3>Staff</h3>
+      <div class="input-entry" *ngFor="let i of staffs">
+        <input type="checkbox" [value]="i" [checked]="this.selectedStaff.includes(i)" (change)="selectElement(i,true)">
+        <label>{{i.id + ' -' + i.surname.toUpperCase() + ' ' + i.name}}</label>
+      </div>
+    </div>
+  </div>
+  <button (click)="save($event)" [disabled]="isDisabled()">Save</button>
+</form>

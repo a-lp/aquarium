@@ -8,12 +8,14 @@
                                                                               height="50px">Species</a></li>
       <li [class]="shown==2?'selected':''"><a (click)="showComponent(2)"><img src="../../assets/pools.svg" width="50px"
                                                                               height="50px">Pools</a></li>
-      <li [class]="shown==3?'selected':''"><a (click)="showComponent(3)"><img src="../../assets/staff.svg" width="50px"
+      <li [class]="shown==3?'selected':''"><a (click)="showComponent(3)"><img src="../../assets/pools.svg" width="50px"
+                                                                              height="50px">Sectors</a></li>
+      <li [class]="shown==4?'selected':''"><a (click)="showComponent(4)"><img src="../../assets/staff.svg" width="50px"
                                                                               height="50px">Staff</a></li>
-      <li [class]="shown==4?'selected':''"><a (click)="showComponent(4)"><img src="../../assets/schedule.svg"
+      <li [class]="shown==5?'selected':''"><a (click)="showComponent(5)"><img src="../../assets/schedule.svg"
                                                                               width="50px"
                                                                               height="50px">Schedules</a></li>
-      <li [class]="shown==5?'selected':''"><a (click)="showComponent(5)"><img src="../../assets/activities.svg"
+      <li [class]="shown==6?'selected':''"><a (click)="showComponent(6)"><img src="../../assets/activities.svg"
                                                                               width="50px"
                                                                               height="50px">Activities</a></li>
     </ul>
@@ -32,12 +34,16 @@
       <app-pools [pools]="pools"></app-pools>
     </div>
     <div [class]="shown!=3?'hidden':''">
+      <app-sectors-creator [pools]="pools" [staffs]="staffs" (onSave)="refresh($event)"></app-sectors-creator>
+      <!--      <app-pools [pools]="pools"></app-pools>-->
+    </div>
+    <div [class]="shown!=4?'hidden':''">
       <app-staff-creator (onSave)="refresh($event)"></app-staff-creator>
       <app-staffs [staffs]="staffs"></app-staffs>
     </div>
-    <div [class]="shown!=4?'hidden': ''">
+    <div [class]="shown!=5?'hidden': ''">
       <app-schedule-creator [pools]="pools" (onSave)="refresh($event)"></app-schedule-creator>
-      <app-schedules [schedules] = "schedules"></app-schedules>
+      <app-schedules [schedules]="schedules"></app-schedules>
     </div>
 
   </div>

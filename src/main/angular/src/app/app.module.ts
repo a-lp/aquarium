@@ -20,11 +20,11 @@ import {PoolComponent} from './pools/pool/pool.component';
 import {ActivitiesComponent} from './admin/creator/activities/activities.component';
 import {ScheduleCreatorComponent} from './admin/creator/schedule/schedule-creator.component';
 import {StaffCreatorComponent} from './admin/creator/staff/staff-creator.component';
-import {SectorComponent} from './admin/creator/sector/sector.component';
 import {SchedulesComponent} from './schedules/schedules.component';
 import {ScheduleComponent} from './schedules/schedule/schedule.component';
 import { StaffsComponent } from './staffs/staffs.component';
 import { StaffComponent } from './staffs/staff/staff.component';
+import { SectorsCreatorComponent } from './admin/creator/sectors/sectors-creator.component';
 
 @NgModule({
   declarations: [
@@ -42,11 +42,11 @@ import { StaffComponent } from './staffs/staff/staff.component';
     ActivitiesComponent,
     ScheduleCreatorComponent,
     StaffCreatorComponent,
-    SectorComponent,
     SchedulesComponent,
     ScheduleComponent,
     StaffsComponent,
-    StaffComponent
+    StaffComponent,
+    SectorsCreatorComponent
   ],
   imports: [
     BrowserModule,

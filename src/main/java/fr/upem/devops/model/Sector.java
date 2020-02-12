@@ -18,7 +18,7 @@ public class Sector implements Serializable {
     @JsonIgnoreProperties("sector")
     private List<Pool> pools = new ArrayList<>();
     @ManyToMany
-    private List<Staff> staffList;
+    private List<Staff> staffList = new ArrayList<>();
 
     public Sector() {
     }
