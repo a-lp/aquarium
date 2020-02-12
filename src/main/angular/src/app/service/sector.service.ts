@@ -13,12 +13,9 @@ export class SectorService {
   }
 
   save(sector: Sector): Observable<any> {
-    return this.http.post('/sectors', sector);
-  }
-
-  addPoolToSector(name: string, pool: Pool): Observable<any> {
-    // TODO: gestire la persistenza di pool.
-    return this.http.post('/sectors/' + name + '/assign-pool', pool);
+    const resp = sector.staffList;
+    sector.staffList = [];
+    return this.http.post('/sectors/responsible/' + resp.join(","), sector);
   }
 
   getAll(): Observable<any> {

@@ -1,15 +1,24 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
+import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.SectorService;
+import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class SectorController {
     @Autowired
     private SectorService sectorService;
+
+    @Autowired
+    private StaffService staffService;
 
     @GetMapping("/sectors")
     public Iterable<Sector> getAll() {
@@ -21,20 +30,18 @@ public class SectorController {
         return sectorService.getByName(name);
     }
 
-    @PostMapping("/sectors")
+    @PostMapping("/sectors/responsible/{ids}")
     @ResponseBody
-    public Sector addSector(@RequestBody Sector sector) {
-        //TODO: manage duplicate HTTP
+    public Sector addSector(@RequestBody Sector sector, @PathVariable List<String> ids) {
+        List<Staff> staffs = new ArrayList<>();
+        for (String id : ids) {
+            Staff s = staffService.getById(Long.parseLong(id));
+            if (s == null)
+                throw new ResourceNotFoundException("Staff " + id + "not found!");
+            staffs.add(s);
+        }
         if (getByName(sector.getName()) != null) return null;
-        return sectorService.save(sector);
-    }
-
-    @PostMapping("/sectors/{name}/assign-pool")
-    @ResponseBody
-    public Sector addPoolToSector(@RequestBody Pool pool, @PathVariable String name) {
-        Sector sector = getByName(name);
-        if (sector == null) return null;
-        sector.addPool(pool);
+        sector.setStaffList(staffs);
         return sectorService.save(sector);
     }
 

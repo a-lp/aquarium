@@ -9,6 +9,6 @@ export class Fish {
   distinctSign: string;
   arrivalDate: Date;
   returnDate: Date;
-  specie: Specie;
-  pool: Pool|null;
+  specie: Specie = null;
+  pool: Pool = null;
 }

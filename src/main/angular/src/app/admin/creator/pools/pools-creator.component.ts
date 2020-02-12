@@ -1,7 +1,8 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Pool, WaterCondition} from '../../../model/Pool';
 import {PoolService} from '../../../service/pool.service';
+import {Sector} from "../../../model/Sector";
 
 @Component({
   selector: 'app-pools-creator',
@@ -13,10 +14,13 @@ export class PoolsCreatorComponent implements OnInit {
     maxCapacity: new FormControl('', Validators.required),
     volume: new FormControl('', Validators.required),
     condition: new FormControl('', Validators.required),
+    sector: new FormControl('', Validators.required)
   });
   conditions = Object.values(WaterCondition);
   @Output()
   onSave: EventEmitter<Pool> = new EventEmitter<Pool>();
+  @Input()
+  sectors: Array<Sector>;
 
   constructor(private poolService: PoolService) {
   }
@@ -27,7 +31,7 @@ export class PoolsCreatorComponent implements OnInit {
   save($event: Event) {
     this.poolService.save(this.form.value).subscribe(pool => {
         this.onSave.emit(pool);
-      if (pool != null) this.form.reset();
+        if (pool != null) this.form.reset();
       }
     );
   }

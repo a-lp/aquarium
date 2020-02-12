@@ -9,6 +9,8 @@ import {ScheduleService} from "../service/schedule.service";
 import {Schedule} from "../model/Schedule";
 import {StaffService} from "../service/staff.service";
 import {Staff} from "../model/Staff";
+import {Sector} from "../model/Sector";
+import {SectorService} from "../service/sector.service";
 
 @Component({
   selector: 'app-admin',
@@ -22,15 +24,15 @@ export class AdminComponent implements OnInit {
   species: Array<Specie> = [];
   pools: Array<Pool> = [];
   staffs: Array<Staff>;
+  sectors: Array<Sector> = [];
   schedules: Array<Schedule> = [];
-
   @ViewChild('components', {static: false})
   components: ElementRef;
   shown: number = 0;
 
   constructor(private fishService: FishService, private speciesService: SpeciesService,
               private poolService: PoolService, private scheduleService: ScheduleService,
-              private staffService: StaffService) {
+              private staffService: StaffService, private sectorService: SectorService) {
   }
 
   ngOnInit() {
@@ -57,6 +59,10 @@ export class AdminComponent implements OnInit {
     });
     this.staffService.getAll().subscribe(staffs => {
       this.staffs = staffs;
+      this.refreshEvent.emit(null);
+    });
+    this.sectorService.getAll().subscribe(sectors => {
+      this.sectors = sectors;
       this.refreshEvent.emit(null);
     });
   }
