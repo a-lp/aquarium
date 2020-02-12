@@ -23,7 +23,7 @@ export class FishesCreatorComponent implements OnInit {
   @Input()
   pools: Array<Pool>;
 
-  profileForm = new FormGroup({
+  form = new FormGroup({
     name: new FormControl('', Validators.required),
     distinctSign: new FormControl('', Validators.required),
     gender: new FormControl('', Validators.required),
@@ -39,29 +39,24 @@ export class FishesCreatorComponent implements OnInit {
   }
 
   save($event: Event) {
-    console.log(this.profileForm.value)
-    this.speciesService.getSpecie(this.profileForm.value.specie).subscribe(specie => {
-      console.log(specie)
-      this.profileForm.value.specie = specie;
-      if (this.profileForm.value.pool != undefined) {
-        this.poolService.getPool(this.profileForm.value.pool).subscribe(pool => {
-          console.log(pool)
-          this.profileForm.value.pool = pool;
-          this.fishService.save(this.profileForm.value).subscribe(
-            data => {
-              console.log(data);
-              this.onSave.emit(data);
-              this.profileForm.reset();
+    this.speciesService.getSpecie(this.form.value.specie).subscribe(specie => {
+      this.form.value.specie = specie;
+      if (this.form.value.pool != undefined) {
+        this.poolService.getPool(this.form.value.pool).subscribe(pool => {
+          this.form.value.pool = pool;
+          this.fishService.save(this.form.value).subscribe(
+            fish => {
+              this.onSave.emit(fish);
+              if (fish != null) this.form.reset();
             },
             error => console.log(error)
           );
         });
       } else {
-        this.fishService.save(this.profileForm.value).subscribe(
+        this.fishService.save(this.form.value).subscribe(
           data => {
-            console.log(data);
             this.onSave.emit(data);
-            this.profileForm.reset();
+            this.form.reset();
           },
           error => console.log(error)
         );

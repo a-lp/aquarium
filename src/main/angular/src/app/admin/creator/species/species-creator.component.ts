@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Alimentation} from '../../../model/Alimentation';
 import {SpeciesService} from '../../../service/species.service';
@@ -10,7 +10,7 @@ import {Specie} from '../../../model/Specie';
   styleUrls: ['./species-creator.component.css']
 })
 export class SpeciesCreatorComponent implements OnInit {
-  profileForm = new FormGroup({
+  form = new FormGroup({
     name: new FormControl('', Validators.required),
     lifeSpan: new FormControl(''),
     extinctionLevel: new FormControl(''),
@@ -28,8 +28,9 @@ export class SpeciesCreatorComponent implements OnInit {
   }
 
   save($event: Event) {
-    this.speciesService.save(this.profileForm.value).subscribe(data => {
+    this.speciesService.save(this.form.value).subscribe(specie => {
       this.onSave.emit();
+      if (specie != null) this.form.reset();
     });
   }
 }

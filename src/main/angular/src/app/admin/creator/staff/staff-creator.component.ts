@@ -30,8 +30,8 @@ export class StaffCreatorComponent implements OnInit {
 
   save($event: MouseEvent) {
     this.staffService.addStaff(this.form.value).subscribe(staff => {
-      console.log(staff);
-      if (staff != null) this.onSave.emit(staff);
+      this.onSave.emit(staff);
+      if (staff != null) this.form.reset();
     });
   }
 }

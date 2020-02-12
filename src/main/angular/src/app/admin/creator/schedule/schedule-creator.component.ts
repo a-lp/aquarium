@@ -35,8 +35,8 @@ export class ScheduleCreatorComponent implements OnInit {
       if (pool != null) {
         this.form.value.pool = pool;
         this.scheduleService.save(this.form.value).subscribe(schedule => {
-          console.log(schedule);
-          if (schedule != null) this.onSave.emit(schedule);
+          this.onSave.emit(schedule);
+          if (schedule != null) this.form.reset();
         });
       }
     })

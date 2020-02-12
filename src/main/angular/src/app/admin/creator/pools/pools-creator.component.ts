@@ -9,7 +9,7 @@ import {PoolService} from '../../../service/pool.service';
   styleUrls: ['./pools-creator.component.css']
 })
 export class PoolsCreatorComponent implements OnInit {
-  profileForm = new FormGroup({
+  form = new FormGroup({
     maxCapacity: new FormControl('', Validators.required),
     volume: new FormControl('', Validators.required),
     condition: new FormControl('', Validators.required),
@@ -25,8 +25,9 @@ export class PoolsCreatorComponent implements OnInit {
   }
 
   save($event: Event) {
-    this.poolService.save(this.profileForm.value).subscribe(value => {
-        this.onSave.emit(value);
+    this.poolService.save(this.form.value).subscribe(pool => {
+        this.onSave.emit(pool);
+      if (pool != null) this.form.reset();
       }
     );
   }

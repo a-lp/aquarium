@@ -1,4 +1,4 @@
-<form [formGroup]="profileForm">
+<form [formGroup]="form">
   <table>
     <thead>
     <tr>
@@ -16,7 +16,7 @@
         <option *ngFor="let i of conditions" [value]="i">{{i}}</option>
       </select></th>
       <th>
-        <button (click)="save($event)" [disabled]="!profileForm.valid">Save</button>
+        <button (click)="save($event)" [disabled]="!form.valid">Save</button>
       </th>
     </tr>
     </tbody>
