@@ -18,6 +18,12 @@ public class Sector implements Serializable {
     @JsonIgnoreProperties("sector")
     private List<Pool> pools = new ArrayList<>();
     @ManyToMany
+    @JoinTable(
+            name = "sectors_staffs",
+            joinColumns = @JoinColumn(name = "staff_id"),
+            inverseJoinColumns = @JoinColumn(name = "sector_id")
+    )
+    @JsonIgnoreProperties("sectors")
     private List<Staff> staffList = new ArrayList<>();
 
     public Sector() {

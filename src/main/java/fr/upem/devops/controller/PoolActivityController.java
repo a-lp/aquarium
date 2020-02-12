@@ -28,14 +28,6 @@ public class PoolActivityController {
         return service.save(activities);
     }
 
-    @PostMapping("/activities/{id}/assign-staff")
-    @ResponseBody
-    public PoolActivity assignStaffToPoolActivity(@RequestBody Staff staff, @PathVariable String id) {
-        PoolActivity activities = getById(id);
-        if (activities == null) return null;
-        activities.assignStaff(staff);
-        return service.save(activities);
-    }
 
     @PutMapping("/activities/{id}")
     @ResponseBody

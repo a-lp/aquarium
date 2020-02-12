@@ -33,8 +33,8 @@ export class SectorsCreatorComponent implements OnInit {
   save($event: Event) {
     this.form.addControl("staffList", new FormArray(this.selectedStaff.map(x => new FormControl(x.id))));
     this.sectorService.save(this.form.value).subscribe(sector => {
-        this.onSave.emit(sector);
         console.log(sector)
+        this.onSave.emit(sector);
         if (sector != null) this.form.reset();
       }
     );

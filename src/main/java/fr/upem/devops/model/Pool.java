@@ -1,5 +1,6 @@
 package fr.upem.devops.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
@@ -24,6 +25,7 @@ public class Pool implements Serializable {
     private List<Schedule> scheduledActivities = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "pool_sector")
+    @JsonIgnoreProperties("pools")
     private Sector sector;
     @ManyToOne
     @JoinColumn(name = "pool_responsible")

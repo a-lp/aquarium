@@ -27,15 +27,6 @@ public class ScheduleController {
         return service.save(schedule);
     }
 
-    @PostMapping("/schedules/{id}/assign-activity")
-    @ResponseBody
-    public Schedule assignPoolActivityToSchedule(@RequestBody PoolActivity poolActivity, @PathVariable String id) {
-        Schedule schedule = getById(id);
-        if (schedule == null) return null;
-        schedule.assignActivity(poolActivity);
-        return service.save(schedule);
-    }
-
     @PutMapping("/schedules/{id}")
     @ResponseBody
     public Schedule updateSchedule(@PathVariable String id, @RequestBody Schedule schedule) {

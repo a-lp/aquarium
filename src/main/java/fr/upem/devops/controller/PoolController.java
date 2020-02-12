@@ -35,15 +35,6 @@ public class PoolController {
         return poolService.save(pool);
     }
 
-    @PostMapping("/pools/{id}")
-    @ResponseBody
-    public Pool addFishToPool(@RequestBody Fish fish, @PathVariable String id) {
-        Pool pool = getById(id);
-        if (pool == null) return null;
-        pool.addFish(fish);
-        return poolService.save(pool);
-    }
-
     @PutMapping("/pools/{id}")
     @ResponseBody
     public Pool updatePool(@PathVariable String id, @RequestBody Pool pool) {
