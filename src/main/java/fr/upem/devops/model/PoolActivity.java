@@ -29,7 +29,7 @@ public class PoolActivity implements Serializable {
     @JsonIgnoreProperties({"activities"})
     private List<Staff> staffList = new ArrayList<>();
     @ManyToOne
-    @JsonManagedReference
+    @JsonIgnoreProperties({"scheduledActivities"})
     private Schedule schedule;
 
     public PoolActivity() {

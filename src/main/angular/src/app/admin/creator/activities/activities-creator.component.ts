@@ -3,7 +3,7 @@ import {PoolActivity} from '../../../model/PoolActivity';
 import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Schedule} from '../../../model/Schedule';
 import {Staff} from '../../../model/Staff';
-import {ActivityService} from "../../../service/activity.service";
+import {ActivityService} from '../../../service/activity.service';
 
 @Component({
   selector: 'app-activities-creator',
