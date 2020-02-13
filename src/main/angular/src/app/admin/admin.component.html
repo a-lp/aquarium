@@ -35,7 +35,7 @@
     </div>
     <div [class]="shown!=3?'hidden':''">
       <app-sectors-creator [pools]="pools" [staffs]="staffs" (onSave)="refresh($event)"></app-sectors-creator>
-      <!--      <app-pools [pools]="pools"></app-pools>-->
+      <app-sectors></app-sectors>
     </div>
     <div [class]="shown!=4?'hidden':''">
       <app-staff-creator (onSave)="refresh($event)"></app-staff-creator>
@@ -44,6 +44,11 @@
     <div [class]="shown!=5?'hidden': ''">
       <app-schedule-creator [pools]="pools" (onSave)="refresh($event)"></app-schedule-creator>
       <app-schedules [schedules]="schedules"></app-schedules>
+    </div>
+    <div [class]="shown!=6?'hidden': ''">
+      <app-activities-creator [schedules]="schedules" [staffs]="staffs" [activities]="activities"
+                              (onSave)="refresh($event)"></app-activities-creator>
+      <app-activities [activities]="activities"></app-activities>
     </div>
 
   </div>

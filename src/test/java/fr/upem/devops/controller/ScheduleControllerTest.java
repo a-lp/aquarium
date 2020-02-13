@@ -43,7 +43,7 @@ public class ScheduleControllerTest {
     @Before
     public void init() {
         for (int i = 0; i < 3; i++) {
-            this.schedules.add(new Schedule(Long.parseLong(i + ""), new Date(), new Date(), (i % 2 == 0), new ArrayList<>()));
+            this.schedules.add(new Schedule(Long.parseLong(i + ""), new Date(), new Date(), new ArrayList<>()));
         }
         Mockito.when(service.getAll()).thenReturn(schedules);
         Mockito.when(service.getById(1L)).thenReturn(this.schedules.get(0));
@@ -63,19 +63,17 @@ public class ScheduleControllerTest {
         Schedule output = this.restTemplate.getForObject("http://localhost:" + port + "/schedules/1", Schedule.class);
         assertEquals(lista.get(0).get("id").toString(), output.getId().toString());
         assertEquals(((List) (lista.get(0).get("activities"))).size(), output.getActivities().size());
-        assertEquals(lista.get(0).get("repeated"), output.getRepeated());
         assertEquals(lista.get(0).get("pool"), output.getPool());
     }
 
     @Test
     public void addSchedule() {
-        Schedule pa = new Schedule(3L, new Date(), new Date(), false, new ArrayList<>());
+        Schedule pa = new Schedule(3L, new Date(), new Date(), new ArrayList<>());
         Mockito.when(service.save(pa)).thenReturn(pa);
         Schedule request = this.restTemplate.postForObject("http://localhost:" + port + "/schedules", pa,
                 Schedule.class);
         assertEquals(pa.getId(), request.getId());
         assertEquals(pa.getActivities(), request.getActivities());
-        assertEquals(pa.getRepeated(), request.getRepeated());
         assertEquals(pa.getEndPeriod(), request.getEndPeriod());
         assertEquals(pa.getStartPeriod(), request.getStartPeriod());
         assertEquals(pa.getPool(), request.getPool());
@@ -92,7 +90,6 @@ public class ScheduleControllerTest {
                 Schedule.class);
         assertEquals(schedule.getId(), request.getId());
         assertEquals(schedule.getActivities(), request.getActivities());
-        assertEquals(schedule.getRepeated(), request.getRepeated());
         assertEquals(schedule.getEndPeriod(), request.getEndPeriod());
         assertEquals(schedule.getStartPeriod(), request.getStartPeriod());
         assertEquals(schedule.getPool(), request.getPool());

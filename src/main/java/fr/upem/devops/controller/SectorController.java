@@ -1,7 +1,6 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.errors.ResourceNotFoundException;
-import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.SectorService;
@@ -28,7 +27,6 @@ public class SectorController {
     @GetMapping("/sectors/{name}")
     public Sector getByName(@PathVariable String name) {
         Sector sector = sectorService.getByName(name);
-        if(sector==null) throw new ResourceNotFoundException("Sector named '" + name + "' not found!");
         return sector;
     }
 
@@ -42,7 +40,9 @@ public class SectorController {
                 throw new ResourceNotFoundException("Staff " + id + "not found!");
             staffs.add(s);
         }
-        if (getByName(sector.getName()) != null) return null;
+        if (getByName(sector.getName()) != null)
+            //TODO: cambiare errore
+            throw new ResourceNotFoundException("Another sector named '" + sector.getName() + "' found!");
         sector.setStaffList(staffs);
         return sectorService.save(sector);
     }

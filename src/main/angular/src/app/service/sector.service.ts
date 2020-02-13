@@ -15,7 +15,7 @@ export class SectorService {
   save(sector: Sector): Observable<any> {
     const resp = sector.staffList;
     sector.staffList = [];
-    return this.http.post('/sectors/responsible/' + resp.join(","), sector);
+    return this.http.post('/sectors/responsible/' + resp.join(','), sector);
   }
 
   getAll(): Observable<any> {

@@ -11,26 +11,21 @@ form {
   justify-content: space-around;
   padding-top: 2em;
 }
-
-h3 {
-  text-align: center;
-}
-
 .multiple-choice {
   flex: .8;
   display: flex;
   justify-content: space-around;
-  padding-top: 2em;
+  padding: 2em 1em;
   max-height: 60vh;
 }
 
-.multiple-choice > div{
+#staffs{
   border: 1px solid black;
   background: white;
-  width: 35%;
   overflow-y: scroll;
+  width: 100%;
+  padding: 1em;
 }
-
 button {
   width: fit-content;
   align-self: center;

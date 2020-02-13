@@ -1,9 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Specie} from "../../../model/Specie";
-import {PoolService} from "../../../service/pool.service";
-import {ScheduleService} from "../../../service/schedule.service";
-import {Schedule} from "../../../model/Schedule";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Specie} from '../../../model/Specie';
+import {ScheduleService} from '../../../service/schedule.service';
+import {Schedule} from '../../../model/Schedule';
 
 @Component({
   selector: 'app-schedule-creator',
@@ -31,7 +30,9 @@ export class ScheduleCreatorComponent implements OnInit {
   save($event: MouseEvent) {
     this.scheduleService.save(this.form.value).subscribe(schedule => {
       this.onSave.emit(schedule);
-      if (schedule != null) this.form.reset();
+      if (schedule != null) {
+        this.form.reset();
+      }
     });
   }
 }

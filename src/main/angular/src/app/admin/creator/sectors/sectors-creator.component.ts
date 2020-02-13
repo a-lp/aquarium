@@ -1,10 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from "@angular/forms";
-import {SectorService} from "../../../service/sector.service";
-import {Sector} from "../../../model/Sector";
-import {Pool} from "../../../model/Pool";
-import {Staff} from "../../../model/Staff";
-import {PoolService} from "../../../service/pool.service";
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {SectorService} from '../../../service/sector.service';
+import {Sector} from '../../../model/Sector';
+import {Pool} from '../../../model/Pool';
+import {Staff} from '../../../model/Staff';
+import {PoolService} from '../../../service/pool.service';
 
 @Component({
   selector: 'app-sectors-creator',
@@ -31,11 +31,13 @@ export class SectorsCreatorComponent implements OnInit {
   }
 
   save($event: Event) {
-    this.form.addControl("staffList", new FormArray(this.selectedStaff.map(x => new FormControl(x.id))));
+    this.form.addControl('staffList', new FormArray(this.selectedStaff.map(x => new FormControl(x.id))));
     this.sectorService.save(this.form.value).subscribe(sector => {
-        console.log(sector)
+        console.log(sector);
         this.onSave.emit(sector);
-        if (sector != null) this.form.reset();
+        if (sector != null) {
+          this.form.reset();
+        }
       }
     );
   }
