@@ -1,7 +1,9 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.PoolActivity;
+import fr.upem.devops.errors.ResourceNotFoundException;
+import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Schedule;
+import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 public class ScheduleController {
     @Autowired
     private ScheduleService service;
+    @Autowired
+    private PoolService poolService;
 
     @GetMapping("/schedules")
     public Iterable<Schedule> getAll() {
@@ -21,9 +25,12 @@ public class ScheduleController {
         return service.getById(Long.parseLong(id));
     }
 
-    @PostMapping("/schedules")
+    @PostMapping("pools/{poolId}/schedules")
     @ResponseBody
-    public Schedule addSchedule(@RequestBody Schedule schedule) {
+    public Schedule addSchedule(@RequestBody Schedule schedule, @PathVariable String poolId) {
+        Pool pool = poolService.getById(Long.parseLong(poolId));
+        if (pool == null) throw new ResourceNotFoundException("Pool with id '" + poolId + "' not found");
+        schedule.setPool(pool);
         return service.save(schedule);
     }
 
@@ -34,7 +41,6 @@ public class ScheduleController {
         p.setActivities(schedule.getActivities());
         p.setEndPeriod(schedule.getEndPeriod());
         p.setPool(schedule.getPool());
-        p.setRepeated(schedule.getRepeated());
         p.setStartPeriod(schedule.getStartPeriod());
         return service.save(p);
     }

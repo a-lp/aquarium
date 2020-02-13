@@ -1,7 +1,6 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.PoolActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +39,7 @@ public class PoolActivityController {
         poolActivity.setEndActivity(poolActivityRequest.getEndActivity());
         poolActivity.setStartActivity(poolActivityRequest.getStartActivity());
         poolActivity.setStaffList(poolActivityRequest.getStaffList());
+        poolActivity.setRepeated(poolActivityRequest.getRepeated());
         return service.save(poolActivity);
     }
 

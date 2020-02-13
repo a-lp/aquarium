@@ -22,7 +22,9 @@ export class ScheduleService {
   }
 
   save(schedule: Schedule): Observable<any> {
-    return this.http.post('/schedules', schedule);
+    const poolId = schedule.pool;
+    schedule.pool = null;
+    return this.http.post('/pools/' + poolId + '/schedules', schedule);
   }
 
   assignAPoolActivityToSchedule(id: number, activity: PoolActivity): Observable<any> {

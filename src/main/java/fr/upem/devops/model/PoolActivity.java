@@ -15,6 +15,7 @@ public class PoolActivity implements Serializable {
     private Date startActivity;
     private Date endActivity;
     private Boolean openToPublic;
+    private Boolean repeated;
     @ManyToMany
     @JoinTable(
             name = "activity_staff",
@@ -91,6 +92,14 @@ public class PoolActivity implements Serializable {
 
     public void setSchedule(Schedule schedule) {
         this.schedule = schedule;
+    }
+
+    public Boolean getRepeated() {
+        return repeated;
+    }
+
+    public void setRepeated(Boolean repeated) {
+        this.repeated = repeated;
     }
 
     public void assignStaff(Staff staff) {

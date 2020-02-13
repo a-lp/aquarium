@@ -16,7 +16,7 @@
       <th><input type="text" formControlName="name"></th>
       <th><input type="text" formControlName="surname"></th>
       <th><input type="text" formControlName="address"></th>
-      <th><input type="date" formControlName="birthday"></th>
+      <th><input type="date" [max]="today()" formControlName="birthday"></th>
       <th><input type="text" formControlName="socialSecurity"></th>
       <th><select formControlName="role">
         <option *ngFor="let i of roles" [value]="i">{{i}}</option>

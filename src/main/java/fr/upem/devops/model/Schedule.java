@@ -15,7 +15,6 @@ public class Schedule implements Serializable {
     private Long id;
     private Date startPeriod;
     private Date endPeriod;
-    private Boolean repeated;
     @ManyToOne
     @JoinColumn(name = "calendar_pool")
     private Pool pool;
@@ -26,18 +25,16 @@ public class Schedule implements Serializable {
     public Schedule() {
     }
 
-    public Schedule(Long id, Date startPeriod, Date endPeriod, Boolean repeated, List<PoolActivity> activities) {
+    public Schedule(Long id, Date startPeriod, Date endPeriod, List<PoolActivity> activities) {
         this.id = id;
         this.startPeriod = startPeriod;
         this.endPeriod = endPeriod;
-        this.repeated = repeated;
         this.activities = activities;
     }
 
-    public Schedule(Date startPeriod, Date endPeriod, Boolean repeated, List<PoolActivity> activities) {
+    public Schedule(Date startPeriod, Date endPeriod, List<PoolActivity> activities) {
         this.startPeriod = startPeriod;
         this.endPeriod = endPeriod;
-        this.repeated = repeated;
         this.activities = activities;
     }
 
@@ -63,14 +60,6 @@ public class Schedule implements Serializable {
 
     public void setEndPeriod(Date endPeriod) {
         this.endPeriod = endPeriod;
-    }
-
-    public Boolean getRepeated() {
-        return repeated;
-    }
-
-    public void setRepeated(Boolean repeated) {
-        this.repeated = repeated;
     }
 
     public Pool getPool() {

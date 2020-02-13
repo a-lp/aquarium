@@ -30,15 +30,6 @@ public class StaffController {
         return service.save(staff);
     }
 
-    @PostMapping("/staff/{id}/assign-activity")
-    @ResponseBody
-    public Staff assignActivityToStaff(@RequestBody PoolActivity activity, @PathVariable String id) {
-        Staff staff = getById(id);
-        if (staff == null) return null;
-        staff.assignActivity(activity);
-        return service.save(staff);
-    }
-
     @PutMapping("/staff/{id}")
     @ResponseBody
     public Staff updateStaff(@PathVariable String id, @RequestBody Staff staff) {
