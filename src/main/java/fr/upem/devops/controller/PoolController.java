@@ -1,7 +1,6 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.errors.ResourceNotFoundException;
-import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.service.PoolService;
@@ -44,7 +43,7 @@ public class PoolController {
         p.setCondition(pool.getCondition());
         p.setResponsible(p.getResponsible());
         p.setFishes(pool.getFishes());
-        p.setScheduledActivities(pool.getScheduledActivities());
+        p.setSchedules(pool.getSchedules());
         p.setSector(p.getSector());
         return poolService.save(p);
     }

@@ -1,8 +1,9 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {PoolActivity} from '../../../model/PoolActivity';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Schedule} from '../../../model/Schedule';
 import {Staff} from '../../../model/Staff';
+import {ActivityService} from "../../../service/activity.service";
 
 @Component({
   selector: 'app-activities-creator',
@@ -29,14 +30,22 @@ export class ActivitiesCreatorComponent implements OnInit {
     schedule: new FormControl('', Validators.required),
   });
 
-  constructor() {
+  constructor(private activityService: ActivityService) {
   }
 
   ngOnInit() {
   }
 
   save($event: MouseEvent) {
-    console.log($event);
+    this.form.addControl('staffList', new FormArray(this.selectedStaff.map(x => new FormControl(x.id))));
+    this.activityService.save(this.form.value).subscribe(activity => {
+        console.log(activity);
+        this.onSave.emit(activity);
+        if (activity != null) {
+          this.form.reset();
+        }
+      }
+    );
   }
 
   isDisabled() {

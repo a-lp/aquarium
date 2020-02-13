@@ -18,6 +18,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalTime;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -163,7 +164,7 @@ public class StaffControllerTest {
     @Test
     public void assignActivityToStaff() {
         Staff staff = this.staffList.get(0);
-        PoolActivity activity = new PoolActivity(1L, new Date(), new Date(), true, Collections.singletonList(staff), null);
+        PoolActivity activity = new PoolActivity(1L, LocalTime.of(1,0),LocalTime.of(2,0), true, Collections.singletonList(staff), null);
         staff.assignActivity(activity);
         Staff response = staff;
         response.assignActivity(activity);

@@ -4,8 +4,8 @@ import {Schedule} from './Schedule';
 export class PoolActivity {
   id: number;
   description: string;
-  startActivity: Date;
-  endActivity: Date;
+  startActivity: string;
+  endActivity: string;
   openToPublic: boolean;
   repeated: boolean;
   staffList: Array<Staff> = [];

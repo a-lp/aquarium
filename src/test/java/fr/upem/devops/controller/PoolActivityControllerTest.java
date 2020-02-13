@@ -17,6 +17,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,9 +39,9 @@ public class PoolActivityControllerTest {
 
     @Before
     public void init() {
-        PoolActivity pa1 = new PoolActivity(1L, new Date(), new Date(), true, new ArrayList<>(), null);
-        PoolActivity pa2 = new PoolActivity(2L, new Date(), new Date(), true, new ArrayList<>(), null);
-        PoolActivity pa3 = new PoolActivity(3L, new Date(), new Date(), true, new ArrayList<>(), null);
+        PoolActivity pa1 = new PoolActivity(1L, LocalTime.of(1, 0), LocalTime.of(2, 0), true, new ArrayList<>(), null);
+        PoolActivity pa2 = new PoolActivity(2L, LocalTime.of(2, 0), LocalTime.of(4, 0), true, new ArrayList<>(), null);
+        PoolActivity pa3 = new PoolActivity(3L, LocalTime.of(3, 0), LocalTime.of(6, 0), true, new ArrayList<>(), null);
 
         activities.add(pa1);
         activities.add(pa2);
@@ -71,7 +72,7 @@ public class PoolActivityControllerTest {
 
     @Test
     public void addPoolActivity() {
-        PoolActivity pa = new PoolActivity(4L, new Date(), new Date(), true, new ArrayList<>(), null);
+        PoolActivity pa = new PoolActivity(4L, LocalTime.of(4,0),LocalTime.of(8,0), true, new ArrayList<>(), null);
         Mockito.when(service.save(pa)).thenReturn(pa);
         PoolActivity request = this.restTemplate.postForObject("http://localhost:" + port + "/activities", pa,
                 PoolActivity.class);

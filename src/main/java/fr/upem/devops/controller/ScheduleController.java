@@ -38,7 +38,7 @@ public class ScheduleController {
     @ResponseBody
     public Schedule updateSchedule(@PathVariable String id, @RequestBody Schedule schedule) {
         Schedule p = getById(id);
-        p.setActivities(schedule.getActivities());
+        p.setScheduledActivities(schedule.getScheduledActivities());
         p.setEndPeriod(schedule.getEndPeriod());
         p.setPool(schedule.getPool());
         p.setStartPeriod(schedule.getStartPeriod());

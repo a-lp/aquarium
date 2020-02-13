@@ -1,9 +1,13 @@
 package fr.upem.devops.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -12,8 +16,8 @@ public class PoolActivity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String description;
-    private Date startActivity;
-    private Date endActivity;
+    private LocalTime startActivity;
+    private LocalTime endActivity;
     private Boolean openToPublic;
     private Boolean repeated;
     @ManyToMany
@@ -22,14 +26,16 @@ public class PoolActivity implements Serializable {
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "staff_id")
     )
+    @JsonIgnoreProperties({"activities"})
     private List<Staff> staffList = new ArrayList<>();
     @ManyToOne
+    @JsonManagedReference
     private Schedule schedule;
 
     public PoolActivity() {
     }
 
-    public PoolActivity(Long id, Date startActivity, Date endActivity, Boolean openToPublic, List<Staff> staffList, Schedule schedule) {
+    public PoolActivity(Long id, LocalTime startActivity, LocalTime endActivity, Boolean openToPublic, List<Staff> staffList, Schedule schedule) {
         this.id = id;
         this.startActivity = startActivity;
         this.endActivity = endActivity;
@@ -38,7 +44,7 @@ public class PoolActivity implements Serializable {
         this.schedule = schedule;
     }
 
-    public PoolActivity(Date startActivity, Date endActivity, Boolean openToPublic, List<Staff> staffList, Schedule schedule) {
+    public PoolActivity(LocalTime startActivity, LocalTime endActivity, Boolean openToPublic, List<Staff> staffList, Schedule schedule) {
         this.startActivity = startActivity;
         this.endActivity = endActivity;
         this.openToPublic = openToPublic;
@@ -62,19 +68,19 @@ public class PoolActivity implements Serializable {
         this.description = description;
     }
 
-    public Date getStartActivity() {
+    public LocalTime getStartActivity() {
         return startActivity;
     }
 
-    public void setStartActivity(Date startActivity) {
+    public void setStartActivity(LocalTime startActivity) {
         this.startActivity = startActivity;
     }
 
-    public Date getEndActivity() {
+    public LocalTime getEndActivity() {
         return endActivity;
     }
 
-    public void setEndActivity(Date endActivity) {
+    public void setEndActivity(LocalTime endActivity) {
         this.endActivity = endActivity;
     }
 

@@ -1,6 +1,8 @@
 package fr.upem.devops.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -19,23 +21,23 @@ public class Schedule implements Serializable {
     @JoinColumn(name = "calendar_pool")
     private Pool pool;
     @OneToMany(mappedBy = "schedule")
-    @JsonIgnoreProperties("schedule")
-    private List<PoolActivity> activities = new ArrayList<>();
+    @JsonBackReference
+    private List<PoolActivity> scheduledActivities = new ArrayList<>();
 
     public Schedule() {
     }
 
-    public Schedule(Long id, Date startPeriod, Date endPeriod, List<PoolActivity> activities) {
+    public Schedule(Long id, Date startPeriod, Date endPeriod, List<PoolActivity> scheduledActivities) {
         this.id = id;
         this.startPeriod = startPeriod;
         this.endPeriod = endPeriod;
-        this.activities = activities;
+        this.scheduledActivities = scheduledActivities;
     }
 
-    public Schedule(Date startPeriod, Date endPeriod, List<PoolActivity> activities) {
+    public Schedule(Date startPeriod, Date endPeriod, List<PoolActivity> scheduledActivities) {
         this.startPeriod = startPeriod;
         this.endPeriod = endPeriod;
-        this.activities = activities;
+        this.scheduledActivities = scheduledActivities;
     }
 
     public Long getId() {
@@ -70,16 +72,16 @@ public class Schedule implements Serializable {
         this.pool = pool;
     }
 
-    public List<PoolActivity> getActivities() {
-        return activities;
+    public List<PoolActivity> getScheduledActivities() {
+        return scheduledActivities;
     }
 
-    public void setActivities(List<PoolActivity> activities) {
-        this.activities = activities;
+    public void setScheduledActivities(List<PoolActivity> activities) {
+        this.scheduledActivities = activities;
     }
 
     public void assignActivity(PoolActivity activity) {
-        this.activities.add(activity);
+        this.scheduledActivities.add(activity);
     }
 
     @Override

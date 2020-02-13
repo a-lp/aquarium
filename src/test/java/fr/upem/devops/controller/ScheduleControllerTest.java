@@ -18,6 +18,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,7 +63,7 @@ public class ScheduleControllerTest {
         List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/schedules", List.class);
         Schedule output = this.restTemplate.getForObject("http://localhost:" + port + "/schedules/1", Schedule.class);
         assertEquals(lista.get(0).get("id").toString(), output.getId().toString());
-        assertEquals(((List) (lista.get(0).get("activities"))).size(), output.getActivities().size());
+        assertEquals(((List) (lista.get(0).get("activities"))).size(), output.getScheduledActivities().size());
         assertEquals(lista.get(0).get("pool"), output.getPool());
     }
 
@@ -73,7 +74,7 @@ public class ScheduleControllerTest {
         Schedule request = this.restTemplate.postForObject("http://localhost:" + port + "/schedules", pa,
                 Schedule.class);
         assertEquals(pa.getId(), request.getId());
-        assertEquals(pa.getActivities(), request.getActivities());
+        assertEquals(pa.getScheduledActivities(), request.getScheduledActivities());
         assertEquals(pa.getEndPeriod(), request.getEndPeriod());
         assertEquals(pa.getStartPeriod(), request.getStartPeriod());
         assertEquals(pa.getPool(), request.getPool());
@@ -82,14 +83,14 @@ public class ScheduleControllerTest {
     @Test
     public void assignPoolActivityToSchedule() {
         Schedule schedule = this.schedules.get(0);
-        PoolActivity pa1 = new PoolActivity(1L, new Date(), new Date(), true, new ArrayList<>(), schedule);
+        PoolActivity pa1 = new PoolActivity(1L, LocalTime.of(1,0),LocalTime.of(2,0), true, new ArrayList<>(), schedule);
         schedule.assignActivity(pa1);
         Mockito.when(service.save(schedule)).thenReturn(schedule);
         Mockito.when(poolActivityService.getById(1L)).thenReturn(pa1);
         Schedule request = this.restTemplate.postForObject("http://localhost:" + port + "/schedules/1/assign-activity", pa1,
                 Schedule.class);
         assertEquals(schedule.getId(), request.getId());
-        assertEquals(schedule.getActivities(), request.getActivities());
+        assertEquals(schedule.getScheduledActivities(), request.getScheduledActivities());
         assertEquals(schedule.getEndPeriod(), request.getEndPeriod());
         assertEquals(schedule.getStartPeriod(), request.getStartPeriod());
         assertEquals(schedule.getPool(), request.getPool());
@@ -102,12 +103,12 @@ public class ScheduleControllerTest {
     public void updateSchedule() {
         Schedule schedule = this.schedules.get(0);
         Mockito.when(service.save(schedule)).thenReturn(schedule);
-        PoolActivity pa1 = new PoolActivity(1L, new Date(), new Date(), true, new ArrayList<>(), schedule);
+        PoolActivity pa1 = new PoolActivity(1L, LocalTime.of(1,0),LocalTime.of(2,0), true, new ArrayList<>(), schedule);
         schedule.assignActivity(pa1);
         HttpEntity<Schedule> httpEntity = new HttpEntity<>(schedule);
         Schedule request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.PUT, httpEntity, Schedule.class).getBody();
         assertEquals(schedule, request);
-        assertEquals(schedule.getActivities(), request.getActivities());
+        assertEquals(schedule.getScheduledActivities(), request.getScheduledActivities());
         /* Testing bidirectional relation */
         Mockito.when(poolActivityService.getById(1L)).thenReturn(pa1);
         PoolActivity poolActivityRequest = this.restTemplate.getForObject("http://localhost:" + port + "/activities/1", PoolActivity.class);
