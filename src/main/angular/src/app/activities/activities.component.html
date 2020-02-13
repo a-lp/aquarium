@@ -1,1 +1,36 @@
-<p>activities works!</p>
+<h1>Activities</h1>
+<table>
+  <thead>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Description
+    </th>
+    <th>
+      Start Activity
+    </th>
+    <th>
+      End Activity
+    </th>
+    <th>
+      Open to Public
+    </th>
+    <th>
+      Repeated
+    </th>
+    <th>
+      Show Staff
+    </th>
+    <th>
+      Show Schedule
+    </th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr app-activity *ngFor=" let p of activities" [activity]="p"></tr>
+  </tbody>
+</table>
+
