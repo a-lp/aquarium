@@ -103,9 +103,7 @@ public class PoolActivityControllerTest {
     @Test
     public void addPoolActivityScheduleNotFound() {
         ResourceNotFoundException notFoundException = new ResourceNotFoundException("Schedule with id '1' not found!");
-        Schedule schedule = new Schedule(1L, new Date(), new Date(), new ArrayList<>());
-        Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
-        Mockito.when(staffService.getById(1L)).thenThrow(notFoundException);
+        Mockito.when(scheduleService.getById(1L)).thenThrow(notFoundException);
         ResourceNotFoundException exception = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", new PoolActivity(),
                 ResourceNotFoundException.class);
         assertEquals(notFoundException.getMessage(), exception.getMessage());
@@ -114,6 +112,8 @@ public class PoolActivityControllerTest {
     @Test
     public void addPoolActivityResponsibleNotFound() {
         ResourceNotFoundException notFoundException = new ResourceNotFoundException("Staff with id '1' not found!");
+        Schedule schedule = new Schedule(1L, new Date(), new Date(), new ArrayList<>());
+        Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
         Mockito.when(staffService.getById(1L)).thenThrow(notFoundException);
         ResourceNotFoundException exception = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", new PoolActivity(),
                 ResourceNotFoundException.class);
