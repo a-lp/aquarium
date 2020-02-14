@@ -1,5 +1,6 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.FishGender;
 import fr.upem.devops.model.Pool;
@@ -108,6 +109,15 @@ public class PoolControllerTest {
         assertEquals(pool.getVolume(), request.getVolume());
         assertEquals(pool.getFishes(), request.getFishes());
         assertEquals(pool_new.getSector(), request.getSector());
+    }
+
+    @Test
+    public void addPoolSectorNotFound(){
+        Mockito.when(sectorService.getById(4L)).thenThrow(new ResourceNotFoundException("Sector with id '4' not found!"));
+        Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
+        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/4/pools", pool,
+                ResourceNotFoundException.class);
+        assertEquals("Sector with id '4' not found!", request.getMessage());
     }
 
 

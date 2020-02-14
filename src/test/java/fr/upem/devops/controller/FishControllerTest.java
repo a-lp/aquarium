@@ -148,7 +148,7 @@ public class FishControllerTest {
         Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, null);
         Mockito.when(fishService.save(updateP1)).thenReturn(new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, null));
         updateP1.setName("MauriceColdfish");
-        HttpEntity<Fish> updated = new HttpEntity<Fish>(updateP1);
+        HttpEntity<Fish> updated = new HttpEntity<>(updateP1);
         Fish request = this.restTemplate.exchange("http://localhost:" + port + "/fishes/3", HttpMethod.PUT,
                 updated, Fish.class).getBody();
         assertEquals(updateP1, request);

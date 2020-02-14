@@ -29,7 +29,7 @@ public class ScheduleController {
     @ResponseBody
     public Schedule addSchedule(@RequestBody Schedule schedule, @PathVariable String poolId) {
         Pool pool = poolService.getById(Long.parseLong(poolId));
-        if (pool == null) throw new ResourceNotFoundException("Pool with id '" + poolId + "' not found");
+        if (pool == null) throw new ResourceNotFoundException("Pool with id '" + poolId + "' not found!");
         schedule.setPool(pool);
         return service.save(schedule);
     }
