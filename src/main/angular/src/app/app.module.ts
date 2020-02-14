@@ -17,14 +17,18 @@ import {AdminComponent} from './admin/admin.component';
 import {SpecieComponent} from './species/specie/specie.component';
 import {PoolsComponent} from './pools/pools.component';
 import {PoolComponent} from './pools/pool/pool.component';
-import {ActivitiesComponent} from './admin/creator/activities/activities.component';
+import {ActivitiesCreatorComponent} from './admin/creator/activities/activities-creator.component';
 import {ScheduleCreatorComponent} from './admin/creator/schedule/schedule-creator.component';
 import {StaffCreatorComponent} from './admin/creator/staff/staff-creator.component';
 import {SchedulesComponent} from './schedules/schedules.component';
 import {ScheduleComponent} from './schedules/schedule/schedule.component';
-import { StaffsComponent } from './staffs/staffs.component';
-import { StaffComponent } from './staffs/staff/staff.component';
-import { SectorsCreatorComponent } from './admin/creator/sectors/sectors-creator.component';
+import {StaffsComponent} from './staffs/staffs.component';
+import {StaffComponent} from './staffs/staff/staff.component';
+import {SectorsCreatorComponent} from './admin/creator/sectors/sectors-creator.component';
+import {ActivityComponent} from './activities/activity/activity.component';
+import {ActivitiesComponent} from './activities/activities.component';
+import { SectorsComponent } from './sectors/sectors.component';
+import { SectorComponent } from './sectors/sector/sector.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +50,12 @@ import { SectorsCreatorComponent } from './admin/creator/sectors/sectors-creator
     ScheduleComponent,
     StaffsComponent,
     StaffComponent,
-    SectorsCreatorComponent
+    SectorsCreatorComponent,
+    ActivityComponent,
+    ActivitiesCreatorComponent,
+    ActivitiesComponent,
+    SectorsComponent,
+    SectorComponent
   ],
   imports: [
     BrowserModule,

@@ -5,6 +5,7 @@
       <th>Max Capacity</th>
       <th>Volume</th>
       <th>Condition</th>
+      <th>Sector</th>
       <th>Save</th>
     </tr>
     </thead>
@@ -14,6 +15,9 @@
       <th><input type="number" formControlName="volume"></th>
       <th><select formControlName="condition">
         <option *ngFor="let i of conditions" [value]="i">{{i}}</option>
+      </select></th>
+      <th><select formControlName="sector">
+        <option *ngFor="let i of sectors" [value]="i.id">{{i.name}}</option>
       </select></th>
       <th>
         <button (click)="save($event)" [disabled]="!form.valid">Save</button>

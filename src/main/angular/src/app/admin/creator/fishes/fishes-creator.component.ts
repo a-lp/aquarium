@@ -28,7 +28,7 @@ export class FishesCreatorComponent implements OnInit {
     distinctSign: new FormControl('', Validators.required),
     gender: new FormControl('', Validators.required),
     specie: new FormControl(null, Validators.required),
-    pool: new FormControl(null)
+    pool: new FormControl(null, Validators.required)
   });
 
 
@@ -39,28 +39,8 @@ export class FishesCreatorComponent implements OnInit {
   }
 
   save($event: Event) {
-    this.speciesService.getSpecie(this.form.value.specie).subscribe(specie => {
-      this.form.value.specie = specie;
-      if (this.form.value.pool != undefined) {
-        this.poolService.getPool(this.form.value.pool).subscribe(pool => {
-          this.form.value.pool = pool;
-          this.fishService.save(this.form.value).subscribe(
-            fish => {
-              this.onSave.emit(fish);
-              if (fish != null) this.form.reset();
-            },
-            error => console.log(error)
-          );
-        });
-      } else {
-        this.fishService.save(this.form.value).subscribe(
-          data => {
-            this.onSave.emit(data);
-            this.form.reset();
-          },
-          error => console.log(error)
-        );
-      }
-    });
+    this.fishService.save(this.form.value).subscribe(fish => {
+      this.onSave.emit(fish);
+    })
   }
 }

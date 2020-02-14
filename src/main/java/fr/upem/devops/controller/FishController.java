@@ -1,6 +1,9 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Fish;
+import fr.upem.devops.model.Pool;
+import fr.upem.devops.model.Specie;
 import fr.upem.devops.service.FishService;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.SpecieService;
@@ -24,30 +27,33 @@ public class FishController {
         return fishService.getAll();
     }
 
+    @GetMapping("/species/{specieName}/fishes")
+    public Iterable<Fish> getBySpecies(@PathVariable String specieName) {
+        Specie specie = this.specieService.getByName(specieName);
+        if (specie == null) throw new ResourceNotFoundException("Species '" + specieName + "' not found!");
+        else {
+            return specie.getFishList();
+        }
+    }
+
     @GetMapping("/fishes/{id}")
     public Fish getById(@PathVariable String id) {
         return fishService.getById(Long.parseLong(id));
     }
 
-    @PostMapping("/fishes")
+    @PostMapping("/species/{specieName}/pools/{poolId}/fishes")
     @ResponseBody
-    public Fish addFish(@RequestBody Fish fish) {
+    public Fish addFish(@RequestBody Fish fish, @PathVariable String specieName, @PathVariable String poolId) {
+        Specie specie = this.specieService.getByName(specieName);
+        if (specie == null) throw new ResourceNotFoundException("Specie '" + specieName + "' not found!");
+        Pool pool = this.poolService.getById(Long.parseLong(poolId));
+        if (pool == null) throw new ResourceNotFoundException("Pool '" + poolId + "' not found!");
         fish.setArrivalDate(new Date());
+        fish.setSpecie(specie);
+        fish.setPool(pool);
         return fishService.save(fish);
     }
 
-//    @PostMapping("/fishes")
-//    @ResponseBody
-//    public Fish addFish(@RequestBody Map<String, String> allParams) {
-//        Fish p = new Fish();
-//        p.setName(allParams.get("name"));
-//        p.setGender(FishGender.valueOf(allParams.get("gender")));
-//        p.setDistinctSign(allParams.get("distinctSign"));
-//        p.setArrivalDate(new Date());
-//        p.setSpecie(specieService.getByName(allParams.get("specie")));
-//
-//        return fishService.save(p);
-//    }
 
     @PutMapping("/fishes/retire/{id}")
     @ResponseBody

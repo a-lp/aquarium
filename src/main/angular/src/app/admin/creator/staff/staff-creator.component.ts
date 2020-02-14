@@ -34,4 +34,9 @@ export class StaffCreatorComponent implements OnInit {
       if (staff != null) this.form.reset();
     });
   }
+
+  today() {
+    const today = new Date();
+    return (today.getFullYear() + "-" + ((today.getMonth() + 1) < 10 ? "0" + (today.getMonth() + 1) : today.getMonth() + 1) + "-" + (today.getDate() < 10 ? "0" + today.getDate() : today.getDate()));
+  }
 }

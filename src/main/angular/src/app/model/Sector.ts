@@ -5,6 +5,6 @@ export class Sector {
   id: number;
   name: string;
   location: string;
-  pools: Array<Pool>;
-  staffList: Array<Staff>;
+  pools: Array<Pool> = [];
+  staffList: Array<Staff> = [];
 }

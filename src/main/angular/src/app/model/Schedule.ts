@@ -5,7 +5,6 @@ export class Schedule {
   id: number;
   startPeriod: Date;
   endPeriod: Date;
-  repeated: boolean;
   pool: Pool;
-  activities: Array<PoolActivity>;
+  activities: Array<PoolActivity> = [];
 }

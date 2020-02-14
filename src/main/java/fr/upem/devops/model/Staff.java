@@ -1,6 +1,7 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -21,12 +22,8 @@ public class Staff implements Serializable {
     private StaffRole role;
     @OneToMany(mappedBy = "responsible")
     private List<Pool> poolsResponsabilities = new ArrayList<>();
-    @ManyToMany
-    @JoinTable(
-            name = "sectors_staffs",
-            joinColumns = @JoinColumn(name = "staff_id"),
-            inverseJoinColumns = @JoinColumn(name = "sector_id")
-    )
+    @ManyToMany(mappedBy = "staffList")
+    @JsonIgnoreProperties("staffList")
     private List<Sector> sectors = new ArrayList<>();
     @ManyToMany
     @JsonIgnoreProperties("staffList")

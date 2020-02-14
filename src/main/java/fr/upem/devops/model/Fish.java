@@ -23,7 +23,6 @@ public class Fish implements Serializable {
     private Specie specie;
     @ManyToOne
     @JoinColumn(name = "fish_pool_id")
-    @JsonIgnoreProperties("fishes")
     private Pool pool;
 
     public Fish() {

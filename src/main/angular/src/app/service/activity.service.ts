@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {PoolActivity} from '../model/PoolActivity';
-import {Staff} from '../model/Staff';
 
 @Injectable({
   providedIn: 'root'
@@ -21,12 +20,11 @@ export class ActivityService {
   }
 
   save(activity: PoolActivity): Observable<any> {
-    return this.http.post('/activities', activity);
-  }
-
-  assignStaffToPoolActivity(id: number, staff: Staff): Observable<any> {
-    //TODO: gestire la persistenza di staff.
-    return this.http.post('/activities/${id}/assign-staff', staff);
+    const resp = activity.staffList;
+    const scheduleId = activity.schedule;
+    activity.schedule = null;
+    activity.staffList = [];
+    return this.http.post('/schedule/' + scheduleId + '/activities/staff/' + resp.join(','), activity);
   }
 
   delete(activity: PoolActivity): Observable<any> {

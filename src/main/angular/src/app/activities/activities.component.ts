@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {PoolActivity} from '../model/PoolActivity';
 
 @Component({
   selector: 'app-activities',
@@ -6,8 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./activities.component.css']
 })
 export class ActivitiesComponent implements OnInit {
+  @Input()
+  activities: Array<PoolActivity>;
 
-  constructor() { }
+  constructor() {
+  }
 
   ngOnInit() {
   }

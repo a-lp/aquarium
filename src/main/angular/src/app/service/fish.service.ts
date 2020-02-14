@@ -16,7 +16,11 @@ export class FishService {
   }
 
   save(fish: Fish): Observable<any> {
-    return this.http.post('/fishes', fish);
+    const specie = fish.specie;
+    const pool = fish.pool;
+    fish.specie = null;
+    fish.pool = null;
+    return this.http.post('/species/' + specie + '/pools/' + pool + '/fishes', fish);
   }
 
   delete(fish: Fish): Observable<any> {

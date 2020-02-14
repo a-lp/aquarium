@@ -1,5 +1,6 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.errors.ConflictException;
 import fr.upem.devops.model.Alimentation;
 import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.FishGender;
@@ -23,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -98,10 +98,11 @@ public class SpecieControllerTest {
     public void addExistentSpecie() {
         short lf = 1;
         Specie specie = new Specie(4L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new ArrayList<>());
-        Mockito.when(specieService.save(specie)).thenReturn(null);
-        Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
-                Specie.class);
-        assertNull(request);
+        ConflictException conflictError = new ConflictException("Another specie named '" + specie.getName() + "' found!");
+        Mockito.when(specieService.save(specie)).thenThrow(conflictError);
+        ConflictException request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
+                ConflictException.class);
+        assertEquals(conflictError.getMessage(), request.getMessage());
     }
 
     @Test

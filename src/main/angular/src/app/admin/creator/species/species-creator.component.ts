@@ -30,7 +30,7 @@ export class SpeciesCreatorComponent implements OnInit {
   save($event: Event) {
     this.speciesService.save(this.form.value).subscribe(specie => {
       this.onSave.emit();
-      if (specie != null) this.form.reset();
+      if (specie != null) { this.form.reset(); }
     });
   }
 }

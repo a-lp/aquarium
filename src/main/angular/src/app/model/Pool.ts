@@ -11,8 +11,8 @@ export class Pool {
   condition: WaterCondition;
   fishes: Array<Fish>;
   sector: Sector;
-  responsible: Staff | null;
-  scheduledActivities: Array<Schedule> = [];
+  responsible: Staff;
+  scheduledActivities: Array<Schedule>;
 }
 
 export enum WaterCondition {

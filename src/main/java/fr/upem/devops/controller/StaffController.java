@@ -1,8 +1,6 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Sector;
+import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,8 @@ public class StaffController {
 
     @GetMapping("/staff")
     public Iterable<Staff> getAll() {
-        return service.getAll();
+        Iterable<Staff> result = service.getAll();
+        return result;
     }
 
     @GetMapping("/staff/{id}")
@@ -29,37 +28,11 @@ public class StaffController {
         return service.save(staff);
     }
 
-    @PostMapping("/staff/{id}/assign-pool")
-    @ResponseBody
-    public Staff assignPoolToStaff(@RequestBody Pool pool, @PathVariable String id) {
-        Staff staff = getById(id);
-        if (staff == null) return null;
-        staff.assignPool(pool);
-        return service.save(staff);
-    }
-
-    @PostMapping("/staff/{id}/assign-sector")
-    @ResponseBody
-    public Staff assignSectorToStaff(@RequestBody Sector sector, @PathVariable String id) {
-        Staff staff = getById(id);
-        if (staff == null) return null;
-        staff.assignSector(sector);
-        return service.save(staff);
-    }
-
-    @PostMapping("/staff/{id}/assign-activity")
-    @ResponseBody
-    public Staff assignActivityToStaff(@RequestBody PoolActivity activity, @PathVariable String id) {
-        Staff staff = getById(id);
-        if (staff == null) return null;
-        staff.assignActivity(activity);
-        return service.save(staff);
-    }
-
     @PutMapping("/staff/{id}")
     @ResponseBody
     public Staff updateStaff(@PathVariable String id, @RequestBody Staff staff) {
         Staff p = getById(id);
+        if (p == null) throw new ResourceNotFoundException("Staff with id: '" + id + "' not found!");
         p.setName(staff.getName());
         p.setAddress(staff.getAddress());
         p.setBirthday(staff.getBirthday());

@@ -4,7 +4,6 @@
     <tr>
       <th>Start Period</th>
       <th>End Period</th>
-      <th>Repeated</th>
       <th>Pool</th>
       <th>Save</th>
     </tr>
@@ -12,8 +11,7 @@
     <tbody>
     <tr>
       <th><input type="date" formControlName="startPeriod"></th>
-      <th><input type="date" formControlName="endPeriod"></th>
-      <th><input type="checkbox" formControlName="repeated"></th>
+      <th><input type="date" [min]="form.value.startPeriod" formControlName="endPeriod"></th>
       <th><select formControlName="pool">
         <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
       </select></th>

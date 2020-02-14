@@ -30,17 +30,10 @@
     </div>
   </div>
   <div class="multiple-choice">
-    <div id="pools">
-      <h3>Pools</h3>
-      <div class="input-entry" *ngFor="let i of pools">
-        <input type="checkbox" [value]="i" [checked]="this.selectedPool.includes(i)" (change)="selectElement(i,false)">
-        <label>{{'ID: ' + i.id + ' capacity: ' + i.maxCapacity}}</label>
-      </div>
-    </div>
     <div id="staffs">
       <h3>Staff</h3>
       <div class="input-entry" *ngFor="let i of staffs">
-        <input type="checkbox" [value]="i" [checked]="this.selectedStaff.includes(i)" (change)="selectElement(i,true)">
+        <input type="checkbox" [value]="i" [checked]="this.selectedStaff.includes(i)" (change)="selectElement(i)">
         <label>{{i.id + ' -' + i.surname.toUpperCase() + ' ' + i.name}}</label>
       </div>
     </div>

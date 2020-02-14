@@ -1,7 +1,9 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.PoolActivity;
+import fr.upem.devops.errors.ResourceNotFoundException;
+import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Schedule;
+import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 public class ScheduleController {
     @Autowired
     private ScheduleService service;
+    @Autowired
+    private PoolService poolService;
 
     @GetMapping("/schedules")
     public Iterable<Schedule> getAll() {
@@ -21,18 +25,12 @@ public class ScheduleController {
         return service.getById(Long.parseLong(id));
     }
 
-    @PostMapping("/schedules")
+    @PostMapping("pools/{poolId}/schedules")
     @ResponseBody
-    public Schedule addSchedule(@RequestBody Schedule schedule) {
-        return service.save(schedule);
-    }
-
-    @PostMapping("/schedules/{id}/assign-activity")
-    @ResponseBody
-    public Schedule assignPoolActivityToSchedule(@RequestBody PoolActivity poolActivity, @PathVariable String id) {
-        Schedule schedule = getById(id);
-        if (schedule == null) return null;
-        schedule.assignActivity(poolActivity);
+    public Schedule addSchedule(@RequestBody Schedule schedule, @PathVariable String poolId) {
+        Pool pool = poolService.getById(Long.parseLong(poolId));
+        if (pool == null) throw new ResourceNotFoundException("Pool with id '" + poolId + "' not found!");
+        schedule.setPool(pool);
         return service.save(schedule);
     }
 
@@ -40,10 +38,9 @@ public class ScheduleController {
     @ResponseBody
     public Schedule updateSchedule(@PathVariable String id, @RequestBody Schedule schedule) {
         Schedule p = getById(id);
-        p.setActivities(schedule.getActivities());
+        p.setScheduledActivities(schedule.getScheduledActivities());
         p.setEndPeriod(schedule.getEndPeriod());
         p.setPool(schedule.getPool());
-        p.setRepeated(schedule.getRepeated());
         p.setStartPeriod(schedule.getStartPeriod());
         return service.save(p);
     }

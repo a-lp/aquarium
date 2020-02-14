@@ -8,7 +8,7 @@
                                                                               height="50px">Species</a></li>
       <li [class]="shown==2?'selected':''"><a (click)="showComponent(2)"><img src="../../assets/pools.svg" width="50px"
                                                                               height="50px">Pools</a></li>
-      <li [class]="shown==3?'selected':''"><a (click)="showComponent(3)"><img src="../../assets/pools.svg" width="50px"
+      <li [class]="shown==3?'selected':''"><a (click)="showComponent(3)"><img src="../../assets/sector.svg" width="50px"
                                                                               height="50px">Sectors</a></li>
       <li [class]="shown==4?'selected':''"><a (click)="showComponent(4)"><img src="../../assets/staff.svg" width="50px"
                                                                               height="50px">Staff</a></li>
@@ -30,12 +30,12 @@
       <app-species [species]="species"></app-species>
     </div>
     <div [class]="shown!=2?'hidden':''">
-      <app-pools-creator (onSave)="refresh($event)"></app-pools-creator>
+      <app-pools-creator [sectors]="sectors" (onSave)="refresh($event)"></app-pools-creator>
       <app-pools [pools]="pools"></app-pools>
     </div>
     <div [class]="shown!=3?'hidden':''">
       <app-sectors-creator [pools]="pools" [staffs]="staffs" (onSave)="refresh($event)"></app-sectors-creator>
-      <!--      <app-pools [pools]="pools"></app-pools>-->
+      <app-sectors [sectors]="sectors"></app-sectors>
     </div>
     <div [class]="shown!=4?'hidden':''">
       <app-staff-creator (onSave)="refresh($event)"></app-staff-creator>
@@ -44,6 +44,11 @@
     <div [class]="shown!=5?'hidden': ''">
       <app-schedule-creator [pools]="pools" (onSave)="refresh($event)"></app-schedule-creator>
       <app-schedules [schedules]="schedules"></app-schedules>
+    </div>
+    <div [class]="shown!=6?'hidden': ''">
+      <app-activities-creator [schedules]="schedules" [staffs]="staffs" [activities]="activities"
+                              (onSave)="refresh($event)"></app-activities-creator>
+      <app-activities [activities]="activities"></app-activities>
     </div>
 
   </div>

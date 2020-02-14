@@ -3,12 +3,17 @@ import {Specie} from '../model/Specie';
 import {Pool} from '../model/Pool';
 import {SpeciesService} from '../service/species.service';
 import {PoolService} from '../service/pool.service';
-import {Fish} from "../model/Fish";
-import {FishService} from "../service/fish.service";
-import {ScheduleService} from "../service/schedule.service";
-import {Schedule} from "../model/Schedule";
-import {StaffService} from "../service/staff.service";
-import {Staff} from "../model/Staff";
+import {Fish} from '../model/Fish';
+import {FishService} from '../service/fish.service';
+import {ScheduleService} from '../service/schedule.service';
+import {Schedule} from '../model/Schedule';
+import {StaffService} from '../service/staff.service';
+import {Staff} from '../model/Staff';
+import {Sector} from '../model/Sector';
+import {SectorService} from '../service/sector.service';
+import {PoolActivity} from '../model/PoolActivity';
+import {ActivityService} from '../service/activity.service';
+import {ActivitiesCreatorComponent} from './creator/activities/activities-creator.component';
 
 @Component({
   selector: 'app-admin',
@@ -22,15 +27,17 @@ export class AdminComponent implements OnInit {
   species: Array<Specie> = [];
   pools: Array<Pool> = [];
   staffs: Array<Staff>;
+  sectors: Array<Sector> = [];
   schedules: Array<Schedule> = [];
-
+  activities: Array<PoolActivity> = [];
   @ViewChild('components', {static: false})
   components: ElementRef;
-  shown: number = 0;
+  shown = 0;
 
   constructor(private fishService: FishService, private speciesService: SpeciesService,
               private poolService: PoolService, private scheduleService: ScheduleService,
-              private staffService: StaffService) {
+              private staffService: StaffService, private sectorService: SectorService,
+              private activityService: ActivityService) {
   }
 
   ngOnInit() {
@@ -59,6 +66,15 @@ export class AdminComponent implements OnInit {
       this.staffs = staffs;
       this.refreshEvent.emit(null);
     });
+    this.sectorService.getAll().subscribe(sectors => {
+      this.sectors = sectors;
+      this.refreshEvent.emit(null);
+    });
+    this.activityService.getAll().subscribe(activities => {
+        this.activities = activities;
+        this.refreshEvent.emit(null);
+      }
+    );
   }
 
   showComponent(position: number) {
