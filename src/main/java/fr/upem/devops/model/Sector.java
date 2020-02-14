@@ -34,6 +34,10 @@ public class Sector implements Serializable {
         this.name = name;
         this.location = location;
     }
+    public Sector(String name, String location) {
+        this.name = name;
+        this.location = location;
+    }
 
     public Sector(Long id, String name, String location, List<Pool> pools) {
         this.id = id;

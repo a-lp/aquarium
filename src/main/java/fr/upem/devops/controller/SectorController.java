@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class SectorController {
+public class    SectorController {
     @Autowired
     private SectorService sectorService;
 
