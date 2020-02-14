@@ -11,7 +11,6 @@ public class FishService {
     private FishRepository fishRepository;
 
     public Iterable<Fish> getAll() {
-
         return fishRepository.findAll();
     }
 
