@@ -3,7 +3,9 @@ package fr.upem.devops.controller;
 import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.FishGender;
 import fr.upem.devops.model.Pool;
+import fr.upem.devops.model.Sector;
 import fr.upem.devops.service.PoolService;
+import fr.upem.devops.service.SectorService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,6 +20,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,34 +31,47 @@ import static org.junit.Assert.assertEquals;
 public class PoolControllerTest {
     @MockBean
     private PoolService poolService;
+    @MockBean
+    private SectorService sectorService;
     @LocalServerPort
     private int port = 8080;
     @Autowired
     private TestRestTemplate restTemplate;
 
     private List<Pool> pools = new ArrayList<>();
+    private List<Sector> sectors = new ArrayList<>();
 
     @Before
     public void init() {
-        Pool s1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
-        Pool s2 = new Pool(2L, 20L, 20.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
-        Pool s3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
+        Pool p1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
+        Pool p2 = new Pool(2L, 20L, 20.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
+        Pool p3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
+        Sector s1 = new Sector(1L, "Sector1", "Location1");
+        Sector s2 = new Sector(2L, "Sector2", "Location2");
+        Sector s3 = new Sector(3L, "Sector3", "Location3");
+        Fish a1 = new Fish(1L, "Shark", FishGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", null, p1);
+        Fish a2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", null, p2);
+        Fish a3 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, p3);
 
-        Fish a1 = new Fish(1L, "Shark", FishGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", null, s1);
-        Fish a2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", null, s2);
-        Fish a3 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, s3);
+        p1.addFish(a1);
+        p2.addFish(a2);
+        p3.addFish(a3);
+        p1.setSector(s1);
+        p2.setSector(s2);
+        p3.setSector(s3);
+        s1.addPool(p1);
+        s2.addPool(p2);
+        s3.addPool(p3);
 
-        s1.addFish(a1);
-        s2.addFish(a2);
-        s3.addFish(a3);
-
-        pools.add(s1);
-        pools.add(s2);
-        pools.add(s3);
+        pools.addAll(Arrays.asList(p1, p2, p3));
+        sectors.addAll(Arrays.asList(s1, s2, s3));
         Mockito.when(poolService.getAll()).thenReturn(pools);
-        Mockito.when(poolService.getById(1l)).thenReturn(s1);
-        Mockito.when(poolService.getById(2l)).thenReturn(s2);
-        Mockito.when(poolService.getById(3l)).thenReturn(s3);
+        Mockito.when(poolService.getById(1L)).thenReturn(p1);
+        Mockito.when(poolService.getById(2L)).thenReturn(p2);
+        Mockito.when(poolService.getById(3L)).thenReturn(p3);
+        Mockito.when(sectorService.getByName("Sector1")).thenReturn(s1);
+        Mockito.when(sectorService.getByName("Sector2")).thenReturn(s2);
+        Mockito.when(sectorService.getByName("Sector3")).thenReturn(s3);
     }
 
     @Test
@@ -78,30 +94,22 @@ public class PoolControllerTest {
     @Test
     public void addPool() {
         Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
-        Mockito.when(poolService.save(pool)).thenReturn(new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new ArrayList<>()));
-        Pool request = this.restTemplate.postForObject("http://localhost:" + port + "/pools", pool,
+        Sector sector = sectors.get(0);
+        Pool pool_new = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
+        pool_new.setSector(sector);
+        sector.addPool(pool_new);
+        Mockito.when(sectorService.getById(1L)).thenReturn(sector);
+        Mockito.when(poolService.save(pool)).thenReturn(pool_new);
+        Pool request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/1/pools", pool,
                 Pool.class);
-        assertEquals(request.getId(), pool.getId());
-        assertEquals(request.getCondition(), pool.getCondition());
-        assertEquals(request.getMaxCapacity(), pool.getMaxCapacity());
-        assertEquals(request.getVolume(), pool.getVolume());
-        assertEquals(request.getFishes(), pool.getFishes());
+        assertEquals(pool.getId(), request.getId());
+        assertEquals(pool.getCondition(), request.getCondition());
+        assertEquals(pool.getMaxCapacity(), request.getMaxCapacity());
+        assertEquals(pool.getVolume(), request.getVolume());
+        assertEquals(pool.getFishes(), request.getFishes());
+        assertEquals(pool_new.getSector(), request.getSector());
     }
 
-    @Test
-    public void addFishToPool() {
-        Pool pool = this.pools.get(0);
-        Fish fish = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, pool);
-        pool.addFish(fish);
-        Mockito.when(poolService.save(pool)).thenReturn(new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, pool.getFishes()));
-        Pool request = this.restTemplate.postForObject("http://localhost:" + port + "/pools/1", fish,
-                Pool.class);
-        assertEquals(request.getId(), pool.getId());
-        assertEquals(request.getVolume(), pool.getVolume());
-        assertEquals(request.getMaxCapacity(), pool.getMaxCapacity());
-        assertEquals(request.getCondition(), pool.getCondition());
-        assertEquals(request.getFishes(), pool.getFishes());
-    }
 
     @Test
     public void updatePool() {
