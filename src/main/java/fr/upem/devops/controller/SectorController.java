@@ -1,5 +1,6 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.errors.ConflictException;
 import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
@@ -41,8 +42,7 @@ public class    SectorController {
             staffs.add(s);
         }
         if (getByName(sector.getName()) != null)
-            //TODO: cambiare errore
-            throw new ResourceNotFoundException("Another sector named '" + sector.getName() + "' found!");
+            throw new ConflictException("Another sector named '" + sector.getName() + "' found!");
         sector.setStaffList(staffs);
         return sectorService.save(sector);
     }

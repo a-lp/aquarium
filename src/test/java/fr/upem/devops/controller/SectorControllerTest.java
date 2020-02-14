@@ -1,5 +1,7 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.errors.ConflictException;
+import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
@@ -30,6 +32,7 @@ public class SectorControllerTest {
 
     @MockBean
     private StaffService staffService;
+
     @LocalServerPort
     private int port = 8080;
     @Autowired
@@ -56,13 +59,14 @@ public class SectorControllerTest {
 
         sectors.addAll(Arrays.asList(s1, s2, s3));
         staff.addAll(Arrays.asList(st1, st2, st3));
-        sectors.add(s1);
-        sectors.add(s2);
-        sectors.add(s3);
+
         Mockito.when(sectorService.getAll()).thenReturn(sectors);
         Mockito.when(sectorService.getByName("Sector1")).thenReturn(s1);
         Mockito.when(sectorService.getByName("Sector2")).thenReturn(s2);
-        Mockito.when(sectorService.getByName("Sector3")).thenReturn(s3);
+
+        Mockito.when(staffService.getById(1L)).thenReturn(st1);
+        Mockito.when(staffService.getById(2L)).thenReturn(st2);
+        Mockito.when(staffService.getById(3L)).thenReturn(st3);
     }
 
     @Test
@@ -94,6 +98,24 @@ public class SectorControllerTest {
         assertEquals(sec_new.getLocation(), request.getLocation());
         assertEquals(sec_new.getPools(), request.getPools());
         assertEquals(sec_new.getStaffList(), request.getStaffList());
+    }
+
+    @Test
+    public void addSectorResponsibleNotFound() {
+        Mockito.when(staffService.getById(4L)).thenThrow(new ResourceNotFoundException("Staff 4 not found!"));
+        Sector sec = new Sector("Sector4", "Location4");
+        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/responsible/4", sec,
+                ResourceNotFoundException.class);
+        assertEquals("Staff 4 not found!", request.getMessage());
+    }
+
+    @Test
+    public void addSectorDuplicatedName() {
+        Sector sec = new Sector("Sector1", "Location4");
+        Mockito.when(sectorService.save(sec)).thenThrow(new ConflictException("Another sector named 'Sector1' found!"));
+        ConflictException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/responsible/1", sec,
+                ConflictException.class);
+        assertEquals("Another sector named 'Sector1' found!", request.getMessage());
     }
 
     @Test
