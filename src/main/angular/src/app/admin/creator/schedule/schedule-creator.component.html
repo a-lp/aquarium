@@ -10,8 +10,11 @@
     </thead>
     <tbody>
     <tr>
-      <th><input type="date" formControlName="startPeriod"></th>
-      <th><input type="date" [min]="form.value.startPeriod" formControlName="endPeriod"></th>
+      <th><input type="date" [min]="today()" formControlName="startPeriod"></th>
+      <th><input type="date" [attr.disabled]="form.value.startPeriod==''?'disabled':null"
+                 [value]="form.value.startPeriod==''?'':form.value.endPeriod"
+                 [min]="form.value.startPeriod"
+                 formControlName="endPeriod"></th>
       <th><select formControlName="pool">
         <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
       </select></th>
