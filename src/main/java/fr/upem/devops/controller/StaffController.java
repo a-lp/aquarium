@@ -1,8 +1,6 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Sector;
+import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +32,7 @@ public class StaffController {
     @ResponseBody
     public Staff updateStaff(@PathVariable String id, @RequestBody Staff staff) {
         Staff p = getById(id);
+        if (p == null) throw new ResourceNotFoundException("Staff with id: '" + id + "' not found!");
         p.setName(staff.getName());
         p.setAddress(staff.getAddress());
         p.setBirthday(staff.getBirthday());

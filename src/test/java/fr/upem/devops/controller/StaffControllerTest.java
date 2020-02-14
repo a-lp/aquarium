@@ -1,5 +1,6 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.PoolActivity;
 import fr.upem.devops.model.Sector;
@@ -94,48 +95,6 @@ public class StaffControllerTest {
         assertEquals(request.getId(), staff.getId());
         assertEquals(request.getName(), staff.getName());
         assertEquals(request.getSurname(), staff.getSurname());
-//        assertEquals(request.getBirthday(), staff.getBirthday());
-        assertEquals(request.getSocialSecurity(), staff.getSocialSecurity());
-        assertEquals(request.getRole(), staff.getRole());
-        assertEquals(request.getPoolsResponsabilities().size(), staff.getPoolsResponsabilities().size());
-        assertEquals(request.getSectors().size(), staff.getSectors().size());
-    }
-
-    @Test
-    public void assignPoolToStaff() {
-        Staff staff = this.staffList.get(0);
-        Pool pool = new Pool(4L, 4L, 4.0, Pool.WaterCondition.CLEAN, null);
-        staff.assignPool(pool);
-        Staff response = staff;
-        response.assignPool(pool);
-        Mockito.when(staffService.save(staff)).thenReturn(response);
-        Staff request = this.restTemplate.postForObject("http://localhost:" + port + "/staff", staff,
-                Staff.class);
-        assertEquals(request.getId(), staff.getId());
-        assertEquals(request.getName(), staff.getName());
-        assertEquals(request.getSurname(), staff.getSurname());
-//        assertEquals(request.getBirthday(), staff.getBirthday());
-        assertEquals(request.getSocialSecurity(), staff.getSocialSecurity());
-        assertEquals(request.getRole(), staff.getRole());
-        assertEquals(request.getPoolsResponsabilities().size(), staff.getPoolsResponsabilities().size());
-        assertEquals(request.getSectors().size(), staff.getSectors().size());
-
-    }
-
-    @Test
-    public void assignSectorToStaff() {
-        Staff staff = this.staffList.get(0);
-        Sector sec = new Sector(4L, "Sector4", "Location4");
-        staff.assignSector(sec);
-        Staff response = staff;
-        response.assignSector(sec);
-        Mockito.when(staffService.save(staff)).thenReturn(response);
-        Staff request = this.restTemplate.postForObject("http://localhost:" + port + "/staff", staff,
-                Staff.class);
-        assertEquals(request.getId(), staff.getId());
-        assertEquals(request.getName(), staff.getName());
-        assertEquals(request.getSurname(), staff.getSurname());
-//        assertEquals(request.getBirthday(), staff.getBirthday());
         assertEquals(request.getSocialSecurity(), staff.getSocialSecurity());
         assertEquals(request.getRole(), staff.getRole());
         assertEquals(request.getPoolsResponsabilities().size(), staff.getPoolsResponsabilities().size());
@@ -154,6 +113,16 @@ public class StaffControllerTest {
     }
 
     @Test
+    public void updateNotExistingStaff() {
+        Staff staff = new Staff(4L, "Nome4", "Cognome4", "Address4", new Date(), "SocSec4", Staff.StaffRole.WORKER);
+        ResourceNotFoundException exception = new ResourceNotFoundException("Staff with id: '" + staff.getId() + "' not found!");
+        Mockito.when(staffService.save(staff)).thenThrow(exception);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(staff);
+        ResourceNotFoundException request = this.restTemplate.exchange("http://localhost:" + port + "/staff/4", HttpMethod.PUT, httpEntity, ResourceNotFoundException.class).getBody();
+        assertEquals(exception.getMessage(), request.getMessage());
+    }
+
+    @Test
     public void deleteStaff() {
         Staff staff = this.staffList.get(0);
         Mockito.when(staffService.remove(staff)).thenReturn(staff);
@@ -164,7 +133,7 @@ public class StaffControllerTest {
     @Test
     public void assignActivityToStaff() {
         Staff staff = this.staffList.get(0);
-        PoolActivity activity = new PoolActivity(1L, LocalTime.of(1,0),LocalTime.of(2,0), true, Collections.singletonList(staff), null);
+        PoolActivity activity = new PoolActivity(1L, LocalTime.of(1, 0), LocalTime.of(2, 0), true, Collections.singletonList(staff), null);
         staff.assignActivity(activity);
         Staff response = staff;
         response.assignActivity(activity);
