@@ -31,7 +31,6 @@ public class PoolActivityController {
 
     @GetMapping("/activities/{id}")
     public PoolActivity getById(@PathVariable String id) {
-        //TODO: manage null
         return service.getById(Long.parseLong(id));
     }
 
