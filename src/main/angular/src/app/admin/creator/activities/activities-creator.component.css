@@ -1,24 +1,16 @@
-.staff-list{
-  flex: .8;
-  display: flex;
-  justify-content: space-around;
-  max-height: 60vh;
-  padding: 2em 1em;
-
+h1 {
+  text-align: center;
 }
 
-#staffs{
-  border: 1px solid black;
-  background: white;
-  overflow-y: scroll;
-  width: 100%;
-  padding: 1em;
-}
-
-table{
+table {
+  padding: 2em;
   width: 100%;
 }
 
-th *{
-  width: 95%;
+table thead {
+  width: 100%;
+}
+
+td {
+  text-align: center;
 }

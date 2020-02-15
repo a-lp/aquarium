@@ -41,8 +41,7 @@
     </div>
     <div [class]="shown!=6?'hidden': ''">
       <app-activities-creator [schedules]="schedules" [staffs]="staffs" [activities]="activities"
-                              (onSave)="refresh($event)"></app-activities-creator>
-      <app-activities [activities]="activities"></app-activities>
+                              (onChange)="refresh($event)"></app-activities-creator>
     </div>
 
   </div>

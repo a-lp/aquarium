@@ -35,6 +35,7 @@ import { PoolCreatorComponent } from './admin/creator/pools/pool-creator/pool-cr
 import { SectorCreatorComponent } from './admin/creator/sectors/sector-creator/sector-creator.component';
 import { StaffCreatorComponent } from './admin/creator/staffs/staff-creator/staff-creator.component';
 import { ScheduleCreatorComponent } from './admin/creator/schedules/schedule-creator/schedule-creator.component';
+import { ActivityCreatorComponent } from './admin/creator/activities/activity-creator/activity-creator.component';
 
 @NgModule({
   declarations: [
@@ -67,7 +68,8 @@ import { ScheduleCreatorComponent } from './admin/creator/schedules/schedule-cre
     PoolCreatorComponent,
     SectorCreatorComponent,
     StaffCreatorComponent,
-    ScheduleCreatorComponent
+    ScheduleCreatorComponent,
+    ActivityCreatorComponent
   ],
   imports: [
     BrowserModule,
