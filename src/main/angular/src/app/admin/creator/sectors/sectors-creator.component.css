@@ -1,33 +1,14 @@
-form {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+h1 {
+  text-align: center;
 }
 
-.single-choice {
-  flex: .2;
-  height: 100%;
-  display: flex;
-  justify-content: space-around;
-  padding-top: 2em;
-}
-.multiple-choice {
-  flex: .8;
-  display: flex;
-  justify-content: space-around;
-  padding: 2em 1em;
-  max-height: 60vh;
-}
-
-#staffs{
-  border: 1px solid black;
-  background: white;
-  overflow-y: scroll;
+table {
   width: 100%;
-  padding: 1em;
 }
-button {
-  width: fit-content;
-  align-self: center;
-  margin-top: 2em;
+
+table thead {
+  width: 100%;
+}
+td{
+  text-align: center;
 }

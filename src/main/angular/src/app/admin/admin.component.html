@@ -31,11 +31,10 @@
       <app-pools-creator [sectors]="sectors" (onChange)="refresh($event)"></app-pools-creator>
     </div>
     <div [class]="shown!=3?'hidden':''">
-      <app-sectors-creator [pools]="pools" [staffs]="staffs" (onSave)="refresh($event)"></app-sectors-creator>
-      <app-sectors [sectors]="sectors"></app-sectors>
+      <app-sectors-creator [pools]="pools" [staffs]="staffs" (onChange)="refresh($event)"></app-sectors-creator>
     </div>
     <div [class]="shown!=4?'hidden':''">
-      <app-staff-creator (onSave)="refresh($event)"></app-staff-creator>
+      <app-staffs-creator (onSave)="refresh($event)"></app-staffs-creator>
       <app-staffs [staffs]="staffs"></app-staffs>
     </div>
     <div [class]="shown!=5?'hidden': ''">

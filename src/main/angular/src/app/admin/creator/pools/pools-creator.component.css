@@ -4,6 +4,7 @@ h1 {
 
 table {
   width: 100%;
+  padding: 2em;
 }
 
 table thead {
