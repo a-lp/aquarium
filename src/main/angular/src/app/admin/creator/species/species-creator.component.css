@@ -1,7 +1,15 @@
-table{
-  width: 100%;
+h1 {
+  text-align: center;
 }
 
-th *{
-  width: 95%;
+.species-table {
+  width: 100%;
+  padding: 2em;
+}
+
+.species-table thead {
+  width: 100%;
+}
+td{
+  text-align: center;
 }

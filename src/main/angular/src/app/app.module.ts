@@ -30,6 +30,7 @@ import {ActivitiesComponent} from './activities/activities.component';
 import { SectorsComponent } from './sectors/sectors.component';
 import { SectorComponent } from './sectors/sector/sector.component';
 import { FishCreatorComponent } from './admin/creator/fishes/fish-creator/fish-creator.component';
+import { SpecieCreatorComponent } from './admin/creator/species/specie-creator/specie-creator.component';
 
 @NgModule({
   declarations: [
@@ -57,7 +58,8 @@ import { FishCreatorComponent } from './admin/creator/fishes/fish-creator/fish-c
     ActivitiesComponent,
     SectorsComponent,
     SectorComponent,
-    FishCreatorComponent
+    FishCreatorComponent,
+    SpecieCreatorComponent
   ],
   imports: [
     BrowserModule,
