@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Pool} from "../../model/Pool";
+import {Pool} from '../../model/Pool';
 
 @Component({
-  selector: 'tr [app-pool]',
+  selector: 'app-pool',
   templateUrl: './pool.component.html',
   styleUrls: ['./pool.component.css']
 })

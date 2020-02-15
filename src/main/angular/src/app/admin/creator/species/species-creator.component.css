@@ -24,6 +24,10 @@ td {
   flex: .05;
 }
 
+.close-button:hover {
+  cursor: pointer;
+}
+
 .specie-content {
   flex: available;
 }

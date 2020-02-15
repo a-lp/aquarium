@@ -29,7 +29,6 @@ export class SpeciesCreatorComponent implements OnInit {
   }
 
   showFishes(specie: Specie) {
-    console.log(specie);
     this.specie = specie;
   }
 

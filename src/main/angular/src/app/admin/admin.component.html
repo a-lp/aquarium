@@ -28,8 +28,7 @@
       <app-species-creator (onChange)="refresh($event)"></app-species-creator>
     </div>
     <div [class]="shown!=2?'hidden':''">
-      <app-pools-creator [sectors]="sectors" (onSave)="refresh($event)"></app-pools-creator>
-      <app-pools [pools]="pools"></app-pools>
+      <app-pools-creator [sectors]="sectors" (onChange)="refresh($event)"></app-pools-creator>
     </div>
     <div [class]="shown!=3?'hidden':''">
       <app-sectors-creator [pools]="pools" [staffs]="staffs" (onSave)="refresh($event)"></app-sectors-creator>

@@ -1,7 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Pool} from "../model/Pool";
-import {PoolService} from "../service/pool.service";
-import {Specie} from "../model/Specie";
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-pools',
@@ -9,24 +6,9 @@ import {Specie} from "../model/Specie";
   styleUrls: ['./pools.component.css']
 })
 export class PoolsComponent implements OnInit {
-  @Input()
-  pools: Array<Pool>
-
-  constructor(private poolService: PoolService) {
+  constructor() {
   }
 
   ngOnInit() {
-    this.refresh(null);
   }
-
-  refresh($event: Specie) {
-    this.poolService.getAll().subscribe(
-      data => {
-        this.pools = data;
-      },
-      error => console.log(error)
-    );
-
-  }
-
 }
