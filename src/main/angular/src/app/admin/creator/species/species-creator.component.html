@@ -1,33 +1,43 @@
-<app-specie-creator (onSave)="onSaveSpecie($event)"></app-specie-creator>
-<table class="species-table">
-  <thead>
-  <tr>
-    <th>
-      ID
-    </th>
-    <th>
-      Name
-    </th>
-    <th>
-      Alimentation
-    </th>
-    <th>
-      Extinction Level
-    </th>
-    <th>
-      Life Span
-    </th>
-    <th>Fishes</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor=" let specie of species" (show)="showFishes($event)">
-    <td>{{specie.id}}</td>
-    <td>{{specie.name}}</td>
-    <td>{{specie.alimentation}}</td>
-    <td>{{specie.extinctionLevel}}</td>
-    <td>{{specie.lifeSpan}}</td>
-    <td><button (click)="showFishes(specie)">Show</button></td>
-  </tr>
-  </tbody>
-</table>
+<div *ngIf="specie==null" class="creator">
+  <app-specie-creator (onSave)="onSaveSpecie($event)"></app-specie-creator>
+  <table class="species-table">
+    <thead>
+    <tr>
+      <th>
+        ID
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Alimentation
+      </th>
+      <th>
+        Extinction Level
+      </th>
+      <th>
+        Life Span
+      </th>
+      <th>Fishes</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor=" let specie of species" (show)="showFishes($event)">
+      <td>{{specie.id}}</td>
+      <td>{{specie.name}}</td>
+      <td>{{specie.alimentation}}</td>
+      <td>{{specie.extinctionLevel}}</td>
+      <td>{{specie.lifeSpan}}</td>
+      <td>
+        <button (click)="showFishes(specie)">Show</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="specie!=null" class="single-element">
+  <a class="close-button" (click)="hideSpecie()">X</a>
+  <div class="specie-content">
+    <app-specie [specie]="this.specie"></app-specie>
+  </div>
+</div>

@@ -10,6 +10,20 @@ h1 {
 .species-table thead {
   width: 100%;
 }
-td{
+
+td {
   text-align: center;
+}
+
+.single-element {
+  display: flex;
+  padding: 2em;
+}
+
+.close-button {
+  flex: .05;
+}
+
+.specie-content {
+  flex: available;
 }

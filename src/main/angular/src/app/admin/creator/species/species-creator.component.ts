@@ -9,7 +9,7 @@ import {Specie} from '../../../model/Specie';
 })
 export class SpeciesCreatorComponent implements OnInit {
   species: Array<Specie>;
-
+  specie: Specie;
   @Output()
   onChange: EventEmitter<Specie> = new EventEmitter<Specie>();
 
@@ -30,10 +30,15 @@ export class SpeciesCreatorComponent implements OnInit {
 
   showFishes(specie: Specie) {
     console.log(specie);
+    this.specie = specie;
   }
 
   onSaveSpecie(specie: Specie) {
     this.refresh(specie);
     this.onChange.emit(specie);
+  }
+
+  hideSpecie() {
+    this.specie = null;
   }
 }
