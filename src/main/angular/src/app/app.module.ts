@@ -18,7 +18,7 @@ import {SpecieComponent} from './species/specie/specie.component';
 import {PoolsComponent} from './pools/pools.component';
 import {PoolComponent} from './pools/pool/pool.component';
 import {ActivitiesCreatorComponent} from './admin/creator/activities/activities-creator.component';
-import {ScheduleCreatorComponent} from './admin/creator/schedule/schedule-creator.component';
+import {SchedulesCreatorComponent} from './admin/creator/schedules/schedules-creator.component';
 import {StaffsCreatorComponent} from './admin/creator/staffs/staffs-creator.component';
 import {SchedulesComponent} from './schedules/schedules.component';
 import {ScheduleComponent} from './schedules/schedule/schedule.component';
@@ -33,6 +33,8 @@ import { FishCreatorComponent } from './admin/creator/fishes/fish-creator/fish-c
 import { SpecieCreatorComponent } from './admin/creator/species/specie-creator/specie-creator.component';
 import { PoolCreatorComponent } from './admin/creator/pools/pool-creator/pool-creator.component';
 import { SectorCreatorComponent } from './admin/creator/sectors/sector-creator/sector-creator.component';
+import { StaffCreatorComponent } from './admin/creator/staffs/staff-creator/staff-creator.component';
+import { ScheduleCreatorComponent } from './admin/creator/schedules/schedule-creator/schedule-creator.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +50,7 @@ import { SectorCreatorComponent } from './admin/creator/sectors/sector-creator/s
     PoolsComponent,
     PoolComponent,
     ActivitiesComponent,
-    ScheduleCreatorComponent,
+    SchedulesCreatorComponent,
     StaffsCreatorComponent,
     SchedulesComponent,
     ScheduleComponent,
@@ -63,7 +65,9 @@ import { SectorCreatorComponent } from './admin/creator/sectors/sector-creator/s
     FishCreatorComponent,
     SpecieCreatorComponent,
     PoolCreatorComponent,
-    SectorCreatorComponent
+    SectorCreatorComponent,
+    StaffCreatorComponent,
+    ScheduleCreatorComponent
   ],
   imports: [
     BrowserModule,

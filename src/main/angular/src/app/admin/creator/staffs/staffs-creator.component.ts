@@ -1,6 +1,4 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {StaffRole} from '../../../model/StaffRole';
 import {StaffService} from '../../../service/staff.service';
 import {Staff} from '../../../model/Staff';
 
@@ -10,35 +8,25 @@ import {Staff} from '../../../model/Staff';
   styleUrls: ['./staffs-creator.component.css']
 })
 export class StaffsCreatorComponent implements OnInit {
-  form = new FormGroup({
-    name: new FormControl('', Validators.required),
-    surname: new FormControl('', Validators.required),
-    address: new FormControl('', Validators.required),
-    birthday: new FormControl('', Validators.required),
-    socialSecurity: new FormControl('', Validators.required),
-    role: new FormControl('', Validators.required),
-  });
-  roles: Array<StaffRole> = Object.values(StaffRole);
   @Output()
-  onSave: EventEmitter<Staff> = new EventEmitter<Staff>();
+  onChange: EventEmitter<Staff> = new EventEmitter<Staff>();
+  staffs: Array<Staff> = [];
 
   constructor(private staffService: StaffService) {
   }
 
   ngOnInit() {
+    this.refresh(null);
   }
 
-  save($event: MouseEvent) {
-    this.staffService.addStaff(this.form.value).subscribe(staff => {
-      this.onSave.emit(staff);
-      if (staff != null) {
-        this.form.reset();
-      }
+  onSaveStaff(staff: Staff) {
+    this.onChange.emit(staff);
+    this.refresh(staff);
+  }
+
+  private refresh(staff: Staff) {
+    this.staffService.getAll().subscribe(staffs => {
+      this.staffs = staffs;
     });
-  }
-
-  today() {
-    const today = new Date();
-    return (today.getFullYear() + '-' + ((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1) + '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate()));
   }
 }

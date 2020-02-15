@@ -1,7 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Schedule} from "../model/Schedule";
-import {Specie} from "../model/Specie";
-import {ScheduleService} from "../service/schedule.service";
+import {Schedule} from '../model/Schedule';
+import {ScheduleService} from '../service/schedule.service';
 
 @Component({
   selector: 'app-schedules',
@@ -16,15 +15,8 @@ export class SchedulesComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.refresh(null);
+
   }
 
-  refresh($event: Specie) {
-    this.scheduleService.getAll().subscribe(
-      data => {
-        this.schedules = data;
-      },
-      error => console.log(error)
-    );
-  }
+
 }

@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Staff} from "../../model/Staff";
+import {Staff} from '../../model/Staff';
 
 @Component({
-  selector: 'tr [app-staff]',
+  selector: 'app-staff',
   templateUrl: './staff.component.html',
   styleUrls: ['./staff.component.css']
 })

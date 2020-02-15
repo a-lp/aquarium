@@ -34,12 +34,10 @@
       <app-sectors-creator [pools]="pools" [staffs]="staffs" (onChange)="refresh($event)"></app-sectors-creator>
     </div>
     <div [class]="shown!=4?'hidden':''">
-      <app-staffs-creator (onSave)="refresh($event)"></app-staffs-creator>
-      <app-staffs [staffs]="staffs"></app-staffs>
+      <app-staffs-creator (onChange)="refresh($event)"></app-staffs-creator>
     </div>
     <div [class]="shown!=5?'hidden': ''">
-      <app-schedule-creator [pools]="pools" (onSave)="refresh($event)"></app-schedule-creator>
-      <app-schedules [schedules]="schedules"></app-schedules>
+      <app-schedules-creator [pools]="pools" (onChange)="refresh($event)"></app-schedules-creator>
     </div>
     <div [class]="shown!=6?'hidden': ''">
       <app-activities-creator [schedules]="schedules" [staffs]="staffs" [activities]="activities"

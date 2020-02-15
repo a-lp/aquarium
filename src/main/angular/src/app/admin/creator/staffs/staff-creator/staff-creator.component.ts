@@ -1,0 +1,46 @@
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {StaffRole} from "../../../../model/StaffRole";
+import {Staff} from "../../../../model/Staff";
+import {StaffService} from "../../../../service/staff.service";
+
+@Component({
+  selector: 'app-staff-creator',
+  templateUrl: './staff-creator.component.html',
+  styleUrls: ['./staff-creator.component.css']
+})
+export class StaffCreatorComponent implements OnInit {
+  form = new FormGroup({
+    name: new FormControl('', Validators.required),
+    surname: new FormControl('', Validators.required),
+    address: new FormControl('', Validators.required),
+    birthday: new FormControl('', Validators.required),
+    socialSecurity: new FormControl('', Validators.required),
+    role: new FormControl('', Validators.required),
+  });
+  roles: Array<StaffRole> = Object.values(StaffRole);
+  @Output()
+  onSave: EventEmitter<Staff> = new EventEmitter<Staff>();
+
+  constructor(private staffService: StaffService) {
+  }
+
+  ngOnInit() {
+  }
+
+
+  save() {
+    this.staffService.addStaff(this.form.value).subscribe(staff => {
+      if (staff != null) {
+        this.onSave.emit(staff);
+        this.form.reset();
+      }
+    });
+  }
+
+  today() {
+    const today = new Date();
+    return (today.getFullYear() + '-' + ((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1)
+      + '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate()));
+  }
+}
