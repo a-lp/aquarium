@@ -21,6 +21,6 @@
   </tr>
   </thead>
   <tbody>
-  <tr app-specie *ngFor=" let a of species" [specie]="a"></tr>
+  <tr app-specie *ngFor=" let a of species" [specie]="a" (show)="showFishes($event)"></tr>
   </tbody>
 </table>

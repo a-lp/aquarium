@@ -27,7 +27,7 @@ export class FishService {
     return this.http.delete('/fishes/' + fish.id);
   }
 
-  retireFish(fish: Fish) {
+  retireFish(fish: Fish): Observable<any> {
     return this.http.put('/fishes/retire/' + fish.id, fish);
   }
 }

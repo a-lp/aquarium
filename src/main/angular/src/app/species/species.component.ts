@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Specie} from '../model/Specie';
 import {SpeciesService} from '../service/species.service';
 
@@ -10,6 +10,8 @@ import {SpeciesService} from '../service/species.service';
 export class SpeciesComponent implements OnInit {
   @Input()
   species: Array<Specie>;
+  @Output()
+  show = new EventEmitter<Specie>();
 
   constructor(private speciesService: SpeciesService) {
   }
@@ -27,4 +29,7 @@ export class SpeciesComponent implements OnInit {
 
   }
 
+  showFishes(specie: Specie) {
+    this.show.emit(specie);
+  }
 }

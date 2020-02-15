@@ -20,14 +20,22 @@
                                                                               height="50px">Activities</a></li>
     </ul>
   </nav>
-  <div #components class="creator-content">
+  <div [class]="isSingleElementHidden()?'hidden':'single-element'">
+    <nav>
+      <a class="close-button" (click)="hideSingleElement()">X</a>
+    </nav>
+    <div *ngIf="!isSingleElementHidden()" class="content">
+      <tr app-specie [specie]="this.specie"></tr>
+    </div>
+  </div>
+  <div #components [class]="!isSingleElementHidden()?'hidden':'creator-content'">
     <div [class]="shown!=0?'hidden':''">
-      <app-fishes-creator [pools]="pools" [species]="species" (onSave)="refresh($event)"></app-fishes-creator>
-      <app-fishes [fishes]="fishes"></app-fishes>
+      <app-fishes-creator [pools]="pools" [species]="species" (onChange)="refresh($event)"></app-fishes-creator>
+<!--      <app-fishes [fishes]="fishes"></app-fishes>-->
     </div>
     <div [class]="shown!=1?'hidden':''">
       <app-species-creator (onSave)="refresh($event)"></app-species-creator>
-      <app-species [species]="species"></app-species>
+      <app-species (show)="selecteSpecie($event);" [species]="species"></app-species>
     </div>
     <div [class]="shown!=2?'hidden':''">
       <app-pools-creator [sectors]="sectors" (onSave)="refresh($event)"></app-pools-creator>

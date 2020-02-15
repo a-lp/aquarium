@@ -37,7 +37,6 @@ export class FishesComponent implements OnInit {
       },
       error => console.log(error)
     );
-
   }
 
 

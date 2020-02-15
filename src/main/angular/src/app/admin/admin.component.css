@@ -44,15 +44,31 @@ li a {
   overflow-y: scroll;
 }
 
+.single-element {
+  flex: .9;
+  display: flex;
+  flex-direction: column;
+  background: red;
+}
+
+.single-element nav {
+  flex: .05;
+  padding: 1em;
+}
+
+.single-element .content {
+  flex: .95;
+}
+
 .hidden {
   display: none;
 }
 
-.selected{
+.selected {
   background: darkgray;
 }
 
-a:hover{
+a:hover {
   cursor: pointer;
   background: darkgray;
 }

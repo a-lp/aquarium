@@ -29,6 +29,7 @@ import {ActivityComponent} from './activities/activity/activity.component';
 import {ActivitiesComponent} from './activities/activities.component';
 import { SectorsComponent } from './sectors/sectors.component';
 import { SectorComponent } from './sectors/sector/sector.component';
+import { FishCreatorComponent } from './admin/creator/fishes/fish-creator/fish-creator.component';
 
 @NgModule({
   declarations: [
@@ -55,7 +56,8 @@ import { SectorComponent } from './sectors/sector/sector.component';
     ActivitiesCreatorComponent,
     ActivitiesComponent,
     SectorsComponent,
-    SectorComponent
+    SectorComponent,
+    FishCreatorComponent
   ],
   imports: [
     BrowserModule,
