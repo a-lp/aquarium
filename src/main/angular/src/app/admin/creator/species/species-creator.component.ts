@@ -1,6 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SpeciesService} from '../../../service/species.service';
 import {Specie} from '../../../model/Specie';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Alimentation} from '../../../model/Alimentation';
 
 @Component({
   selector: 'app-species-creator',
@@ -13,6 +15,14 @@ export class SpeciesCreatorComponent implements OnInit {
   specie: Specie;
   @Output()
   onChange: EventEmitter<Specie> = new EventEmitter<Specie>();
+  form = new FormGroup({
+    name: new FormControl('', Validators.required),
+    lifeSpan: new FormControl(''),
+    extinctionLevel: new FormControl(''),
+    alimentation: new FormControl('')
+  });
+
+  alimentations = Object.values(Alimentation);
 
   constructor(private speciesService: SpeciesService) {
   }
@@ -33,11 +43,6 @@ export class SpeciesCreatorComponent implements OnInit {
     this.specie = specie;
   }
 
-  onSaveSpecie(specie: Specie) {
-    this.refresh(specie);
-    this.onChange.emit(specie);
-  }
-
   hideSpecie() {
     this.specie = null;
   }
@@ -51,5 +56,15 @@ export class SpeciesCreatorComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  save() {
+    this.speciesService.save(this.form.value).subscribe(specie => {
+      if (specie != null) {
+        this.form.reset();
+        this.refresh(specie);
+        this.onChange.emit();
+      }
+    });
   }
 }

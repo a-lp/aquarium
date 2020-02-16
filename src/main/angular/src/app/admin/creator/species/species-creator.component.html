@@ -1,5 +1,40 @@
 <div *ngIf="specie==null" class="creator">
-  <app-specie-creator (onSave)="onSaveSpecie($event)"></app-specie-creator>
+  <form [formGroup]="form">
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Life Span</th>
+        <th>Extinction Level</th>
+        <th>Alimentation</th>
+        <th>Save</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th>
+          <input type="text" formControlName="name">
+        </th>
+        <th>
+          <input type="number" formControlName="lifeSpan">
+        </th>
+        <th>
+          <select formControlName="extinctionLevel">
+            <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">{{i}}</option>
+          </select>
+        </th>
+        <th>
+          <select formControlName="alimentation">
+            <option *ngFor="let a of alimentations" [value]="a">{{a}}</option>
+          </select>
+        </th>
+        <th>
+          <button (click)="save()" [disabled]="!form.valid">Save</button>
+        </th>
+      </tr>
+      </tbody>
+    </table>
+  </form>
   <table class="species-table">
     <thead>
     <tr>
@@ -18,7 +53,7 @@
       <th>
         Life Span
       </th>
-      <th>Fishes</th>
+      <th></th>
       <th></th>
     </tr>
     </thead>
@@ -31,7 +66,8 @@
       <td>{{specie.lifeSpan}}</td>
       <td>
         <button (click)="showFishes(specie)">Show</button>
-      </td>      <td>
+      </td>
+      <td>
         <button (click)="removeSpecie(specie)">Remove</button>
       </td>
     </tr>
@@ -39,8 +75,6 @@
   </table>
 </div>
 <div *ngIf="specie!=null" class="single-element">
-  <a class="close-button" (click)="hideSpecie()">X</a>
-  <div class="specie-content">
-    <app-specie [specie]="this.specie"></app-specie>
-  </div>
+  <app-specie-creator (onUpdate)="refresh($event); this.onChange.emit($event)" (onHide)="hideSpecie()"
+                      [specie]="specie"></app-specie-creator>
 </div>

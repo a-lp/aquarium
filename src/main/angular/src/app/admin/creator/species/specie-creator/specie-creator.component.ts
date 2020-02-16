@@ -1,8 +1,8 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {SpeciesService} from '../../../../service/species.service';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Specie} from '../../../../model/Specie';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Alimentation} from '../../../../model/Alimentation';
+import {SpeciesService} from "../../../../service/species.service";
 
 @Component({
   selector: 'app-specie-creator',
@@ -10,16 +10,21 @@ import {Alimentation} from '../../../../model/Alimentation';
   styleUrls: ['./specie-creator.component.css']
 })
 export class SpecieCreatorComponent implements OnInit {
+  @Input()
+  specie: Specie;
+  @Output()
+  onHide: EventEmitter<any> = new EventEmitter<any>();
+  @Output()
+  onUpdate: EventEmitter<any> = new EventEmitter<any>();
+
   form = new FormGroup({
     name: new FormControl('', Validators.required),
-    lifeSpan: new FormControl(''),
-    extinctionLevel: new FormControl(''),
-    alimentation: new FormControl('')
+    lifeSpan: new FormControl('', Validators.required),
+    extinctionLevel: new FormControl('', Validators.required),
+    alimentation: new FormControl('', Validators.required)
   });
 
   alimentations = Object.values(Alimentation);
-  @Output()
-  onSave: EventEmitter<Specie> = new EventEmitter<Specie>();
 
   constructor(private speciesService: SpeciesService) {
   }
@@ -27,12 +32,24 @@ export class SpecieCreatorComponent implements OnInit {
   ngOnInit() {
   }
 
-  save() {
-    this.speciesService.save(this.form.value).subscribe(specie => {
-      if (specie != null) {
-        this.form.reset();
-        this.onSave.emit();
-      }
-    });
+
+  hideSpecie() {
+    this.onHide.emit();
   }
+
+  update() {
+    //TODO: gestire l'update dei pesci
+    var specie: any = Object.assign({}, this.specie);
+    specie.name = this.form.value.name;
+    specie.lifeSpan = this.form.value.lifeSpan;
+    specie.extinctionLevel = this.form.value.extinctionLevel;
+    specie.alimentation = this.form.value.alimentation;
+    specie.fishList = this.specie.fishList.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
+    console.log(specie);
+    this.speciesService.update(this.specie.name, specie).subscribe(updatedSpecie => {
+      console.log(updatedSpecie);
+      this.onUpdate.emit(updatedSpecie);
+    }, error => console.log(error));
+  }
+
 }

@@ -1,36 +1,38 @@
-<form [formGroup]="form">
-  <table>
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th>Life Span</th>
-      <th>Extinction Level</th>
-      <th>Alimentation</th>
-      <th>Save</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <th>
-        <input type="text" formControlName="name">
-      </th>
-      <th>
-        <input type="number" formControlName="lifeSpan">
-      </th>
-      <th>
-        <select formControlName="extinctionLevel">
+<div class="specie-page">
+  <div class="close-button">
+    <a (click)="hideSpecie()">X</a>
+  </div>
+  <div class="specie-content">
+    <form [formGroup]="form">
+      <div class="specie-info">
+        <div id="name">
+          <label>Name</label> <input type="text" formControlName="name" [ngModel]="specie.name">
+        </div>
+        <div id="lifeSpan">
+          <label>Life Span</label><input type="number" formControlName="lifeSpan" [ngModel]="specie.lifeSpan">
+        </div>
+        <div id="extinctionLevel">
+          <label>Exctinction Level</label><select formControlName="extinctionLevel" [ngModel]="specie.extinctionLevel">
           <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">{{i}}</option>
         </select>
-      </th>
-      <th>
-        <select formControlName="alimentation">
+        </div>
+        <div id="alimentation">
+          <label>Alimentations</label> <select formControlName="alimentation" [ngModel]="specie.alimentation">
           <option *ngFor="let a of alimentations" [value]="a">{{a}}</option>
         </select>
-      </th>
-      <th>
-        <button (click)="save()" [disabled]="!form.valid">Save</button>
-      </th>
-    </tr>
-    </tbody>
-  </table>
-</form>
+        </div>
+        <div id="update">
+          <button (click)="update()" [disabled]="!form.valid">Update</button>
+        </div>
+      </div>
+      <div class="fish-list">
+        <h2 align="center">Fishes List</h2>
+        <ul>
+          <li *ngFor="let fish of specie.fishList">
+            ID: {{fish.id}} - Name: {{fish.name}}
+          </li>
+        </ul>
+      </div>
+    </form>
+  </div>
+</div>

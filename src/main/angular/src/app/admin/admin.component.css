@@ -44,11 +44,13 @@ li a {
   overflow-y: scroll;
 }
 
+.creator-content .component {
+  height: 100%;
+}
+
 .single-element {
   flex: .9;
-  display: flex;
-  flex-direction: column;
-  background: red;
+  overflow-y: scroll;
 }
 
 .single-element nav {

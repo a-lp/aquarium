@@ -30,7 +30,7 @@ export class AdminComponent implements OnInit {
 
   @ViewChild('components', {static: false})
   components: ElementRef;
-  shown = 0;
+  shown = 1;
 
   constructor(private fishService: FishService, private speciesService: SpeciesService,
               private poolService: PoolService, private scheduleService: ScheduleService,

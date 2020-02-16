@@ -1,8 +1,38 @@
-table{
-  width: 100%;
+.specie-page {
+  display: flex;
+  flex-direction: column;
+  padding: 1%;
+  height: 95%;
 }
 
-th *{
-  width: 95%;
+.specie-content {
+  flex: 1 auto;
 }
 
+.close-button {
+  align-self: center;
+  margin-bottom: 1em;
+}
+
+.close-button:hover {
+  cursor: pointer;
+}
+
+form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.specie-info {
+  flex: .3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fish-list {
+  flex: .7;
+  background: white;
+  padding: 0 1em;
+}

@@ -3,7 +3,6 @@ h1 {
 }
 
 .species-table {
-  width: 100%;
   padding: 2em;
 }
 
@@ -16,18 +15,14 @@ td {
 }
 
 .single-element {
-  display: flex;
-  padding: 2em;
+  height: 100%;
 }
 
-.close-button {
-  flex: .05;
+table {
+  width: 100%;
 }
 
-.close-button:hover {
-  cursor: pointer;
+th * {
+  width: 95%;
 }
 
-.specie-content {
-  flex: available;
-}

@@ -5,7 +5,7 @@ import {AppRoutingModule} from './app-routing.module';
 import {AppComponent} from './app.component';
 import {FishesComponent} from './fishes/fishes.component';
 import {FishesCreatorComponent} from './admin/creator/fishes/fishes-creator.component';
-import {ReactiveFormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {FishComponent} from './fishes/fish/fish.component';
 import {SpeciesComponent} from './species/species.component';
@@ -71,30 +71,31 @@ import { ActivityCreatorComponent } from './admin/creator/activities/activity-cr
     ScheduleCreatorComponent,
     ActivityCreatorComponent
   ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    HttpClientModule,
-    ReactiveFormsModule,
-    RouterModule.forRoot([
-      {
-        path: 'view-fishes',
-        component: FishesComponent
-      },
-      {
-        path: 'view-species',
-        component: SpeciesComponent
-      },
-      {
-        path: 'view-pools',
-        component: PoolsComponent
-      },
-      {
-        path: 'view-admin',
-        component: AdminComponent
-      }
-    ], {useHash: true})
-  ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        HttpClientModule,
+        ReactiveFormsModule,
+        RouterModule.forRoot([
+            {
+                path: 'view-fishes',
+                component: FishesComponent
+            },
+            {
+                path: 'view-species',
+                component: SpeciesComponent
+            },
+            {
+                path: 'view-pools',
+                component: PoolsComponent
+            },
+            {
+                path: 'view-admin',
+                component: AdminComponent
+            }
+        ], {useHash: true}),
+        FormsModule
+    ],
   providers: [DatePipe, {provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })
