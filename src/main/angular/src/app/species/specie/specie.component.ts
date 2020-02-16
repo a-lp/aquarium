@@ -1,16 +1,14 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {Specie} from '../../model/Specie';
 
 @Component({
-  selector: 'tr [app-specie]',
+  selector: 'app-specie',
   templateUrl: './specie.component.html',
   styleUrls: ['./specie.component.css']
 })
 export class SpecieComponent implements OnInit {
   @Input()
   specie: Specie;
-  @Output()
-  show = new EventEmitter<Specie>();
 
   constructor() {
   }
@@ -18,7 +16,4 @@ export class SpecieComponent implements OnInit {
   ngOnInit() {
   }
 
-  showFishes() {
-    this.show.emit(this.specie);
-  }
 }

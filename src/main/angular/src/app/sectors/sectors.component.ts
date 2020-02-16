@@ -1,7 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {Sector} from "../model/Sector";
-import {Specie} from "../model/Specie";
-import {SectorService} from "../service/sector.service";
+import {Component, OnInit} from '@angular/core';
 
 @Component({
   selector: 'app-sectors',
@@ -9,23 +6,12 @@ import {SectorService} from "../service/sector.service";
   styleUrls: ['./sectors.component.css']
 })
 export class SectorsComponent implements OnInit {
-  @Input()
-  sectors: Array<Sector>;
 
-  constructor(private sectorService: SectorService) {
+  constructor() {
   }
 
   ngOnInit() {
-    this.refresh(null);
-  }
-
-  refresh($event: Specie) {
-    this.sectorService.getAll().subscribe(
-      data => {
-        this.sectors = data;
-      },
-      error => console.log(error)
-    );
 
   }
+
 }

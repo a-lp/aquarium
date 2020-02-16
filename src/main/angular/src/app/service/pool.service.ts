@@ -25,4 +25,8 @@ export class PoolService {
   getPool(id: string): Observable<any> {
     return this.http.get('/pools/' + id);
   }
+
+  remove(pool: Pool): Observable<any> {
+    return this.http.delete('/pools/' + pool.id);
+  }
 }

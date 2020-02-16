@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Schedule} from "../../model/Schedule";
+import {Schedule} from '../../model/Schedule';
 
 @Component({
-  selector: 'tr [app-schedule]',
+  selector: 'app-schedule',
   templateUrl: './schedule.component.html',
   styleUrls: ['./schedule.component.css']
 })

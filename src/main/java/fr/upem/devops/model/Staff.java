@@ -1,7 +1,6 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -163,6 +162,10 @@ public class Staff implements Serializable {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
+    }
+
+    public void removePoolResponsability(Pool pool) {
+        this.poolsResponsabilities.remove(pool);
     }
 
     public enum StaffRole {

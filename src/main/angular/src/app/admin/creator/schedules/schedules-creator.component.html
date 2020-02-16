@@ -1,0 +1,38 @@
+<app-schedule-creator [pools]="pools" (onSave)="onSaveSchedule($event)"></app-schedule-creator>
+<h1>Schedules</h1>
+<table>
+  <thead>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Start Period
+    </th>
+    <th>
+      End Period
+    </th>
+    <th>
+      Repeated
+    </th>
+    <th>
+      Pool
+    </th>
+    <th>Activities</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor=" let schedule of schedules">
+    <td>{{schedule.id}}</td>
+    <td>{{schedule.startPeriod}}</td>
+    <td>{{schedule.endPeriod}}</td>
+    <td>{{schedule.pool.id}}</td>
+    <td>
+      <button>Show</button>
+    </td>
+    <td>
+      <button>Show</button>
+    </td>
+  </tr>
+  </tbody>
+</table>

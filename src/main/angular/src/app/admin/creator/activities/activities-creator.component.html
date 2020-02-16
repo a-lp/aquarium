@@ -1,38 +1,50 @@
-<form [formGroup]="form">
-  <table>
-    <thead>
-    <tr>
-      <th>Description</th>
-      <th>Start Activity</th>
-      <th>End Activity</th>
-      <th>Open to public</th>
-      <th>Repeated</th>
-      <th>Schedule</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <th><input type="text" formControlName="description"></th>
-      <th><input type="time" formControlName="startActivity"></th>
-      <th><input type="time" [min]="form.value.startActivity" formControlName="endActivity"></th>
-      <th><input type="checkbox" formControlName="openToPublic"></th>
-      <th><input type="checkbox" formControlName="repeated"></th>
-      <th><select formControlName="schedule">
-        <option *ngFor="let i of schedules" [value]="i.id">{{i.id}}</option>
-      </select></th>
-      <th>
-        <button (click)="save($event)" [disabled]="isDisabled()">Save</button>
-      </th>
-    </tr>
-    </tbody>
-  </table>
-  <div class="staff-list">
-    <div id="staffs">
-      <h3>Staff</h3>
-      <div class="input-entry" *ngFor="let i of staffs">
-        <input type="checkbox" [value]="i" [checked]="this.selectedStaff.includes(i)" (change)="selectElement(i)">
-        <label>{{i.id + ' -' + i.surname.toUpperCase() + ' ' + i.name}}</label>
-      </div>
-    </div>
-  </div>
-</form>
+<app-activity-creator [schedules]="schedules" [staffs]="staffs"
+                      (onSave)="onSaveActivity($event)"></app-activity-creator>
+<table>
+  <thead>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Description
+    </th>
+    <th>
+      Start Activity
+    </th>
+    <th>
+      End Activity
+    </th>
+    <th>
+      Open to Public
+    </th>
+    <th>
+      Repeated
+    </th>
+    <th>
+      Show Staff
+    </th>
+    <th>
+      Show Schedule
+    </th>
+    <th></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor=" let activity of activities">
+    <td>{{activity.id}}</td>
+    <td>{{activity.description}}</td>
+    <td>{{activity.startActivity}}</td>
+    <td>{{activity.endActivity}}</td>
+    <td><input disabled type="checkbox" [checked]="activity.openToPublic"></td>
+    <td><input disabled type="checkbox" [checked]="activity.repeated"></td>
+    <td>
+      <button>Show</button>
+    </td>
+    <td>
+      <button>Show</button>
+    </td>
+
+  </tr>
+  </tbody>
+</table>

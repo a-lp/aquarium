@@ -1,0 +1,49 @@
+<app-staff-creator (onSave)="onSaveStaff($event)"></app-staff-creator>
+<table>
+  <thead>
+  <tr>
+    <th>
+      ID
+    </th>
+    <th>
+      Name
+    </th>
+    <th>
+      Surname
+    </th>
+    <th>
+      Address
+    </th>
+    <th>
+      Birthday
+    </th>
+    <th>
+      Social Security
+    </th>
+    <th>Role</th>
+    <th>Pool Responsibilities</th>
+    <th>Sectors</th>
+    <th>Activities</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor=" let staff of staffs">
+    <td>{{this.staff.id}}</td>
+    <td>{{this.staff.name}}</td>
+    <td>{{this.staff.surname}}</td>
+    <td>{{this.staff.address}}</td>
+    <td>{{this.staff.birthday}}</td>
+    <td>{{this.staff.socialSecurity}}</td>
+    <td>{{this.staff.role}}</td>
+    <td>
+      <button>Show</button>
+    </td>
+    <td>
+      <button>Show</button>
+    </td>
+    <td>
+      <button>Show</button>
+    </td>
+  </tr>
+  </tbody>
+</table>

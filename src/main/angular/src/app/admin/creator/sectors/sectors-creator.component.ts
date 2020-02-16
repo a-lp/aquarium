@@ -1,5 +1,4 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import {SectorService} from '../../../service/sector.service';
 import {Sector} from '../../../model/Sector';
 import {Pool} from '../../../model/Pool';
@@ -16,42 +15,32 @@ export class SectorsCreatorComponent implements OnInit {
   pools: Array<Pool> = [];
   @Input()
   staffs: Array<Staff> = [];
-  form = new FormGroup({
-    name: new FormControl('', Validators.required),
-    location: new FormControl('', Validators.required),
-  });
   @Output()
-  onSave: EventEmitter<Sector> = new EventEmitter<Sector>();
-  selectedStaff: Array<Staff> = [];
+  onChange: EventEmitter<Sector> = new EventEmitter<Sector>();
+
+  @Input()
+  sectors: Array<Sector>;
 
   constructor(private sectorService: SectorService, private poolService: PoolService) {
   }
 
   ngOnInit() {
+    this.refresh(null);
   }
 
-  save($event: Event) {
-    this.form.addControl('staffList', new FormArray(this.selectedStaff.map(x => new FormControl(x.id))));
-    this.sectorService.save(this.form.value).subscribe(sector => {
-        console.log(sector);
-        this.onSave.emit(sector);
-        if (sector != null) {
-          this.form.reset();
+  refresh(sector: Sector) {
+    this.sectorService.getAll().subscribe(
+      data => {
+        if (data != null) {
+          this.sectors = data;
         }
-      }
+      },
+      error => console.log(error)
     );
   }
 
-  isDisabled() {
-    return !(this.form.valid && this.selectedStaff.length > 0);
+  onSaveSector(sector: Sector) {
+    this.refresh(sector);
+    this.onChange.emit(sector);
   }
-
-  selectElement(obj: any) {
-    if (this.selectedStaff.includes(obj)) {
-      this.selectedStaff.splice(this.selectedStaff.findIndex(element => obj.id == element.id));
-    } else {
-      this.selectedStaff.push(obj);
-    }
-  }
-
 }

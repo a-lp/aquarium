@@ -1,8 +1,8 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from '@angular/forms';
-import {Pool, WaterCondition} from '../../../model/Pool';
+import {Sector} from '../../../model/Sector';
+import {Pool} from '../../../model/Pool';
 import {PoolService} from '../../../service/pool.service';
-import {Sector} from "../../../model/Sector";
+import {Specie} from '../../../model/Specie';
 
 @Component({
   selector: 'app-pools-creator',
@@ -10,29 +10,43 @@ import {Sector} from "../../../model/Sector";
   styleUrls: ['./pools-creator.component.css']
 })
 export class PoolsCreatorComponent implements OnInit {
-  form = new FormGroup({
-    maxCapacity: new FormControl('', Validators.required),
-    volume: new FormControl('', Validators.required),
-    condition: new FormControl('', Validators.required),
-    sector: new FormControl('', Validators.required)
-  });
-  conditions = Object.values(WaterCondition);
-  @Output()
-  onSave: EventEmitter<Pool> = new EventEmitter<Pool>();
   @Input()
   sectors: Array<Sector>;
+  pools: Array<Pool>;
+
+  @Output()
+  onChange: EventEmitter<Pool> = new EventEmitter<Pool>();
+
 
   constructor(private poolService: PoolService) {
   }
 
   ngOnInit() {
+    this.refresh(null);
   }
 
-  save($event: Event) {
-    this.poolService.save(this.form.value).subscribe(pool => {
-        this.onSave.emit(pool);
-        if (pool != null) this.form.reset();
-      }
+  onSavePool(pool: Pool) {
+    this.refresh(null);
+    this.onChange.emit(pool);
+  }
+
+  refresh($event: Specie) {
+    this.poolService.getAll().subscribe(
+      data => {
+        this.pools = data;
+      },
+      error => console.log(error)
     );
+  }
+
+  removePool(pool: Pool) {
+    this.poolService.remove(pool).subscribe(
+      removedPool => {
+        this.refresh(removedPool);
+        this.onChange.emit(removedPool);
+      }, error => {
+        console.log(error);
+      }
+    )
   }
 }

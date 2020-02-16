@@ -29,14 +29,7 @@ export class AdminComponent implements OnInit {
   sectors: Array<Sector> = [];
   schedules: Array<Schedule> = [];
   activities: Array<PoolActivity> = [];
-  /* Selected elements */
-  activity: PoolActivity = null;
-  fish: Fish = null;
-  pool: Pool = null;
-  schedule: Schedule = null;
-  specie: Specie = null;
-  staff: Staff = null;
-  sector: Sector = null;
+
   @ViewChild('components', {static: false})
   components: ElementRef;
   shown = 0;
@@ -88,16 +81,4 @@ export class AdminComponent implements OnInit {
     this.shown = position;
   }
 
-  isSingleElementHidden() {
-    return this.activity == null && this.fish == null && this.pool == null && this.sector == null
-      && this.staff == null && this.specie == null && this.schedule == null;
-  }
-
-  hideSingleElement() {
-    this.specie = null;
-  }
-
-  selecteSpecie(specieSelected: Specie) {
-    this.specie = specieSelected;
-  }
 }

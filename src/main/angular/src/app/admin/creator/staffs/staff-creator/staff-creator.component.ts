@@ -1,8 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {StaffRole} from "../../../model/StaffRole";
-import {StaffService} from "../../../service/staff.service";
-import {Staff} from "../../../model/Staff";
+import {StaffRole} from "../../../../model/StaffRole";
+import {Staff} from "../../../../model/Staff";
+import {StaffService} from "../../../../service/staff.service";
 
 @Component({
   selector: 'app-staff-creator',
@@ -28,15 +28,19 @@ export class StaffCreatorComponent implements OnInit {
   ngOnInit() {
   }
 
-  save($event: MouseEvent) {
+
+  save() {
     this.staffService.addStaff(this.form.value).subscribe(staff => {
-      this.onSave.emit(staff);
-      if (staff != null) this.form.reset();
+      if (staff != null) {
+        this.onSave.emit(staff);
+        this.form.reset();
+      }
     });
   }
 
   today() {
     const today = new Date();
-    return (today.getFullYear() + "-" + ((today.getMonth() + 1) < 10 ? "0" + (today.getMonth() + 1) : today.getMonth() + 1) + "-" + (today.getDate() < 10 ? "0" + today.getDate() : today.getDate()));
+    return (today.getFullYear() + '-' + ((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1)
+      + '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate()));
   }
 }

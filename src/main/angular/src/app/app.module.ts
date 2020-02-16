@@ -18,8 +18,8 @@ import {SpecieComponent} from './species/specie/specie.component';
 import {PoolsComponent} from './pools/pools.component';
 import {PoolComponent} from './pools/pool/pool.component';
 import {ActivitiesCreatorComponent} from './admin/creator/activities/activities-creator.component';
-import {ScheduleCreatorComponent} from './admin/creator/schedule/schedule-creator.component';
-import {StaffCreatorComponent} from './admin/creator/staff/staff-creator.component';
+import {SchedulesCreatorComponent} from './admin/creator/schedules/schedules-creator.component';
+import {StaffsCreatorComponent} from './admin/creator/staffs/staffs-creator.component';
 import {SchedulesComponent} from './schedules/schedules.component';
 import {ScheduleComponent} from './schedules/schedule/schedule.component';
 import {StaffsComponent} from './staffs/staffs.component';
@@ -30,6 +30,12 @@ import {ActivitiesComponent} from './activities/activities.component';
 import { SectorsComponent } from './sectors/sectors.component';
 import { SectorComponent } from './sectors/sector/sector.component';
 import { FishCreatorComponent } from './admin/creator/fishes/fish-creator/fish-creator.component';
+import { SpecieCreatorComponent } from './admin/creator/species/specie-creator/specie-creator.component';
+import { PoolCreatorComponent } from './admin/creator/pools/pool-creator/pool-creator.component';
+import { SectorCreatorComponent } from './admin/creator/sectors/sector-creator/sector-creator.component';
+import { StaffCreatorComponent } from './admin/creator/staffs/staff-creator/staff-creator.component';
+import { ScheduleCreatorComponent } from './admin/creator/schedules/schedule-creator/schedule-creator.component';
+import { ActivityCreatorComponent } from './admin/creator/activities/activity-creator/activity-creator.component';
 
 @NgModule({
   declarations: [
@@ -45,8 +51,8 @@ import { FishCreatorComponent } from './admin/creator/fishes/fish-creator/fish-c
     PoolsComponent,
     PoolComponent,
     ActivitiesComponent,
-    ScheduleCreatorComponent,
-    StaffCreatorComponent,
+    SchedulesCreatorComponent,
+    StaffsCreatorComponent,
     SchedulesComponent,
     ScheduleComponent,
     StaffsComponent,
@@ -57,7 +63,13 @@ import { FishCreatorComponent } from './admin/creator/fishes/fish-creator/fish-c
     ActivitiesComponent,
     SectorsComponent,
     SectorComponent,
-    FishCreatorComponent
+    FishCreatorComponent,
+    SpecieCreatorComponent,
+    PoolCreatorComponent,
+    SectorCreatorComponent,
+    StaffCreatorComponent,
+    ScheduleCreatorComponent,
+    ActivityCreatorComponent
   ],
   imports: [
     BrowserModule,

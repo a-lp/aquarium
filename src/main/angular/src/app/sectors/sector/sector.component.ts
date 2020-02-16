@@ -1,8 +1,8 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {Sector} from "../../model/Sector";
+import {Sector} from '../../model/Sector';
 
 @Component({
-  selector: 'tr [app-sector]',
+  selector: 'app-sector',
   templateUrl: './sector.component.html',
   styleUrls: ['./sector.component.css']
 })

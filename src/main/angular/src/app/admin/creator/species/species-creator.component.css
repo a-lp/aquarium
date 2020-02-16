@@ -1,7 +1,33 @@
-table{
+h1 {
+  text-align: center;
+}
+
+.species-table {
+  width: 100%;
+  padding: 2em;
+}
+
+.species-table thead {
   width: 100%;
 }
 
-th *{
-  width: 95%;
+td {
+  text-align: center;
+}
+
+.single-element {
+  display: flex;
+  padding: 2em;
+}
+
+.close-button {
+  flex: .05;
+}
+
+.close-button:hover {
+  cursor: pointer;
+}
+
+.specie-content {
+  flex: available;
 }
