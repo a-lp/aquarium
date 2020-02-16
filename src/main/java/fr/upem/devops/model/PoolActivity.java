@@ -1,8 +1,6 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -151,5 +149,9 @@ public class PoolActivity implements Serializable {
                 ", openToPublic=" + openToPublic +
                 ", schedule=" + (schedule == null ? "null" : schedule.getId()) +
                 '}';
+    }
+
+    public void removeStaff(Staff staff) {
+        this.staffList.remove(staff);
     }
 }

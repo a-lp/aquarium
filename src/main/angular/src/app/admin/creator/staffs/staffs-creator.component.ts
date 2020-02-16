@@ -29,4 +29,15 @@ export class StaffsCreatorComponent implements OnInit {
       this.staffs = staffs;
     });
   }
+
+  removeStaff(staff: Staff) {
+    this.staffService.delete(staff).subscribe(
+      removedStaff => {
+        this.refresh(removedStaff);
+        this.onChange.emit(removedStaff);
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
 }

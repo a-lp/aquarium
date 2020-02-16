@@ -129,4 +129,8 @@ public class Sector implements Serializable {
     public void removePool(Pool pool) {
         this.pools.remove(pool);
     }
+
+    public void removeStaff(Staff staff) {
+        this.staffList.remove(staff);
+    }
 }

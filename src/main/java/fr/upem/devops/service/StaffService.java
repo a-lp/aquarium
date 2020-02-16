@@ -1,5 +1,8 @@
 package fr.upem.devops.service;
 
+import fr.upem.devops.model.Pool;
+import fr.upem.devops.model.PoolActivity;
+import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +32,12 @@ public class StaffService {
     }
 
     public Staff remove(Staff staff) {
+        for (PoolActivity activity : staff.getActivities())
+            activity.removeStaff(staff);
+        for (Sector sector : staff.getSectors())
+            sector.removeStaff(staff);
+        for (Pool pool : staff.getPoolsResponsabilities())
+            pool.setResponsible(null);
         staffRepository.delete(staff);
         return staff;
     }

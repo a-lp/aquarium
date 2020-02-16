@@ -150,6 +150,7 @@ public class Pool implements Serializable {
         this.fishes.add(fish);
     }
 
+
     public enum WaterCondition implements Serializable {
         CLEAN, DIRTY
     }

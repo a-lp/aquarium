@@ -19,7 +19,9 @@ public class StaffController {
 
     @GetMapping("/staff/{id}")
     public Staff getById(@PathVariable String id) {
-        return service.getById(Long.parseLong(id));
+        Staff staff = service.getById(Long.parseLong(id));
+        if (staff == null) throw new ResourceNotFoundException("Staff with id: '" + id + "' not found!");
+        return staff;
     }
 
     @PostMapping("/staff")
@@ -32,7 +34,6 @@ public class StaffController {
     @ResponseBody
     public Staff updateStaff(@PathVariable String id, @RequestBody Staff staff) {
         Staff p = getById(id);
-        if (p == null) throw new ResourceNotFoundException("Staff with id: '" + id + "' not found!");
         p.setName(staff.getName());
         p.setAddress(staff.getAddress());
         p.setBirthday(staff.getBirthday());
