@@ -107,4 +107,13 @@ export class FishesCreatorComponent implements OnInit {
     this.refresh(fish);
     this.onChange.emit(fish);
   }
+
+  removeFish(fish: Fish) {
+    this.fishService.delete(fish).subscribe(
+      removedFish => {
+        this.refresh(removedFish);
+        this.onChange.emit(removedFish);
+      }
+    );
+  }
 }

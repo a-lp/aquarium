@@ -1,8 +1,6 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -20,7 +18,7 @@ public class Schedule implements Serializable {
     @ManyToOne
     @JoinColumn(name = "calendar_pool")
     private Pool pool;
-    @OneToMany(mappedBy = "schedule")
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
     @JsonBackReference
     private List<PoolActivity> scheduledActivities = new ArrayList<>();
 

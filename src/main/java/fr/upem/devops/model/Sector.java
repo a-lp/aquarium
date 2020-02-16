@@ -34,6 +34,7 @@ public class Sector implements Serializable {
         this.name = name;
         this.location = location;
     }
+
     public Sector(String name, String location) {
         this.name = name;
         this.location = location;
@@ -123,5 +124,9 @@ public class Sector implements Serializable {
                 ", location='" + location + '\'' +
                 ", pools=" + pools +
                 '}';
+    }
+
+    public void removePool(Pool pool) {
+        this.pools.remove(pool);
     }
 }

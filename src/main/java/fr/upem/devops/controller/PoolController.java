@@ -1,6 +1,7 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.errors.ResourceNotFoundException;
+import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.service.PoolService;
@@ -50,6 +51,13 @@ public class PoolController {
 
     @DeleteMapping("/pools/{id}")
     public Pool deletePool(@PathVariable String id) {
-        return poolService.remove(getById(id));
+        Pool pool = getById(id);
+        if (pool == null) throw new ResourceNotFoundException("Pool with id '" + id + "' not found!");
+        for (Fish f : pool.getFishes()) {
+            f.setPool(null);
+        }
+        if (pool.getResponsible() != null)
+            pool.getResponsible().removePoolResponsability(pool);
+        return poolService.remove(pool);
     }
 }

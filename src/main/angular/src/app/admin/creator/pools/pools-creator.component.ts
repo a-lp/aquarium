@@ -38,4 +38,15 @@ export class PoolsCreatorComponent implements OnInit {
       error => console.log(error)
     );
   }
+
+  removePool(pool: Pool) {
+    this.poolService.remove(pool).subscribe(
+      removedPool => {
+        this.refresh(removedPool);
+        this.onChange.emit(removedPool);
+      }, error => {
+        console.log(error);
+      }
+    )
+  }
 }

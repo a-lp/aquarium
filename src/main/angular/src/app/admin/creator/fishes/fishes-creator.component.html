@@ -29,6 +29,7 @@
     <th>
       Retire
     </th>
+    <th></th>
   </tr>
   </thead>
   <tbody>
@@ -43,6 +44,9 @@
     <td>{{(fish.pool != null) ? fish.pool.id : "Not assigned to a pool"}}</td>
     <td>
       <button [disabled]="fish.returnDate!=null" (click)="retireAnimal(fish)">RETIRE</button>
+    </td>
+    <td>
+      <button (click)="removeFish(fish)">Remove</button>
     </td>
   </tr>
   </tbody>

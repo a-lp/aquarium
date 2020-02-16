@@ -19,7 +19,7 @@ public class Pool implements Serializable {
     @OneToMany(mappedBy = "pool")
     @JsonIgnoreProperties("pool")
     private List<Fish> fishes = new ArrayList<>();
-    @OneToMany(mappedBy = "pool")
+    @OneToMany(mappedBy = "pool", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("pool")
     private List<Schedule> schedules = new ArrayList<>();
     @ManyToOne
