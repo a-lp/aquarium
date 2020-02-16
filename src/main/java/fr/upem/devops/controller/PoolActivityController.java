@@ -31,7 +31,9 @@ public class PoolActivityController {
 
     @GetMapping("/activities/{id}")
     public PoolActivity getById(@PathVariable String id) {
-        return service.getById(Long.parseLong(id));
+        PoolActivity activity = service.getById(Long.parseLong(id));
+        if (activity == null) throw new ResourceNotFoundException("Activity with id '" + id + "' not found!");
+        return activity;
     }
 
     @PostMapping("/schedule/{scheduleId}/activities/staff/{staffResponsible}")
@@ -55,7 +57,6 @@ public class PoolActivityController {
     @PutMapping("/activities/{id}")
     @ResponseBody
     public PoolActivity updatePoolActivity(@PathVariable String id, @RequestBody PoolActivity poolActivityRequest) {
-        System.out.println(poolActivityRequest);
         PoolActivity poolActivity = getById(poolActivityRequest.getId().toString());
         poolActivity.setSchedule(poolActivityRequest.getSchedule());
         poolActivity.setDescription(poolActivityRequest.getDescription());

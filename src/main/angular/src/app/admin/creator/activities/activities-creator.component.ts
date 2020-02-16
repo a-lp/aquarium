@@ -36,4 +36,11 @@ export class ActivitiesCreatorComponent implements OnInit {
       this.activities = activities;
     });
   }
+
+  removeActivity(activity: PoolActivity) {
+    this.activityService.delete(activity).subscribe(removedActivity => {
+      this.refresh(removedActivity);
+      this.onChange.emit(removedActivity);
+    }, error => console.log(error));
+  }
 }

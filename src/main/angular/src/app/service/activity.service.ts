@@ -16,7 +16,7 @@ export class ActivityService {
   }
 
   getById(id: number): Observable<any> {
-    return this.http.get('/activities/${id}');
+    return this.http.get('/activities/' + id);
   }
 
   save(activity: PoolActivity): Observable<any> {
@@ -24,15 +24,15 @@ export class ActivityService {
     const scheduleId = activity.schedule;
     activity.schedule = null;
     activity.staffList = [];
-    return this.http.post('/schedule/' + scheduleId + '/activities/staff/' + resp.join(','), activity);
+    return this.http.post('/schedule/' + scheduleId + '/activities/staff/' + resp, activity);
   }
 
   delete(activity: PoolActivity): Observable<any> {
-    return this.http.delete('/activities/${activity.id}');
+    return this.http.delete('/activities/' + activity.id);
   }
 
   update(activity: PoolActivity): Observable<any> {
-    return this.http.put('/activities/${activity.id}', activity);
+    return this.http.put('/activities/' + activity.id, activity);
   }
 
 

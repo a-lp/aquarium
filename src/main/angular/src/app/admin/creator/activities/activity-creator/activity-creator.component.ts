@@ -26,6 +26,7 @@ export class ActivityCreatorComponent implements OnInit {
     openToPublic: new FormControl(false),
     repeated: new FormControl(false),
     schedule: new FormControl('', Validators.required),
+    staffList: new FormControl('')
   });
 
   constructor(private activityService: ActivityService) {
@@ -36,7 +37,7 @@ export class ActivityCreatorComponent implements OnInit {
 
 
   save() {
-    this.form.addControl('staffList', new FormArray(this.selectedStaff.map(x => new FormControl(x.id))));
+    this.form.value.staffList = this.selectedStaff.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
     this.activityService.save(this.form.value).subscribe(activity => {
         console.log(activity);
         this.onSave.emit(activity);
