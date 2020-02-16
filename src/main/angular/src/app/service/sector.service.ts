@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Sector} from '../model/Sector';
 import {Observable} from 'rxjs';
-import {Pool} from '../model/Pool';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +14,7 @@ export class SectorService {
   save(sector: Sector): Observable<any> {
     const resp = sector.staffList;
     sector.staffList = [];
-    return this.http.post('/sectors/responsible/' + resp.join(','), sector);
+    return this.http.post('/sectors/responsible/' + resp, sector);
   }
 
   getAll(): Observable<any> {

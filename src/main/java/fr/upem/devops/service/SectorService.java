@@ -1,6 +1,9 @@
 package fr.upem.devops.service;
 
+import fr.upem.devops.model.Fish;
+import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
+import fr.upem.devops.model.Staff;
 import fr.upem.devops.repository.SectorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,6 +37,11 @@ public class SectorService {
     }
 
     public Sector remove(Sector specie) {
+        for (Staff staff : specie.getStaffList())
+            staff.removeStaff(staff);
+        for (Pool pool : specie.getPools())
+            for (Fish fish : pool.getFishes())
+                fish.setPool(null);
         sectorRepository.delete(specie);
         return specie;
     }

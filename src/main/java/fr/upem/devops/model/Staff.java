@@ -168,6 +168,10 @@ public class Staff implements Serializable {
         this.poolsResponsabilities.remove(pool);
     }
 
+    public void removeStaff(Staff staff) {
+        this.sectors.remove(staff);
+    }
+
     public enum StaffRole {
         ADMIN, MANAGER, WORKER
     }

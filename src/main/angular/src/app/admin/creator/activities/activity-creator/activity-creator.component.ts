@@ -53,7 +53,7 @@ export class ActivityCreatorComponent implements OnInit {
 
   selectStaff(staff: Staff) {
     if (this.selectedStaff.includes(staff)) {
-      this.selectedStaff.splice(this.selectedStaff.findIndex(element => staff.id == element.id));
+      this.selectedStaff.splice(this.selectedStaff.findIndex(element => staff.id == element.id), 1);
     } else {
       this.selectedStaff.push(staff);
     }

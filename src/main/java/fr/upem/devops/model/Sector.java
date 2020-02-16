@@ -14,7 +14,7 @@ public class Sector implements Serializable {
     private Long id;
     private String name;
     private String location;
-    @OneToMany(mappedBy = "sector")
+    @OneToMany(mappedBy = "sector", cascade = CascadeType.REMOVE)
     @JsonIgnoreProperties("sector")
     private List<Pool> pools = new ArrayList<>();
     @ManyToMany

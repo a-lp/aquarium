@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-public class    SectorController {
+public class SectorController {
     @Autowired
     private SectorService sectorService;
 
@@ -28,6 +28,7 @@ public class    SectorController {
     @GetMapping("/sectors/{name}")
     public Sector getByName(@PathVariable String name) {
         Sector sector = sectorService.getByName(name);
+        if (sector == null) throw new ResourceNotFoundException("Sector  '" + name + "' not found!");
         return sector;
     }
 
@@ -38,10 +39,10 @@ public class    SectorController {
         for (String id : ids) {
             Staff s = staffService.getById(Long.parseLong(id));
             if (s == null)
-                throw new ResourceNotFoundException("Staff " + id + "not found!");
+                throw new ResourceNotFoundException("Staff with id '" + id + "' not found!");
             staffs.add(s);
         }
-        if (getByName(sector.getName()) != null)
+        if (sectorService.getByName(sector.getName()) != null)
             throw new ConflictException("Another sector named '" + sector.getName() + "' found!");
         sector.setStaffList(staffs);
         return sectorService.save(sector);

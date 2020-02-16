@@ -43,4 +43,15 @@ export class SectorsCreatorComponent implements OnInit {
     this.refresh(sector);
     this.onChange.emit(sector);
   }
+
+  removeSector(sector: Sector) {
+    this.sectorService.delete(sector).subscribe(
+      removedSector => {
+        this.refresh(removedSector);
+        this.onChange.emit(removedSector);
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
 }
