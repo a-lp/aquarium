@@ -29,6 +29,7 @@ public class ScheduleService {
     }
 
     public Schedule remove(Schedule schedule) {
+        schedule.getPool().removeSchedule(schedule);
         scheduleRepository.delete(schedule);
         return schedule;
     }

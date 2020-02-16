@@ -18,7 +18,7 @@ export class ScheduleService {
   }
 
   getById(id: number): Observable<any> {
-    return this.http.get('/schedules/${id}');
+    return this.http.get('/schedules/' + id);
   }
 
   save(schedule: Schedule): Observable<any> {
@@ -29,15 +29,15 @@ export class ScheduleService {
 
   assignAPoolActivityToSchedule(id: number, activity: PoolActivity): Observable<any> {
     // TODO: gestire la persistenza di staff.
-    return this.http.post('/schedules/${id}/assign-activity', activity);
+    return this.http.post('/schedules/' + id + '/assign-activity', activity);
   }
 
   delete(schedule: Schedule): Observable<any> {
-    return this.http.delete('/schedules/${schedule.id}');
+    return this.http.delete('/schedules/' + schedule.id);
   }
 
   update(schedule: Schedule): Observable<any> {
-    return this.http.put('/schedules/${schedule.id}', schedule);
+    return this.http.put('/schedules/' + schedule.id, schedule);
   }
 
 }

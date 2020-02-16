@@ -150,6 +150,10 @@ public class Pool implements Serializable {
         this.fishes.add(fish);
     }
 
+    public void removeSchedule(Schedule schedule) {
+        this.schedules.remove(schedule);
+    }
+
 
     public enum WaterCondition implements Serializable {
         CLEAN, DIRTY

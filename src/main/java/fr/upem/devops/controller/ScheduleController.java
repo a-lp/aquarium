@@ -22,7 +22,9 @@ public class ScheduleController {
 
     @GetMapping("/schedules/{id}")
     public Schedule getById(@PathVariable String id) {
-        return service.getById(Long.parseLong(id));
+        Schedule schedule = service.getById(Long.parseLong(id));
+        if (schedule == null) throw new ResourceNotFoundException("Schedule with id '" + id + "' not found!");
+        return schedule;
     }
 
     @PostMapping("pools/{poolId}/schedules")

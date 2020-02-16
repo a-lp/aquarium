@@ -35,4 +35,11 @@ export class SchedulesCreatorComponent implements OnInit {
     this.onChange.emit(schedule);
     this.refresh(schedule);
   }
+
+  removeSchedule(schedule: Schedule) {
+    this.scheduleService.delete(schedule).subscribe(removedSchedule => {
+      this.refresh(removedSchedule);
+      this.onChange.emit(removedSchedule);
+    }, error => console.log(error));
+  }
 }
