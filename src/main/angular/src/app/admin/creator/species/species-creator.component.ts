@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {SpeciesService} from '../../../service/species.service';
 import {Specie} from '../../../model/Specie';
 
@@ -8,6 +8,7 @@ import {Specie} from '../../../model/Specie';
   styleUrls: ['./species-creator.component.css']
 })
 export class SpeciesCreatorComponent implements OnInit {
+  @Input()
   species: Array<Specie>;
   specie: Specie;
   @Output()

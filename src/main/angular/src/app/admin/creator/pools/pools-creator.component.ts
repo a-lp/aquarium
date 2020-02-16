@@ -12,6 +12,7 @@ import {Specie} from '../../../model/Specie';
 export class PoolsCreatorComponent implements OnInit {
   @Input()
   sectors: Array<Sector>;
+  @Input()
   pools: Array<Pool>;
 
   @Output()

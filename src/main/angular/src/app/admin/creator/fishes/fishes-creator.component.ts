@@ -21,6 +21,7 @@ export class FishesCreatorComponent implements OnInit {
   pools: Array<Pool>;
   @Output()
   onChange: EventEmitter<Fish> = new EventEmitter<Fish>();
+  @Input()
   fishes: Array<Fish>;
   field = 0; // Sorting field
   ascendent = true;

@@ -10,9 +10,10 @@ import {Pool} from '../../../model/Pool';
 })
 export class SchedulesCreatorComponent implements OnInit {
   @Input()
-  pools: Array<Pool>;
+  pools: Array<Pool>
   @Output()
   onChange: EventEmitter<Schedule> = new EventEmitter<Schedule>();
+  @Input()
   schedules: Array<Schedule> = [];
 
   constructor(private scheduleService: ScheduleService) {

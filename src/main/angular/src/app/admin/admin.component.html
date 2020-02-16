@@ -22,22 +22,22 @@
   </nav>
   <div #components class="creator-content">
     <div [class]="shown!=0?'hidden':''">
-      <app-fishes-creator [pools]="pools" [species]="species" (onChange)="refresh()"></app-fishes-creator>
+      <app-fishes-creator [fishes]="fishes" [pools]="pools" [species]="species" (onChange)="refresh()"></app-fishes-creator>
     </div>
     <div [class]="shown!=1?'hidden':''">
-      <app-species-creator (onChange)="refresh()"></app-species-creator>
+      <app-species-creator [species]="species" (onChange)="refresh()"></app-species-creator>
     </div>
     <div [class]="shown!=2?'hidden':''">
-      <app-pools-creator [sectors]="sectors" (onChange)="refresh()"></app-pools-creator>
+      <app-pools-creator [pools]="pools" [sectors]="sectors" (onChange)="refresh()"></app-pools-creator>
     </div>
     <div [class]="shown!=3?'hidden':''">
-      <app-sectors-creator [pools]="pools" [staffs]="staffs" (onChange)="refresh()"></app-sectors-creator>
+      <app-sectors-creator [sectors]="sectors" [pools]="pools" [staffs]="staffs" (onChange)="refresh()"></app-sectors-creator>
     </div>
     <div [class]="shown!=4?'hidden':''">
       <app-staffs-creator (onChange)="refresh()"></app-staffs-creator>
     </div>
     <div [class]="shown!=5?'hidden': ''">
-      <app-schedules-creator [pools]="pools" (onChange)="refresh()"></app-schedules-creator>
+      <app-schedules-creator [schedules]="schedules" [pools]="pools" (onChange)="refresh()"></app-schedules-creator>
     </div>
     <div [class]="shown!=6?'hidden': ''">
       <app-activities-creator [schedules]="schedules" [staffs]="staffs" [activities]="activities"
