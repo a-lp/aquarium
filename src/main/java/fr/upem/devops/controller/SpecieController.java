@@ -44,6 +44,8 @@ public class SpecieController {
 
     @DeleteMapping("/species/{name}")
     public Specie deleteSpecie(@PathVariable String name) {
+        Specie p = getByName(name);
+        if (p == null) throw new ResourceNotFoundException("Specie named: '" + name + "' not found!");
         return specieService.remove(getByName(name));
     }
 }

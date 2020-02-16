@@ -19,6 +19,7 @@
         Life Span
       </th>
       <th>Fishes</th>
+      <th></th>
     </tr>
     </thead>
     <tbody>
@@ -30,6 +31,8 @@
       <td>{{specie.lifeSpan}}</td>
       <td>
         <button (click)="showFishes(specie)">Show</button>
+      </td>      <td>
+        <button (click)="removeSpecie(specie)">Remove</button>
       </td>
     </tr>
     </tbody>

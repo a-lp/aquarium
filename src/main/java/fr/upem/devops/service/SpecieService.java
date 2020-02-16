@@ -1,5 +1,6 @@
 package fr.upem.devops.service;
 
+import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.Specie;
 import fr.upem.devops.repository.SpecieRepository;
 import org.hibernate.Hibernate;
@@ -35,7 +36,9 @@ public class SpecieService {
     }
 
     public Specie remove(Specie specie) {
-        Hibernate.initialize(specie.getFishList()); // Make EAGER
+//        Hibernate.initialize(specie.getFishList()); // Make EAGER
+        for (Fish fish : specie.getFishList())
+            fish.setSpecie(null);
         specieRepository.delete(specie);
         return specie;
     }

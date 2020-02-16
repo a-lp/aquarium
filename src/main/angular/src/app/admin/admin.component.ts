@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {Specie} from '../model/Specie';
 import {Pool} from '../model/Pool';
 import {SpeciesService} from '../service/species.service';
@@ -20,8 +20,6 @@ import {ActivityService} from '../service/activity.service';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-  @Output()
-  refreshEvent = new EventEmitter();
   fishes: Array<Fish> = [];
   species: Array<Specie> = [];
   pools: Array<Pool> = [];
@@ -41,38 +39,31 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.refresh(null);
+    this.refresh();
 
   }
 
-  refresh($event: any) {
+  refresh() {
     this.speciesService.getAll().subscribe(data => {
       this.species = data;
-      this.refreshEvent.emit(null);
     });
     this.poolService.getAll().subscribe(pools => {
       this.pools = pools;
-      this.refreshEvent.emit(null);
     });
     this.fishService.getAll().subscribe(fishes => {
       this.fishes = fishes;
-      this.refreshEvent.emit(null);
     });
     this.scheduleService.getAll().subscribe(schedules => {
       this.schedules = schedules;
-      this.refreshEvent.emit(null);
     });
     this.staffService.getAll().subscribe(staffs => {
       this.staffs = staffs;
-      this.refreshEvent.emit(null);
     });
     this.sectorService.getAll().subscribe(sectors => {
       this.sectors = sectors;
-      this.refreshEvent.emit(null);
     });
     this.activityService.getAll().subscribe(activities => {
         this.activities = activities;
-        this.refreshEvent.emit(null);
       }
     );
   }

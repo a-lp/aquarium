@@ -40,4 +40,15 @@ export class SpeciesCreatorComponent implements OnInit {
   hideSpecie() {
     this.specie = null;
   }
+
+  removeSpecie(specie: Specie) {
+    this.speciesService.delete(specie).subscribe(
+      removedSpecie => {
+        this.refresh(removedSpecie);
+        this.onChange.emit(removedSpecie);
+      }, error => {
+        console.log(error);
+      }
+    );
+  }
 }

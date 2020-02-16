@@ -38,7 +38,9 @@ public class FishController {
 
     @GetMapping("/fishes/{id}")
     public Fish getById(@PathVariable String id) {
-        return fishService.getById(Long.parseLong(id));
+        Fish fish = fishService.getById(Long.parseLong(id));
+        if (fish == null) throw new ResourceNotFoundException("Fish with id '" + id + "' not found!");
+        return fish;
     }
 
     @PostMapping("/species/{specieName}/pools/{poolId}/fishes")
