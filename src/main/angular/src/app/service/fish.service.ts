@@ -30,4 +30,46 @@ export class FishService {
   retireFish(fish: Fish): Observable<any> {
     return this.http.put('/fishes/retire/' + fish.id, fish);
   }
+
+  sort(fishes: Array<Fish>, field: number, ascendent: boolean) {
+    switch (field) {
+      case 0:
+        fishes = fishes.sort((a, b) => (ascendent ? 1 : -1) * a.id - b.id);
+        break;
+      case 1:
+        fishes = fishes.sort((a, b) => (ascendent ? 1 : -1) * a.name.localeCompare(b.name));
+        break;
+      case 2:
+        fishes = fishes.sort((a, b) => (ascendent ? 1 : -1) * a.gender.localeCompare(b.gender));
+        break;
+      case 3:
+        fishes = fishes.sort((a, b) => (ascendent ? 1 : -1) * (a.arrivalDate == b.arrivalDate ? 0 : (a.arrivalDate > b.arrivalDate ? 1 : -1)));
+        break;
+      case 4:
+        fishes = fishes.sort((a, b) => (ascendent ? 1 : -1) * (a.returnDate == b.returnDate ? 0 : (a.returnDate > b.returnDate ? 1 : -1)));
+        break;
+      case 5:
+        fishes = fishes.sort((a, b) => {
+          if (a.specie == null) {
+            return (ascendent ? 1 : -1);
+          }
+          if (b.specie == null) {
+            return (ascendent ? -1 : 1);
+          }
+          return ((ascendent ? 1 : -1) * a.specie.name.localeCompare(b.specie.name));
+        });
+        break;
+      case 6:
+        fishes = fishes.sort((a, b) => {
+          if (a.pool == null) {
+            return (ascendent ? 1 : -1);
+          }
+          if (b.pool == null) {
+            return (ascendent ? -1 : 1);
+          }
+          return (ascendent ? 1 : -1) * a.pool.id - b.pool.id;
+        });
+        break;
+    }
+  }
 }

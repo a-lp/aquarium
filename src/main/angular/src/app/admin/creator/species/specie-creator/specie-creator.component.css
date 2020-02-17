@@ -6,7 +6,8 @@
 }
 
 .specie-content {
-  flex: 1 auto;
+  max-height: 100%;
+  flex-grow: 1;
 }
 
 .close-button {
@@ -35,4 +36,26 @@ form {
   flex: .7;
   background: white;
   padding: 0 1em;
+  overflow-y: scroll;
+}
+
+table {
+  padding: 2em;
+  width: 100%;
+}
+
+table thead {
+  width: 100%;
+}
+
+th:hover {
+  cursor: pointer;
+}
+
+tr {
+  padding: 1em 0;
+}
+
+td {
+  text-align: center;
 }

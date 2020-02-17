@@ -15,6 +15,10 @@ h1, h2{
   width: 100%;
 }
 
+th:hover {
+  cursor: pointer;
+}
+
 tr{
   padding: 1em 0;
 }

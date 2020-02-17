@@ -25,13 +25,56 @@
           <button (click)="update()" [disabled]="!form.valid">Update</button>
         </div>
       </div>
+      <h2 align="center">Fishes List</h2>
       <div class="fish-list">
-        <h2 align="center">Fishes List</h2>
-        <ul>
-          <li *ngFor="let fish of specie.fishList">
-            ID: {{fish.id}} - Name: {{fish.name}}
-          </li>
-        </ul>
+        <table>
+          <thead>
+          <tr>
+            <th (click)="sort(0)">
+              ID{{this.field == 0 ? (this.ascendent ? "▼" : "▲") : ""}}
+            </th>
+            <th (click)="sort(1)">
+              Name{{this.field == 1 ? (this.ascendent ? "▼" : "▲") : ""}}
+            </th>
+            <th (click)="sort(2)">
+              Gender{{this.field == 2 ? (this.ascendent ? "▼" : "▲") : ""}}
+            </th>
+            <th>
+              Distinct Sign
+            </th>
+            <th (click)="sort(3)">
+              Arrival Date{{this.field == 3 ? (this.ascendent ? "▼" : "▲") : ""}}
+            </th>
+            <th (click)="sort(4)">
+              Return Date{{this.field == 4 ? (this.ascendent ? "▼" : "▲") : ""}}
+            </th>
+            <th (click)="sort(6)">
+              Pool{{this.field == 6 ? (this.ascendent ? "▼" : "▲") : ""}}
+            </th>
+            <th>
+              Retire
+            </th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let fish of specie.fishList">
+            <td>{{fish.id}}</td>
+            <td>{{fish.name}}</td>
+            <td>{{fish.gender}}</td>
+            <td>{{fish.distinctSign}}</td>
+            <td>{{this.datePipe.transform(fish.arrivalDate, 'dd/MM/yyyy, HH:mm')}}</td>
+            <td>{{(fish.returnDate != null) ? this.datePipe.transform(fish.returnDate, 'dd/MM/yyyy, HH:mm') : "Not yet"}}</td>
+            <td>{{fish.pool.id}}</td>
+            <td>
+              <button [disabled]="fish.returnDate!=null" (click)="retireAnimal(fish)">Retire</button>
+            </td>
+            <td>
+              <button>Remove</button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
       </div>
     </form>
   </div>
