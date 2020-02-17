@@ -1,15 +1,14 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Staff.class)
 public class Staff implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,7 +24,7 @@ public class Staff implements Serializable {
     @ManyToMany(mappedBy = "staffList")
     private List<Sector> sectors = new ArrayList<>();
     @ManyToMany
-    private List<PoolActivity> activities = new ArrayList<>();
+    private Set<PoolActivity> activities = new HashSet<>();
 
     public Staff() {
     }
@@ -130,11 +129,11 @@ public class Staff implements Serializable {
         this.role = role;
     }
 
-    public List<PoolActivity> getActivities() {
+    public Set<PoolActivity> getActivities() {
         return activities;
     }
 
-    public void setActivities(List<PoolActivity> activities) {
+    public void setActivities(Set<PoolActivity> activities) {
         this.activities = activities;
     }
 

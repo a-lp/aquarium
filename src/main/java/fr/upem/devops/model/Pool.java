@@ -5,10 +5,12 @@ import com.fasterxml.jackson.annotation.*;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Pool.class)
 public class Pool implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,9 +20,9 @@ public class Pool implements Serializable {
     @Enumerated(EnumType.STRING)
     private WaterCondition condition;
     @OneToMany(mappedBy = "pool")
-    private List<Fish> fishes = new ArrayList<>();
+    private Set<Fish> fishes = new HashSet<>();
     @OneToMany(mappedBy = "pool", cascade = CascadeType.REMOVE)
-    private List<Schedule> schedules = new ArrayList<>();
+    private Set<Schedule> schedules = new HashSet<>();
     @ManyToOne
     @JoinColumn(name = "pool_sector")
     private Sector sector;
@@ -31,7 +33,7 @@ public class Pool implements Serializable {
     public Pool() {
     }
 
-    public Pool(Long id, Long maxCapacity, Double volume, WaterCondition waterCondition, List<Fish> fishes) {
+    public Pool(Long id, Long maxCapacity, Double volume, WaterCondition waterCondition, Set<Fish> fishes) {
         this.id = id;
         this.maxCapacity = maxCapacity;
         this.volume = volume;
@@ -39,7 +41,7 @@ public class Pool implements Serializable {
         this.fishes = fishes;
     }
 
-    public Pool(Long maxCapacity, Double volume, WaterCondition waterCondition, List<Fish> fishes) {
+    public Pool(Long maxCapacity, Double volume, WaterCondition waterCondition, Set<Fish> fishes) {
         this.maxCapacity = maxCapacity;
         this.volume = volume;
         this.condition = waterCondition;
@@ -78,11 +80,11 @@ public class Pool implements Serializable {
         this.condition = condition;
     }
 
-    public List<Fish> getFishes() {
+    public Set<Fish> getFishes() {
         return fishes;
     }
 
-    public void setFishes(List<Fish> fish) {
+    public void setFishes(Set<Fish> fish) {
         this.fishes = fish;
     }
 
@@ -102,13 +104,14 @@ public class Pool implements Serializable {
         this.responsible = responsible;
     }
 
-    public List<Schedule> getSchedules() {
+    public Set<Schedule> getSchedules() {
         return schedules;
     }
 
-    public void setSchedules(List<Schedule> scheduledActivities) {
+    public void setSchedules(Set<Schedule> scheduledActivities) {
         this.schedules = scheduledActivities;
     }
+
 
     @Override
     public boolean equals(Object obj) {

@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class SectorController {
@@ -35,7 +37,7 @@ public class SectorController {
     @PostMapping("/sectors/responsible/{ids}")
     @ResponseBody
     public Sector addSector(@RequestBody Sector sector, @PathVariable List<String> ids) {
-        List<Staff> staffs = new ArrayList<>();
+        Set<Staff> staffs = new HashSet<>();
         for (String id : ids) {
             Staff s = staffService.getById(Long.parseLong(id));
             if (s == null)

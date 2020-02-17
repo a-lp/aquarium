@@ -6,6 +6,7 @@ import fr.upem.devops.model.PoolActivity;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.StaffService;
+import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,9 +42,9 @@ public class StaffControllerTest {
         Staff s1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
         Staff s2 = new Staff(2L, "Nome2", "Cognome2", "Address2", new Date(), "SocSec2", Staff.StaffRole.MANAGER);
         Staff s3 = new Staff(3L, "Nome3", "Cognome3", "Address3", new Date(), "SocSec3", Staff.StaffRole.WORKER);
-        Pool p1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
-        Pool p2 = new Pool(2L, 20L, 20.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
-        Pool p3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
+        Pool p1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+        Pool p2 = new Pool(2L, 20L, 20.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+        Pool p3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new HashSet<>());
         Sector sec1 = new Sector(1L, "Sector1", "Location1");
         Sector sec2 = new Sector(2L, "Sector2", "Location2");
         Sector sec3 = new Sector(3L, "Sector3", "Location3");
@@ -133,7 +134,7 @@ public class StaffControllerTest {
     @Test
     public void assignActivityToStaff() {
         Staff staff = this.staffList.get(0);
-        PoolActivity activity = new PoolActivity(1L, LocalTime.of(1, 0), LocalTime.of(2, 0), true, Collections.singletonList(staff), null);
+        PoolActivity activity = new PoolActivity(1L, LocalTime.of(1, 0), LocalTime.of(2, 0), true, Sets.newHashSet(Collections.singletonList(staff)), null);
         staff.assignActivity(activity);
         Staff response = staff;
         response.assignActivity(activity);

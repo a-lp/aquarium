@@ -7,6 +7,7 @@ import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.SectorService;
 import fr.upem.devops.service.StaffService;
+import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -89,7 +90,7 @@ public class SectorControllerTest {
     public void addSector() {
         Sector sec = new Sector("Sector4", "Location4");
         Sector sec_new = new Sector(4L, "Sector4", "Location4");
-        sec_new.setStaffList(this.staff);
+        sec_new.setStaffList(Sets.newHashSet(this.staff));
         Mockito.when(sectorService.save(sec)).thenReturn(sec_new);
         Sector request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/responsible/1,2,3", sec,
                 Sector.class);

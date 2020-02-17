@@ -10,6 +10,8 @@ import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 @RestController
 public class PoolController {
     @Autowired
@@ -45,15 +47,20 @@ public class PoolController {
 
     @PutMapping("/pools/{id}")
     @ResponseBody
-    public Pool updatePool(@PathVariable String id, @RequestBody Pool pool) {
+    public Pool updatePool(@PathVariable String id, @RequestBody HashMap<String, String> parameters) {
+        System.out.println(parameters);
         Pool p = getById(id);
-        p.setVolume(pool.getVolume());
-        p.setMaxCapacity(pool.getMaxCapacity());
-        p.setCondition(pool.getCondition());
-        p.setResponsible(p.getResponsible());
-        p.setFishes(pool.getFishes());
-        p.setSchedules(pool.getSchedules());
-        p.setSector(p.getSector());
+        if (parameters.containsKey("volume"))
+            p.setVolume(Double.parseDouble(parameters.get("volume")));
+        if (parameters.containsKey("maxCapacity"))
+            p.setMaxCapacity(Long.parseLong(parameters.get("maxCapacity")));
+        if (parameters.containsKey("condition"))
+            p.setCondition(Pool.WaterCondition.valueOf(parameters.get("condition")));
+        //todo: vedere lo staff
+//        p.setResponsible(p.getResponsible());
+//        p.setFishes(pool.getFishes());
+//        p.setSchedules(pool.getSchedules());
+//        p.setSector(p.getSector());
         return poolService.save(p);
     }
 

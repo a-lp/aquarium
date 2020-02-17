@@ -1,12 +1,10 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.errors.ResourceNotFoundException;
-import fr.upem.devops.model.Fish;
-import fr.upem.devops.model.FishGender;
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.Sector;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.SectorService;
+import fr.upem.devops.service.StaffService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,10 +18,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
@@ -34,6 +29,8 @@ public class PoolControllerTest {
     private PoolService poolService;
     @MockBean
     private SectorService sectorService;
+    @MockBean
+    private StaffService staffService;
     @LocalServerPort
     private int port = 8080;
     @Autowired
@@ -44,9 +41,9 @@ public class PoolControllerTest {
 
     @Before
     public void init() {
-        Pool p1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
-        Pool p2 = new Pool(2L, 20L, 20.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
-        Pool p3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
+        Pool p1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+        Pool p2 = new Pool(2L, 20L, 20.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+        Pool p3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new HashSet<>());
         Sector s1 = new Sector(1L, "Sector1", "Location1");
         Sector s2 = new Sector(2L, "Sector2", "Location2");
         Sector s3 = new Sector(3L, "Sector3", "Location3");
@@ -77,31 +74,34 @@ public class PoolControllerTest {
 
     @Test
     public void getAll() {
-        List lista = this.restTemplate.getForObject("http://localhost:" + port + "/pools", List.class);
-        assertEquals(3, lista.size());
+        Set Seta = this.restTemplate.getForObject("http://localhost:" + port + "/pools", Set.class);
+        assertEquals(3, Seta.size());
     }
 
     @Test
     public void getById() {
-        List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/pools", List.class);
+        List<HashMap> poolSet = this.restTemplate.getForObject("http://localhost:" + port + "/pools", List.class);
         Pool output = this.restTemplate.getForObject("http://localhost:" + port + "/pools/1", Pool.class);
-        assertEquals(lista.get(0).get("id").toString(), output.getId().toString());
-        assertEquals(lista.get(0).get("maxCapacity").toString(), output.getMaxCapacity().toString());
-        assertEquals(lista.get(0).get("volume"), output.getVolume());
-        assertEquals(lista.get(0).get("condition"), output.getCondition().name());
-        assertEquals(((List<Fish>) (lista.get(0).get("fishes"))).size(), output.getFishes().size());
+        assertEquals(poolSet.get(0).get("id").toString(), output.getId().toString());
+        assertEquals(poolSet.get(0).get("maxCapacity").toString(), output.getMaxCapacity().toString());
+        assertEquals(poolSet.get(0).get("volume"), output.getVolume());
+        assertEquals(poolSet.get(0).get("condition"), output.getCondition().name());
+        assertEquals(((ArrayList<Fish>) (poolSet.get(0).get("fishes"))).size(), output.getFishes().size());
     }
 
     @Test
     public void addPool() {
-        Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
+        Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new HashSet<>());
         Sector sector = sectors.get(0);
-        Pool pool_new = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
+        Pool pool_new = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new HashSet<>());
         pool_new.setSector(sector);
         sector.addPool(pool_new);
         Mockito.when(sectorService.getById(1L)).thenReturn(sector);
+        Staff s1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
+        pool_new.setResponsible(s1);
+        Mockito.when(staffService.getById(1L)).thenReturn(s1);
         Mockito.when(poolService.save(pool)).thenReturn(pool_new);
-        Pool request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/1/pools", pool,
+        Pool request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/1/responsible/1/pools", pool,
                 Pool.class);
         assertEquals(pool.getId(), request.getId());
         assertEquals(pool.getCondition(), request.getCondition());
@@ -112,12 +112,22 @@ public class PoolControllerTest {
     }
 
     @Test
-    public void addPoolSectorNotFound(){
+    public void addPoolSectorNotFound() {
         Mockito.when(sectorService.getById(4L)).thenThrow(new ResourceNotFoundException("Sector with id '4' not found!"));
-        Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
-        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/4/pools", pool,
+        Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new HashSet<>());
+        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/4/responsible/1/pools", pool,
                 ResourceNotFoundException.class);
         assertEquals("Sector with id '4' not found!", request.getMessage());
+    }
+
+    @Test
+    public void addPoolResponsibleNotFound() {
+        Mockito.when(sectorService.getById(1L)).thenReturn(sectors.get(0));
+        Mockito.when(staffService.getById(2L)).thenThrow(new ResourceNotFoundException("Staff '2' not found!"));
+        Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new HashSet<>());
+        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/1/responsible/2/pools", pool,
+                ResourceNotFoundException.class);
+        assertEquals("Staff '2' not found!", request.getMessage());
     }
 
 
@@ -125,11 +135,10 @@ public class PoolControllerTest {
     public void updatePool() {
         Pool pool = this.pools.get(0);
         Mockito.when(poolService.save(pool)).thenReturn(pool);
-        pool.addFish(new Fish());
+        pool.setCondition(Pool.WaterCondition.DIRTY);
         HttpEntity<Pool> httpEntity = new HttpEntity<>(pool);
         Pool request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT, httpEntity, Pool.class).getBody();
         assertEquals(pool, request);
-        assertEquals(pool.getFishes(), request.getFishes());
     }
 
     @Test

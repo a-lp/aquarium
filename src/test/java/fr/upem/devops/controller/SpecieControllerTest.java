@@ -20,6 +20,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,9 +41,9 @@ public class SpecieControllerTest {
     @Before
     public void init() {
         short lf = 1;
-        Specie s1 = new Specie(1L, "Specie1", lf++, lf, Alimentation.CARNIVORE, new ArrayList<>());
-        Specie s2 = new Specie(2L, "Specie2", lf++, lf, Alimentation.HERBIVORE, new ArrayList<>());
-        Specie s3 = new Specie(3L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new ArrayList<>());
+        Specie s1 = new Specie(1L, "Specie1", lf++, lf, Alimentation.CARNIVORE, new HashSet<>());
+        Specie s2 = new Specie(2L, "Specie2", lf++, lf, Alimentation.HERBIVORE, new HashSet<>());
+        Specie s3 = new Specie(3L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new HashSet<>());
 
         Fish a1 = new Fish(1L, "Shark", FishGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", s1, null);
         Fish a2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", s2, null);
@@ -82,8 +83,8 @@ public class SpecieControllerTest {
     @Test
     public void addSpecie() {
         short lf = 1;
-        Specie specie = new Specie("Specie5", lf, lf, Alimentation.OMNIVORE, new ArrayList<>());
-        Mockito.when(specieService.save(specie)).thenReturn(new Specie(5L, "Specie5", lf, lf, Alimentation.OMNIVORE, new ArrayList<>()));
+        Specie specie = new Specie("Specie5", lf, lf, Alimentation.OMNIVORE, new HashSet<>());
+        Mockito.when(specieService.save(specie)).thenReturn(new Specie(5L, "Specie5", lf, lf, Alimentation.OMNIVORE, new HashSet<>()));
         Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
                 Specie.class);
         assertEquals(request.getId(), Long.valueOf(5l));
@@ -97,7 +98,7 @@ public class SpecieControllerTest {
     @Test
     public void addExistentSpecie() {
         short lf = 1;
-        Specie specie = new Specie(4L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new ArrayList<>());
+        Specie specie = new Specie(4L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new HashSet<>());
         ConflictException conflictError = new ConflictException("Another specie named '" + specie.getName() + "' found!");
         Mockito.when(specieService.save(specie)).thenThrow(conflictError);
         ConflictException request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,

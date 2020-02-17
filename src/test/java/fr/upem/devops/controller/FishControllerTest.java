@@ -47,9 +47,9 @@ public class FishControllerTest {
         Fish p1 = new Fish(1L, "Shark", FishGender.HERMAPHRODITE, "forti mascelle e di dimensioni medio-grandi", null, null);
         Fish p2 = new Fish(2L, "Codfish", FishGender.MALE, "buono da fare al forno", null, null);
         Fish p3 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, null);
-        Specie s1 = new Specie(1L, "Specie1", lf++, lf, Alimentation.CARNIVORE, new ArrayList<>(Collections.singletonList(p1)));
-        Specie s2 = new Specie(2L, "Specie2", lf++, lf, Alimentation.HERBIVORE, new ArrayList<>(Collections.singletonList(p2)));
-        Specie s3 = new Specie(3L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new ArrayList<>(Collections.singletonList(p3)));
+        Specie s1 = new Specie(1L, "Specie1", lf++, lf, Alimentation.CARNIVORE, new HashSet<>(Collections.singletonList(p1)));
+        Specie s2 = new Specie(2L, "Specie2", lf++, lf, Alimentation.HERBIVORE, new HashSet<>(Collections.singletonList(p2)));
+        Specie s3 = new Specie(3L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new HashSet<>(Collections.singletonList(p3)));
         p1.setSpecie(s1);
         p2.setSpecie(s2);
         p3.setSpecie(s3);
@@ -93,7 +93,7 @@ public class FishControllerTest {
 
     @Test
     public void addFish() {
-        Pool pool = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
+        Pool pool = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
         Specie specie = species.get(0);
         Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
         Fish fish_new = new Fish(4L, "Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", specie, pool);

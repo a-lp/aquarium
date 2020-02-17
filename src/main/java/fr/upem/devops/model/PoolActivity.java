@@ -1,15 +1,16 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = PoolActivity.class)
 public class PoolActivity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,20 +20,23 @@ public class PoolActivity implements Serializable {
     private LocalTime endActivity;
     private Boolean openToPublic;
     private Boolean repeated;
-    @ManyToMany
+    @ManyToMany(cascade = {
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
     @JoinTable(
             name = "activity_staff",
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "staff_id")
     )
-    private List<Staff> staffList = new ArrayList<>();
+    private Set<Staff> staffList = new HashSet<>();
     @ManyToOne
     private Schedule schedule;
 
     public PoolActivity() {
     }
 
-    public PoolActivity(Long id, LocalTime startActivity, LocalTime endActivity, Boolean openToPublic, List<Staff> staffList, Schedule schedule) {
+    public PoolActivity(Long id, LocalTime startActivity, LocalTime endActivity, Boolean openToPublic, Set<Staff> staffList, Schedule schedule) {
         this.id = id;
         this.startActivity = startActivity;
         this.endActivity = endActivity;
@@ -41,7 +45,7 @@ public class PoolActivity implements Serializable {
         this.schedule = schedule;
     }
 
-    public PoolActivity(LocalTime startActivity, LocalTime endActivity, Boolean openToPublic, List<Staff> staffList, Schedule schedule) {
+    public PoolActivity(LocalTime startActivity, LocalTime endActivity, Boolean openToPublic, Set<Staff> staffList, Schedule schedule) {
         this.startActivity = startActivity;
         this.endActivity = endActivity;
         this.openToPublic = openToPublic;
@@ -81,11 +85,11 @@ public class PoolActivity implements Serializable {
         this.endActivity = endActivity;
     }
 
-    public List<Staff> getStaffList() {
+    public Set<Staff> getStaffList() {
         return staffList;
     }
 
-    public void setStaffList(List<Staff> staffList) {
+    public void setStaffList(Set<Staff> staffList) {
         this.staffList = staffList;
     }
 

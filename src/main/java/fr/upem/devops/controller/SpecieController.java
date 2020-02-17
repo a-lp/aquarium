@@ -10,9 +10,9 @@ import fr.upem.devops.service.SpecieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 public class SpecieController {
@@ -59,7 +59,7 @@ public class SpecieController {
         if (parameters.containsKey("fishList")) {
             //TODO: fish non si aggiorna. Non aggiornare questa lista lato controller ma farlo lato angular con servizio fish
             String[] fishIds = parameters.get("fishList").split(",");
-            List<Fish> newFishList = new ArrayList<>();
+            Set<Fish> newFishList = new HashSet<>();
             for (String id : fishIds)
                 newFishList.add(fishService.getById(Long.parseLong(id)));
             p.setFishList(newFishList);

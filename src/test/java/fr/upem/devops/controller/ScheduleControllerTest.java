@@ -42,12 +42,12 @@ public class ScheduleControllerTest {
 
     @Before
     public void init() {
-        Pool p1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
-        Pool p2 = new Pool(2L, 20L, 20.5, Pool.WaterCondition.CLEAN, new ArrayList<>());
-        Pool p3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new ArrayList<>());
+        Pool p1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+        Pool p2 = new Pool(2L, 20L, 20.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+        Pool p3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new HashSet<>());
         pools.addAll(Arrays.asList(p1, p2, p3));
         for (int i = 0; i < 3; i++) {
-            this.schedules.add(new Schedule(Long.parseLong(i + ""), new Date(), new Date(), new ArrayList<>()));
+            this.schedules.add(new Schedule(Long.parseLong(i + ""), new Date(), new Date(), new HashSet<>()));
             this.schedules.get(i).setPool(pools.get(i));
             pools.get(i).getSchedules().add(this.schedules.get(i));
         }
@@ -76,8 +76,8 @@ public class ScheduleControllerTest {
 
     @Test
     public void addSchedule() {
-        Schedule schedule = new Schedule(new Date(), new Date(), new ArrayList<>());
-        Schedule schedule_new = new Schedule(4L, new Date(), new Date(), new ArrayList<>());
+        Schedule schedule = new Schedule(new Date(), new Date(), new HashSet<>());
+        Schedule schedule_new = new Schedule(4L, new Date(), new Date(), new HashSet<>());
         Pool pool = this.pools.get(0);
         schedule_new.setPool(pool);
         pool.getSchedules().add(schedule_new);
@@ -94,7 +94,7 @@ public class ScheduleControllerTest {
     @Test
     public void addSchedulePoolNotFound() {
         Mockito.when(poolService.getById(2L)).thenThrow(new ResourceNotFoundException("Pool with id '4' not found!"));
-        Schedule schedule = new Schedule(new Date(), new Date(), new ArrayList<>());
+        Schedule schedule = new Schedule(new Date(), new Date(), new HashSet<>());
         ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/pools/4/schedules", schedule,
                 ResourceNotFoundException.class);
         assertEquals("Pool with id '4' not found!", request.getMessage());

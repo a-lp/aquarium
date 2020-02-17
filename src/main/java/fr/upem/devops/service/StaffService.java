@@ -32,8 +32,11 @@ public class StaffService {
     }
 
     public Staff remove(Staff staff) {
-        for (PoolActivity activity : staff.getActivities())
+        for (PoolActivity activity : staff.getActivities()) {
+            System.out.println("Before: " + activity.getStaffList().size());
             activity.removeStaff(staff);
+            System.out.println("After: " + activity.getStaffList().size());
+        }
         for (Sector sector : staff.getSectors())
             sector.removeStaff(staff);
         for (Pool pool : staff.getPoolsResponsabilities())

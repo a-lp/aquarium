@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 public class PoolActivityController {
@@ -41,11 +43,12 @@ public class PoolActivityController {
     public PoolActivity addPoolActivity(@RequestBody PoolActivity activity, @PathVariable String scheduleId, @PathVariable List<String> staffResponsible) {
         Schedule schedule = scheduleService.getById(Long.parseLong(scheduleId));
         if (schedule == null) throw new ResourceNotFoundException("Schedule with id '" + scheduleId + "' not found!");
-        List<Staff> staffs = new ArrayList<>();
+        Set<Staff> staffs = new HashSet<>();
         for (String id : staffResponsible) {
             Staff s = staffService.getById(Long.parseLong(id));
             if (s == null)
                 throw new ResourceNotFoundException("Staff with id '" + id + "' not found!");
+            s.assignActivity(activity);
             staffs.add(s);
         }
         activity.setStaffList(staffs);

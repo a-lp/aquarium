@@ -7,6 +7,7 @@ import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.PoolActivityService;
 import fr.upem.devops.service.ScheduleService;
 import fr.upem.devops.service.StaffService;
+import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -44,9 +45,9 @@ public class PoolActivityControllerTest {
 
     @Before
     public void init() {
-        PoolActivity pa1 = new PoolActivity(1L, LocalTime.of(1, 0), LocalTime.of(2, 0), true, new ArrayList<>(), null);
-        PoolActivity pa2 = new PoolActivity(2L, LocalTime.of(2, 0), LocalTime.of(4, 0), true, new ArrayList<>(), null);
-        PoolActivity pa3 = new PoolActivity(3L, LocalTime.of(3, 0), LocalTime.of(6, 0), true, new ArrayList<>(), null);
+        PoolActivity pa1 = new PoolActivity(1L, LocalTime.of(1, 0), LocalTime.of(2, 0), true, new HashSet<>(), null);
+        PoolActivity pa2 = new PoolActivity(2L, LocalTime.of(2, 0), LocalTime.of(4, 0), true, new HashSet<>(), null);
+        PoolActivity pa3 = new PoolActivity(3L, LocalTime.of(3, 0), LocalTime.of(6, 0), true, new HashSet<>(), null);
 
         activities.add(pa1);
         activities.add(pa2);
@@ -77,7 +78,7 @@ public class PoolActivityControllerTest {
 
     @Test
     public void addPoolActivity() {
-        Schedule schedule = new Schedule(1L, new Date(), new Date(), new ArrayList<>());
+        Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
         Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
         Staff s1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
         Staff s2 = new Staff(2L, "Nome2", "Cognome2", "Address2", new Date(), "SocSec2", Staff.StaffRole.MANAGER);
@@ -85,8 +86,8 @@ public class PoolActivityControllerTest {
         Mockito.when(staffService.getById(1L)).thenReturn(s1);
         Mockito.when(staffService.getById(2L)).thenReturn(s2);
         Mockito.when(staffService.getById(3L)).thenReturn(s3);
-        PoolActivity pa = new PoolActivity(LocalTime.of(4, 0), LocalTime.of(8, 0), true, new ArrayList<>(), null);
-        PoolActivity pa_new = new PoolActivity(4L, LocalTime.of(4, 0), LocalTime.of(8, 0), true, Arrays.asList(s1, s2, s3), schedule);
+        PoolActivity pa = new PoolActivity(LocalTime.of(4, 0), LocalTime.of(8, 0), true, new HashSet<>(), null);
+        PoolActivity pa_new = new PoolActivity(4L, LocalTime.of(4, 0), LocalTime.of(8, 0), true, Sets.newHashSet(Arrays.asList(s1, s2, s3)), schedule);
         schedule.assignActivity(pa_new);
         Mockito.when(service.save(pa)).thenReturn(pa_new);
         PoolActivity request = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", pa,
@@ -112,7 +113,7 @@ public class PoolActivityControllerTest {
     @Test
     public void addPoolActivityResponsibleNotFound() {
         ResourceNotFoundException notFoundException = new ResourceNotFoundException("Staff with id '1' not found!");
-        Schedule schedule = new Schedule(1L, new Date(), new Date(), new ArrayList<>());
+        Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
         Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
         Mockito.when(staffService.getById(1L)).thenThrow(notFoundException);
         ResourceNotFoundException exception = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", new PoolActivity(),

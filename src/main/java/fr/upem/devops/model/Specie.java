@@ -1,17 +1,15 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "name")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "name", scope = Specie.class)
 public class Specie implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +21,12 @@ public class Specie implements Serializable {
     @Enumerated(EnumType.STRING)
     private Alimentation alimentation;
     @OneToMany(mappedBy = "specie")
-    private List<Fish> fishList = new ArrayList<>();
+    private Set<Fish> fishList = new HashSet<>();
 
     public Specie() {
     }
 
-    public Specie(String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, ArrayList<Fish> fishList) {
+    public Specie(String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, Set<Fish> fishList) {
         this.name = name;
         this.lifeSpan = lifeSpan;
         this.alimentation = alimentation;
@@ -36,7 +34,7 @@ public class Specie implements Serializable {
         this.fishList = fishList;
     }
 
-    public Specie(Long id, String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, ArrayList<Fish> fishList) {
+    public Specie(Long id, String name, Short lifeSpan, Short exctintionLevel, Alimentation alimentation, Set<Fish> fishList) {
         this.id = id;
         this.name = name;
         this.lifeSpan = lifeSpan;
@@ -77,12 +75,16 @@ public class Specie implements Serializable {
         return name;
     }
 
-    public List<Fish> getFishList() {
+    public Set<Fish> getFishList() {
         return fishList;
     }
 
-    public void setFishList(List<Fish> fishList) {
+    public void setFishList(Set<Fish> fishList) {
         this.fishList = fishList;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     @Override
