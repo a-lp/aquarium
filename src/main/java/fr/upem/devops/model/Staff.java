@@ -21,7 +21,6 @@ public class Staff implements Serializable {
     private String socialSecurity;
     private StaffRole role;
     @OneToMany(mappedBy = "responsible")
-    @JsonManagedReference(value = "pool-staff")
     private List<Pool> poolsResponsabilities = new ArrayList<>();
     @ManyToMany(mappedBy = "staffList")
     private List<Sector> sectors = new ArrayList<>();

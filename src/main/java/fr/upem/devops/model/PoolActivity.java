@@ -27,7 +27,6 @@ public class PoolActivity implements Serializable {
     )
     private List<Staff> staffList = new ArrayList<>();
     @ManyToOne
-    @JsonBackReference(value = "schedule-activity")
     private Schedule schedule;
 
     public PoolActivity() {

@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "name")
 public class Sector implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,7 +18,6 @@ public class Sector implements Serializable {
     private String name;
     private String location;
     @OneToMany(mappedBy = "sector", cascade = CascadeType.REMOVE)
-    @JsonManagedReference(value = "sector-pool")
     private List<Pool> pools = new ArrayList<>();
     @ManyToMany
     @JoinTable(

@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Fish implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,11 +20,9 @@ public class Fish implements Serializable {
     private Date returnDate;
     @ManyToOne
     @JoinColumn(name = "fish_specie_id")
-    @JsonBackReference(value = "fish-specie")
     private Specie specie;
     @ManyToOne
     @JoinColumn(name = "fish_pool_id")
-    @JsonBackReference(value = "fish-pool")
     private Pool pool;
 
     public Fish() {

@@ -1,8 +1,6 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Pool implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,18 +18,14 @@ public class Pool implements Serializable {
     @Enumerated(EnumType.STRING)
     private WaterCondition condition;
     @OneToMany(mappedBy = "pool")
-    @JsonManagedReference(value = "fish-pool")
     private List<Fish> fishes = new ArrayList<>();
     @OneToMany(mappedBy = "pool", cascade = CascadeType.REMOVE)
-    @JsonManagedReference(value = "schedule-pool")
     private List<Schedule> schedules = new ArrayList<>();
     @ManyToOne
     @JoinColumn(name = "pool_sector")
-    @JsonBackReference(value = "sector-pool")
     private Sector sector;
     @ManyToOne
     @JoinColumn(name = "pool_responsible")
-    @JsonBackReference(value = "pool-staff")
     private Staff responsible;
 
     public Pool() {

@@ -1,7 +1,9 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -10,6 +12,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Schedule implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,10 +21,8 @@ public class Schedule implements Serializable {
     private Date endPeriod;
     @ManyToOne
     @JoinColumn(name = "calendar_pool")
-    @JsonBackReference(value = "schedule-pool")
     private Pool pool;
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
-    @JsonManagedReference(value = "schedule-activity")
     private List<PoolActivity> scheduledActivities = new ArrayList<>();
 
     public Schedule() {
