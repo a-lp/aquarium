@@ -44,7 +44,8 @@ export class SpecieCreatorComponent implements OnInit {
     specie.lifeSpan = this.form.value.lifeSpan;
     specie.extinctionLevel = this.form.value.extinctionLevel;
     specie.alimentation = this.form.value.alimentation;
-    specie.fishList = this.specie.fishList.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
+    //specie.fishList = this.specie.fishList.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
+    specie.fishList = this.specie.fishList[0].id;
     console.log(specie);
     this.speciesService.update(this.specie.name, specie).subscribe(updatedSpecie => {
       console.log(updatedSpecie);

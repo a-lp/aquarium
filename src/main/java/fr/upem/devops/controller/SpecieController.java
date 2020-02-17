@@ -57,7 +57,7 @@ public class SpecieController {
         if (parameters.containsKey("extinctionLevel"))
             p.setExtinctionLevel(Short.parseShort(parameters.get("extinctionLevel")));
         if (parameters.containsKey("fishList")) {
-            //TODO: verificare che anche fish si aggiorni
+            //TODO: fish non si aggiorna. Non aggiornare questa lista lato controller ma farlo lato angular con servizio fish
             String[] fishIds = parameters.get("fishList").split(",");
             List<Fish> newFishList = new ArrayList<>();
             for (String id : fishIds)
