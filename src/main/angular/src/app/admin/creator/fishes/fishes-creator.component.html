@@ -26,9 +26,8 @@
     <th (click)="sort(6)">
       Pool{{this.field == 6 ? (this.ascendent ? "▼" : "▲") : ""}}
     </th>
-    <th>
-      Retire
-    </th>
+    <th></th>
+    <th></th>
     <th></th>
   </tr>
   </thead>
@@ -42,6 +41,9 @@
     <td>{{(fish.returnDate != null) ? this.datePipe.transform(fish.returnDate, 'dd/MM/yyyy, HH:mm') : "Not yet"}}</td>
     <td>{{(fish.specie != null) ? fish.specie.name : "Unknown"}}</td>
     <td>{{(fish.pool != null) ? fish.pool.id : "Not assigned to a pool"}}</td>
+    <th>
+      <button>Show</button>
+    </th>
     <td>
       <button [disabled]="fish.returnDate!=null" (click)="retireAnimal(fish)">RETIRE</button>
     </td>

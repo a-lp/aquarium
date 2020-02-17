@@ -1,7 +1,7 @@
 form {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 50%;
 }
 
 .single-choice {
@@ -11,21 +11,23 @@ form {
   justify-content: space-around;
   padding-top: 2em;
 }
+
 .multiple-choice {
   flex: .8;
   display: flex;
   justify-content: space-around;
   padding: 2em 1em;
-  max-height: 60vh;
+  overflow-y: scroll;
 }
 
-#staffs{
+#staffs {
   border: 1px solid black;
   background: white;
   overflow-y: scroll;
   width: 100%;
   padding: 1em;
 }
+
 button {
   width: fit-content;
   align-self: center;

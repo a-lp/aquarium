@@ -1,13 +1,18 @@
-.staff-list{
+form{
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.staff-list {
   flex: .8;
   display: flex;
   justify-content: space-around;
-  max-height: 60vh;
   padding: 2em 1em;
-
+  overflow-y: scroll;
 }
 
-#staffs{
+#staffs {
   border: 1px solid black;
   background: white;
   overflow-y: scroll;
@@ -15,11 +20,12 @@
   padding: 1em;
 }
 
-table{
+table {
   width: 100%;
+  flex: .2;
 }
 
-th *{
+th * {
   width: 95%;
 }
 

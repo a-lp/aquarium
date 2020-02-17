@@ -12,7 +12,7 @@
       <h3>Staff</h3>
       <div class="input-entry" *ngFor="let i of staffs">
         <input type="checkbox" [value]="i" [checked]="this.selectedStaff.includes(i)" (change)="selectElement(i)">
-        <label>{{i.id + ' -' + i.surname.toUpperCase() + ' ' + i.name}}</label>
+        <label>{{i.id + ' -' + i.surname + ' ' + i.name}}</label>
       </div>
     </div>
   </div>
