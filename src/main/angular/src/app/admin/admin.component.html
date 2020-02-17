@@ -28,7 +28,7 @@
       <app-species-creator [species]="species" (onChange)="refresh()"></app-species-creator>
     </div>
     <div [class]="shown!=2?'hidden':'component'">
-      <app-pools-creator [pools]="pools" [sectors]="sectors" (onChange)="refresh()"></app-pools-creator>
+      <app-pools-creator [staffs]="staffs" [pools]="pools" [sectors]="sectors" (onChange)="refresh()"></app-pools-creator>
     </div>
     <div [class]="shown!=3?'hidden':'component'">
       <app-sectors-creator [sectors]="sectors" [pools]="pools" [staffs]="staffs" (onChange)="refresh()"></app-sectors-creator>

@@ -19,10 +19,11 @@ public class Fish implements Serializable {
     private Date returnDate;
     @ManyToOne
     @JoinColumn(name = "fish_specie_id")
-    @JsonIgnoreProperties("fishList")
+    @JsonBackReference(value = "fish-specie")
     private Specie specie;
     @ManyToOne
     @JoinColumn(name = "fish_pool_id")
+    @JsonBackReference(value = "fish-pool")
     private Pool pool;
 
     public Fish() {

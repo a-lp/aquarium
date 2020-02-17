@@ -3,6 +3,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {Pool, WaterCondition} from "../../../../model/Pool";
 import {Sector} from "../../../../model/Sector";
 import {PoolService} from "../../../../service/pool.service";
+import {Staff} from "../../../../model/Staff";
 
 @Component({
   selector: 'app-pool-creator',
@@ -14,13 +15,16 @@ export class PoolCreatorComponent implements OnInit {
     maxCapacity: new FormControl('', Validators.required),
     volume: new FormControl('', Validators.required),
     condition: new FormControl('', Validators.required),
-    sector: new FormControl('', Validators.required)
+    sector: new FormControl('', Validators.required),
+    responsible: new FormControl('', Validators.required)
   });
   conditions = Object.values(WaterCondition);
   @Output()
   onSave: EventEmitter<Pool> = new EventEmitter<Pool>();
   @Input()
   sectors: Array<Sector>;
+  @Input()
+  staffs: Array<Staff>;
 
   constructor(private poolService: PoolService) {
   }

@@ -3,6 +3,7 @@ import {Sector} from '../../../model/Sector';
 import {Pool} from '../../../model/Pool';
 import {PoolService} from '../../../service/pool.service';
 import {Specie} from '../../../model/Specie';
+import {Staff} from "../../../model/Staff";
 
 @Component({
   selector: 'app-pools-creator',
@@ -12,6 +13,8 @@ import {Specie} from '../../../model/Specie';
 export class PoolsCreatorComponent implements OnInit {
   @Input()
   sectors: Array<Sector>;
+  @Input()
+  staffs: Array<Staff>;
   @Input()
   pools: Array<Pool>;
 

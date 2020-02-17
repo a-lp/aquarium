@@ -1,6 +1,8 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -8,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Sector implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,7 +18,7 @@ public class Sector implements Serializable {
     private String name;
     private String location;
     @OneToMany(mappedBy = "sector", cascade = CascadeType.REMOVE)
-    @JsonIgnoreProperties("sector")
+    @JsonManagedReference(value = "sector-pool")
     private List<Pool> pools = new ArrayList<>();
     @ManyToMany
     @JoinTable(
@@ -23,7 +26,6 @@ public class Sector implements Serializable {
             joinColumns = @JoinColumn(name = "staff_id"),
             inverseJoinColumns = @JoinColumn(name = "sector_id")
     )
-    @JsonIgnoreProperties("sectors")
     private List<Staff> staffList = new ArrayList<>();
 
     public Sector() {

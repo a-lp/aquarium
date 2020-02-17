@@ -12,10 +12,11 @@ export class PoolService {
   }
 
   save(pool: Pool): Observable<any> {
-    console.log(pool)
     const sectorId = pool.sector;
+    const responsible = pool.responsible;
+    pool.responsible = null;
     pool.sector = null;
-    return this.http.post('/sectors/' + sectorId + '/pools', pool);
+    return this.http.post('/sectors/' + sectorId + '/responsible/' + responsible + '/pools', pool);
   }
 
   getAll(): Observable<any> {

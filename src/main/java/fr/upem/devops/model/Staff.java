@@ -1,6 +1,6 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Staff implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,12 +21,11 @@ public class Staff implements Serializable {
     private String socialSecurity;
     private StaffRole role;
     @OneToMany(mappedBy = "responsible")
+    @JsonManagedReference(value = "pool-staff")
     private List<Pool> poolsResponsabilities = new ArrayList<>();
     @ManyToMany(mappedBy = "staffList")
-    @JsonIgnoreProperties("staffList")
     private List<Sector> sectors = new ArrayList<>();
     @ManyToMany
-    @JsonIgnoreProperties("staffList")
     private List<PoolActivity> activities = new ArrayList<>();
 
     public Staff() {

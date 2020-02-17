@@ -1,6 +1,6 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class PoolActivity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,10 +25,9 @@ public class PoolActivity implements Serializable {
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "staff_id")
     )
-    @JsonIgnoreProperties({"activities"})
     private List<Staff> staffList = new ArrayList<>();
     @ManyToOne
-    @JsonIgnoreProperties({"scheduledActivities"})
+    @JsonBackReference(value = "schedule-activity")
     private Schedule schedule;
 
     public PoolActivity() {

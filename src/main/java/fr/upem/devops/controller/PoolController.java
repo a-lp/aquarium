@@ -3,8 +3,10 @@ package fr.upem.devops.controller;
 import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
+import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.SectorService;
+import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,6 +16,8 @@ public class PoolController {
     private PoolService poolService;
     @Autowired
     private SectorService sectorService;
+    @Autowired
+    private StaffService staffService;
 
     @GetMapping("/pools")
     public Iterable<Pool> getAll() {
@@ -27,12 +31,15 @@ public class PoolController {
         return pool;
     }
 
-    @PostMapping("/sectors/{sectorId}/pools")
+    @PostMapping("/sectors/{sectorId}/responsible/{staffId}/pools")
     @ResponseBody
-    public Pool addPool(@RequestBody Pool pool, @PathVariable String sectorId) {
+    public Pool addPool(@RequestBody Pool pool, @PathVariable String sectorId, @PathVariable String staffId) {
         Sector sector = sectorService.getById(Long.parseLong(sectorId));
         if (sector == null) throw new ResourceNotFoundException("Sector " + sectorId + " not found!");
+        Staff staff = staffService.getById(Long.parseLong(staffId));
+        if (staff == null) throw new ResourceNotFoundException("staff " + staffId + " not found!");
         pool.setSector(sector);
+        pool.setResponsible(staff);
         return poolService.save(pool);
     }
 
