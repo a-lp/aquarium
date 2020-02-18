@@ -106,4 +106,14 @@ public class Schedule implements Serializable {
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Schedule{" +
+                "id=" + id +
+                ", startPeriod=" + startPeriod +
+                ", endPeriod=" + endPeriod +
+                ", pool=" + (pool==null?"undefined":pool.getId()) +
+                '}';
+    }
 }

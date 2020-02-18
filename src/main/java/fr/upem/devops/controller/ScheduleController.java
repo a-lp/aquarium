@@ -8,6 +8,7 @@ import fr.upem.devops.service.ScheduleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 
 @RestController
@@ -40,14 +41,16 @@ public class ScheduleController {
 
     @PutMapping("/schedules/{id}")
     @ResponseBody
-    public Schedule updateSchedule(@PathVariable String id, @RequestBody HashMap<String, Object> schedule) {
+    public Schedule updateSchedule(@PathVariable String id, @RequestBody HashMap<String, String> schedule) {
         Schedule p = getById(id);
 //        p.setScheduledActivities(schedule.getScheduledActivities());
-        //TODO: fix date
-//        p.setEndPeriod(schedule.get("endPeriod"));
-//        p.setStartPeriod(schedule.get("startPeriod"));
+        if (schedule.containsKey("startPeriod"))
+            p.setStartPeriod(new Date(Long.parseLong(schedule.get("startPeriod"))));
+        if (schedule.containsKey("endPeriod"))
+            p.setEndPeriod(new Date(Long.parseLong(schedule.get("endPeriod"))));
 //        p.setPool(schedule.getPool());
-        return service.save(p);
+        Schedule save = service.save(p);
+        return save;
     }
 
     @DeleteMapping("/schedules/{id}")

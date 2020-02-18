@@ -23,7 +23,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -48,7 +47,7 @@ public class ScheduleControllerTest {
         Pool p3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new HashSet<>());
         pools.addAll(Arrays.asList(p1, p2, p3));
         for (int i = 0; i < 3; i++) {
-            this.schedules.add(new Schedule(Long.parseLong(i + ""), new Date(), new Date(), new HashSet<>()));
+            this.schedules.add(new Schedule(Long.parseLong((i+1) + ""), new Date(), new Date(), new HashSet<>()));
             this.schedules.get(i).setPool(pools.get(i));
             pools.get(i).getSchedules().add(this.schedules.get(i));
         }
@@ -102,13 +101,16 @@ public class ScheduleControllerTest {
 
     @Test
     public void updateSchedule() {
-        Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
-        schedule.setPool(this.pools.get(0));
-        Mockito.when(service.save(schedule)).thenReturn(schedule);
+        Schedule schedule = schedules.get(0);
+        schedule.setStartPeriod(new Date());
         schedule.setEndPeriod(new Date());
-        HttpEntity<Schedule> httpEntity = new HttpEntity<>(schedule);
-        Schedule request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.PUT, httpEntity, Schedule.class).getBody();
-        assertNotEquals(schedule.getId().toString(), request.getId().toString());
+        Mockito.when(service.save(schedule)).thenReturn(schedule);
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("endPeriod", schedule.getEndPeriod().getTime() + "");
+        parameters.put("startPeriod", schedule.getStartPeriod().getTime() + "");
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
+        assertEquals(schedule.getId().toString(), request.get("id").toString());
     }
 
     @Test
