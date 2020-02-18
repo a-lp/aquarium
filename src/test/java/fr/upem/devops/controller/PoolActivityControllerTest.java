@@ -90,15 +90,15 @@ public class PoolActivityControllerTest {
         PoolActivity pa_new = new PoolActivity(4L, LocalTime.of(4, 0), LocalTime.of(8, 0), true, Sets.newHashSet(Arrays.asList(s1, s2, s3)), schedule);
         schedule.assignActivity(pa_new);
         Mockito.when(service.save(pa)).thenReturn(pa_new);
-        PoolActivity request = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", pa,
-                PoolActivity.class);
-        assertEquals(pa_new.getId(), request.getId());
-        assertEquals(pa_new.getDescription(), request.getDescription());
-        assertEquals(pa_new.getOpenToPublic(), request.getOpenToPublic());
-        assertEquals(pa_new.getSchedule(), request.getSchedule());
-        assertEquals(pa_new.getEndActivity(), request.getEndActivity());
-        assertEquals(pa_new.getStartActivity(), request.getStartActivity());
-        assertEquals(pa_new.getStaffList(), request.getStaffList());
+        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", pa,
+                HashMap.class);
+        assertEquals(pa_new.getId().toString(), request.get("id").toString());
+        assertEquals(pa_new.getDescription(), request.get("description"));
+        assertEquals(pa_new.getOpenToPublic(), request.get("openToPublic"));
+        assertEquals(pa_new.getSchedule().getId().toString(), request.get("schedule").toString());
+        assertEquals(pa_new.getEndActivity(), LocalTime.parse(request.get("endActivity").toString()));
+        assertEquals(pa_new.getStartActivity(), LocalTime.parse(request.get("startActivity").toString()));
+        assertEquals(pa_new.getStaffList().size(), ((List) request.get("staffList")).size());
     }
 
     @Test
@@ -126,10 +126,10 @@ public class PoolActivityControllerTest {
         PoolActivity poolActivity = this.activities.get(0);
         Mockito.when(service.save(poolActivity)).thenReturn(poolActivity);
         poolActivity.setDescription("new desc");
-        poolActivity.setSchedule(new Schedule());
         HttpEntity<PoolActivity> httpEntity = new HttpEntity<>(poolActivity);
-        PoolActivity request = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT, httpEntity, PoolActivity.class).getBody();
-        assertEquals(poolActivity, request);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
+        assertEquals(poolActivity.getId().toString(), request.get("id").toString());
+        assertEquals(poolActivity.getDescription(), request.get("description"));
     }
 
     @Test
