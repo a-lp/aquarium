@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class PoolController {
@@ -47,8 +48,7 @@ public class PoolController {
 
     @PutMapping("/pools/{id}")
     @ResponseBody
-    public Pool updatePool(@PathVariable String id, @RequestBody HashMap<String, String> parameters) {
-        System.out.println(parameters);
+    public Pool updatePool(@PathVariable String id, @RequestBody Map<String, String> parameters) {
         Pool p = getById(id);
         if (parameters.containsKey("volume"))
             p.setVolume(Double.parseDouble(parameters.get("volume")));

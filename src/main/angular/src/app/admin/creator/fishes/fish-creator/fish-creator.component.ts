@@ -36,6 +36,7 @@ export class FishCreatorComponent implements OnInit {
   save($event: Event) {
     this.fishService.save(this.form.value).subscribe(fish => {
       this.onSave.emit(fish);
+      this.form.reset();
     });
   }
 }

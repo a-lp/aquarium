@@ -44,10 +44,6 @@ public class SpecieController {
     public Specie updateSpecie(@PathVariable String name, @RequestBody Map<String, String> parameters) {
         Specie p = getByName(name);
         if (p == null) throw new ResourceNotFoundException("Specie named: '" + name + "' not found!");
-//        p.setAlimentation(specie.getAlimentation());
-//        p.setExtinctionLevel(specie.getExtinctionLevel());
-//        p.setFishList(specie.getFishList());
-//        p.setLifeSpan(specie.getLifeSpan());
         if (parameters.containsKey("alimentation"))
             p.setAlimentation(Alimentation.valueOf(parameters.get("alimentation")));
         if (parameters.containsKey("name"))
@@ -60,8 +56,11 @@ public class SpecieController {
             //TODO: fish non si aggiorna. Non aggiornare questa lista lato controller ma farlo lato angular con servizio fish
             String[] fishIds = parameters.get("fishList").split(",");
             Set<Fish> newFishList = new HashSet<>();
-            for (String id : fishIds)
-                newFishList.add(fishService.getById(Long.parseLong(id)));
+            for (String id : fishIds){
+                Fish fish = fishService.getById(Long.parseLong(id));
+                fish.setSpecie(p);
+                newFishList.add(fish);
+            }
             p.setFishList(newFishList);
         }
         return specieService.save(p);

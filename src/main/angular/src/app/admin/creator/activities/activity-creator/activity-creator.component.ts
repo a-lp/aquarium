@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {PoolActivity} from '../../../../model/PoolActivity';
 import {Schedule} from '../../../../model/Schedule';
 import {Staff} from '../../../../model/Staff';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivityService} from '../../../../service/activity.service';
 
 @Component({

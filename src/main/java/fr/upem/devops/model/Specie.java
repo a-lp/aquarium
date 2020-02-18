@@ -1,6 +1,7 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -14,13 +15,14 @@ public class Specie implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(name = "name", unique = true)
+    @Column(unique = true)
     private String name;
     private Short lifeSpan;
     private Short extinctionLevel;
     @Enumerated(EnumType.STRING)
     private Alimentation alimentation;
     @OneToMany(mappedBy = "specie")
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<Fish> fishList = new HashSet<>();
 
     public Specie() {

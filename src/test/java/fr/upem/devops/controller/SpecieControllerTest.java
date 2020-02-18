@@ -20,8 +20,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -110,11 +110,19 @@ public class SpecieControllerTest {
     public void updateSpecie() {
         Specie specie = this.species.get(0);
         Mockito.when(specieService.save(specie)).thenReturn(specie);
-        specie.addFish(new Fish());
-        HttpEntity<Specie> httpEntity = new HttpEntity<>(specie);
+        specie.setAlimentation(Alimentation.LIMNIVORE);
+        specie.setLifeSpan((short) 63);
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", specie.getId().toString());
+        parameters.put("name;", specie.getName());
+        parameters.put("lifeSpan", specie.getLifeSpan().toString());
+        parameters.put("extinctionLevel", specie.getExtinctionLevel().toString());
+        parameters.put("alimentation", specie.getAlimentation().name());
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
         Specie request = this.restTemplate.exchange("http://localhost:" + port + "/species/Specie1", HttpMethod.PUT, httpEntity, Specie.class).getBody();
         assertEquals(specie, request);
-        assertEquals(specie.getFishList(), request.getFishList());
+        assertEquals(specie.getAlimentation(), request.getAlimentation());
+        assertEquals(specie.getLifeSpan(), request.getLifeSpan());
     }
 
     @Test

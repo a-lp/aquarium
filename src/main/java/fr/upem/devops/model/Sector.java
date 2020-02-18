@@ -1,6 +1,7 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -17,6 +18,7 @@ public class Sector implements Serializable {
     private String name;
     private String location;
     @OneToMany(mappedBy = "sector", cascade = CascadeType.REMOVE)
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<Pool> pools = new HashSet<>();
     @ManyToMany
     @JoinTable(
@@ -24,6 +26,7 @@ public class Sector implements Serializable {
             joinColumns = @JoinColumn(name = "staff_id"),
             inverseJoinColumns = @JoinColumn(name = "sector_id")
     )
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<Staff> staffList = new HashSet<>();
 
     public Sector() {

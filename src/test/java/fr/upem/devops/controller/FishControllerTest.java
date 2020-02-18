@@ -72,9 +72,9 @@ public class FishControllerTest {
 
     @Test
     public void getBySpecies() {
-        List<LinkedHashMap> fishes = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1/fishes", List.class);
+        List<String> fishes = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1/fishes", List.class);
         assertEquals(1, fishes.size());
-        assertEquals(species.get(0).getName(), ((LinkedHashMap) (fishes.get(0).get("specie"))).get("name"));
+        assertEquals(species.get(0).getName(), fishes.get(0));
     }
 
     @Test
@@ -110,12 +110,12 @@ public class FishControllerTest {
         assertEquals(fish_new.getGender().name(), request.get("gender"));
         assertEquals(fish_new.getId().toString(), request.get("id").toString());
         assertNotNull(request.get("arrivalDate"));
-        assertEquals(fish_new.getPool().getId().toString(), ((LinkedHashMap) request.get("pool")).get("id").toString());
-        assertEquals(fish_new.getSpecie().getName(), ((LinkedHashMap) request.get("specie")).get("name"));
+        assertEquals(fish_new.getPool().getId().toString(), request.get("pool").toString());
+        assertEquals(fish_new.getSpecie().getName(), request.get("specie"));
     }
 
     @Test
-    public void addFishSpecieNotFound(){
+    public void addFishSpecieNotFound() {
         Mockito.when(specieService.getByName("Specie4")).thenThrow(new ResourceNotFoundException("Species 'Specie4' not found!"));
         Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
         ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/species/Specie4/pools/1/fishes", fish,
@@ -124,7 +124,7 @@ public class FishControllerTest {
     }
 
     @Test
-    public void addFishPoolNotFound(){
+    public void addFishPoolNotFound() {
         Mockito.when(poolService.getById(2L)).thenThrow(new ResourceNotFoundException("Pool with id '2' not found!"));
         Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
         ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/species/Specie1/pools/2/fishes", fish,

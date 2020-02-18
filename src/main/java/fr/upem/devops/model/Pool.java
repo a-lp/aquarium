@@ -20,14 +20,18 @@ public class Pool implements Serializable {
     @Enumerated(EnumType.STRING)
     private WaterCondition condition;
     @OneToMany(mappedBy = "pool")
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<Fish> fishes = new HashSet<>();
     @OneToMany(mappedBy = "pool", cascade = CascadeType.REMOVE)
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<Schedule> schedules = new HashSet<>();
     @ManyToOne
     @JoinColumn(name = "pool_sector")
+    @JsonIdentityReference(alwaysAsId=true)
     private Sector sector;
     @ManyToOne
     @JoinColumn(name = "pool_responsible")
+    @JsonIdentityReference(alwaysAsId=true)
     private Staff responsible;
 
     public Pool() {

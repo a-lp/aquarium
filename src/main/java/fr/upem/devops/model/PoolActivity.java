@@ -1,6 +1,7 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -29,8 +30,10 @@ public class PoolActivity implements Serializable {
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "staff_id")
     )
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<Staff> staffList = new HashSet<>();
     @ManyToOne
+    @JsonIdentityReference(alwaysAsId=true)
     private Schedule schedule;
 
     public PoolActivity() {

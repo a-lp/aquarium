@@ -1,6 +1,7 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -20,10 +21,13 @@ public class Staff implements Serializable {
     private String socialSecurity;
     private StaffRole role;
     @OneToMany(mappedBy = "responsible")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Pool> poolsResponsabilities = new ArrayList<>();
     @ManyToMany(mappedBy = "staffList")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Sector> sectors = new ArrayList<>();
     @ManyToMany
+    @JsonIdentityReference(alwaysAsId = true)
     private Set<PoolActivity> activities = new HashSet<>();
 
     public Staff() {

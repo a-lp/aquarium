@@ -1,6 +1,7 @@
 package fr.upem.devops.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
@@ -19,8 +20,10 @@ public class Schedule implements Serializable {
     private Date endPeriod;
     @ManyToOne
     @JoinColumn(name = "calendar_pool")
+    @JsonIdentityReference(alwaysAsId=true)
     private Pool pool;
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
+    @JsonIdentityReference(alwaysAsId=true)
     private Set<PoolActivity> scheduledActivities = new HashSet<>();
 
     public Schedule() {

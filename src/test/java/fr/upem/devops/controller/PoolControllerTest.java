@@ -136,9 +136,15 @@ public class PoolControllerTest {
         Pool pool = this.pools.get(0);
         Mockito.when(poolService.save(pool)).thenReturn(pool);
         pool.setCondition(Pool.WaterCondition.DIRTY);
-        HttpEntity<Pool> httpEntity = new HttpEntity<>(pool);
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("id", pool.getId().toString());
+        parameters.put("maxCapacity", pool.getMaxCapacity().toString());
+        parameters.put("volume", pool.getVolume().toString());
+        parameters.put("condition", pool.getCondition().name());
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
         Pool request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT, httpEntity, Pool.class).getBody();
         assertEquals(pool, request);
+        assertEquals(pool.getCondition(), request.getCondition());
     }
 
     @Test
