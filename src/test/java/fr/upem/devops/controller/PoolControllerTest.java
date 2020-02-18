@@ -81,12 +81,12 @@ public class PoolControllerTest {
     @Test
     public void getById() {
         List<HashMap> poolSet = this.restTemplate.getForObject("http://localhost:" + port + "/pools", List.class);
-        Pool output = this.restTemplate.getForObject("http://localhost:" + port + "/pools/1", Pool.class);
-        assertEquals(poolSet.get(0).get("id").toString(), output.getId().toString());
-        assertEquals(poolSet.get(0).get("maxCapacity").toString(), output.getMaxCapacity().toString());
-        assertEquals(poolSet.get(0).get("volume"), output.getVolume());
-        assertEquals(poolSet.get(0).get("condition"), output.getCondition().name());
-        assertEquals(((ArrayList<Fish>) (poolSet.get(0).get("fishes"))).size(), output.getFishes().size());
+        HashMap<String, Object> request = this.restTemplate.getForObject("http://localhost:" + port + "/pools/1", HashMap.class);
+        assertEquals(poolSet.get(0).get("id").toString(), request.get("id").toString());
+        assertEquals(poolSet.get(0).get("maxCapacity").toString(), request.get("maxCapacity").toString());
+        assertEquals(poolSet.get(0).get("volume"), request.get("volume"));
+        assertEquals(poolSet.get(0).get("condition"), request.get("condition"));
+        assertEquals(((ArrayList<Fish>) (poolSet.get(0).get("fishes"))).size(), ((List) request.get("fishes")).size());
     }
 
     @Test
@@ -101,14 +101,14 @@ public class PoolControllerTest {
         pool_new.setResponsible(s1);
         Mockito.when(staffService.getById(1L)).thenReturn(s1);
         Mockito.when(poolService.save(pool)).thenReturn(pool_new);
-        Pool request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/1/responsible/1/pools", pool,
-                Pool.class);
-        assertEquals(pool.getId(), request.getId());
-        assertEquals(pool.getCondition(), request.getCondition());
-        assertEquals(pool.getMaxCapacity(), request.getMaxCapacity());
-        assertEquals(pool.getVolume(), request.getVolume());
-        assertEquals(pool.getFishes(), request.getFishes());
-        assertEquals(pool_new.getSector(), request.getSector());
+        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/1/responsible/1/pools", pool,
+                HashMap.class);
+        assertEquals(pool.getId().toString(), request.get("id").toString());
+        assertEquals(pool.getCondition().name(), request.get("condition"));
+        assertEquals(pool.getMaxCapacity().toString(), request.get("maxCapacity").toString());
+        assertEquals(pool.getVolume().toString(), request.get("volume").toString());
+        assertEquals(pool.getFishes().size(), ((List) request.get("fishes")).size());
+        assertEquals(pool_new.getSector().getName(), request.get("sector"));
     }
 
     @Test
@@ -142,16 +142,16 @@ public class PoolControllerTest {
         parameters.put("volume", pool.getVolume().toString());
         parameters.put("condition", pool.getCondition().name());
         HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
-        Pool request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT, httpEntity, Pool.class).getBody();
-        assertEquals(pool, request);
-        assertEquals(pool.getCondition(), request.getCondition());
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
+        assertEquals(pool.getId().toString(), request.get("id").toString());
+        assertEquals(pool.getCondition().name(), request.get("condition"));
     }
 
     @Test
     public void deletePool() {
         Pool pool = this.pools.get(0);
         Mockito.when(poolService.remove(pool)).thenReturn(pool);
-        Pool request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.DELETE, null, Pool.class).getBody();
-        assertEquals(pool, request);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.DELETE, null, HashMap.class).getBody();
+        assertEquals(pool.getId().toString(), request.get("id").toString());
     }
 }
