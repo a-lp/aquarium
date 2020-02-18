@@ -40,6 +40,7 @@ public class FishControllerTest {
 
     private List<Fish> fish = new ArrayList<>();
     private List<Specie> species = new ArrayList<>();
+    Pool pool;
 
     @Before
     public void init() {
@@ -50,6 +51,7 @@ public class FishControllerTest {
         Specie s1 = new Specie(1L, "Specie1", lf++, lf, Alimentation.CARNIVORE, new HashSet<>(Collections.singletonList(p1)));
         Specie s2 = new Specie(2L, "Specie2", lf++, lf, Alimentation.HERBIVORE, new HashSet<>(Collections.singletonList(p2)));
         Specie s3 = new Specie(3L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new HashSet<>(Collections.singletonList(p3)));
+        this.pool = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
         p1.setSpecie(s1);
         p2.setSpecie(s2);
         p3.setSpecie(s3);
@@ -62,6 +64,7 @@ public class FishControllerTest {
         Mockito.when(specieService.getByName("Specie1")).thenReturn(s1);
         Mockito.when(specieService.getByName("Specie2")).thenReturn(s2);
         Mockito.when(specieService.getByName("Specie3")).thenReturn(s3);
+        Mockito.when(poolService.getById(1L)).thenReturn(pool);
     }
 
     @Test
@@ -72,9 +75,9 @@ public class FishControllerTest {
 
     @Test
     public void getBySpecies() {
-        List<String> fishes = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1/fishes", List.class);
+        List<HashMap> fishes = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1/fishes", List.class);
         assertEquals(1, fishes.size());
-        assertEquals(species.get(0).getName(), fishes.get(0));
+        assertEquals(species.get(0).getName(), fishes.get(0).get("specie"));
     }
 
     @Test
@@ -87,13 +90,12 @@ public class FishControllerTest {
     @Test
     public void getById() {
         List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/fishes", List.class);
-        Fish output = this.restTemplate.getForObject("http://localhost:" + port + "/fishes/2", Fish.class);
-        assertEquals(lista.get(1).get("name"), output.getName());
+        HashMap output = this.restTemplate.getForObject("http://localhost:" + port + "/fishes/2", HashMap.class);
+        assertEquals(lista.get(1).get("name"), output.get("name"));
     }
 
     @Test
     public void addFish() {
-        Pool pool = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
         Specie specie = species.get(0);
         Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
         Fish fish_new = new Fish(4L, "Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", specie, pool);
@@ -101,8 +103,6 @@ public class FishControllerTest {
         pool.addFish(fish_new);
         specie.addFish(fish_new);
         Mockito.when(fishService.save(fish)).thenReturn(fish_new);
-        Mockito.when(poolService.getById(1L)).thenReturn(pool);
-        Mockito.when(specieService.getByName("Specie1")).thenReturn(specie);
         LinkedHashMap request = this.restTemplate.postForObject("http://localhost:" + port + "/species/Specie1/pools/1/fishes", fish,
                 LinkedHashMap.class);
         assertEquals(fish_new.getName(), request.get("name"));
@@ -137,10 +137,9 @@ public class FishControllerTest {
         Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool());
         updateP1.setReturnDate(new Date());
         Mockito.when(fishService.save(updateP1)).thenReturn(updateP1);
-        HttpEntity<Fish> updated = new HttpEntity<Fish>(updateP1);
-        Fish request = this.restTemplate.exchange("http://localhost:" + port + "/fishes/retire/3", HttpMethod.PUT,
-                updated, Fish.class).getBody();
-        assertNotNull(request.getReturnDate());
+        HashMap<String, String> request = this.restTemplate.exchange("http://localhost:" + port + "/fishes/retire/3", HttpMethod.PUT,
+                null, HashMap.class).getBody();
+        assertNotNull(request.containsKey("returnDate"));
     }
 
     @Test
@@ -156,12 +155,11 @@ public class FishControllerTest {
 
     @Test
     public void deleteFish() {
-        Fish p1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool());
+        Fish p1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", this.species.get(0), pool);
         Mockito.when(fishService.remove(p1)).thenReturn(p1);
-        Fish response = this.restTemplate
-                .exchange("http://localhost:" + port + "/fishes/3", HttpMethod.DELETE, null, Fish.class)
+        HashMap<String, Object> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/fishes/3", HttpMethod.DELETE, null, HashMap.class)
                 .getBody();
-        assertEquals(Long.valueOf(3L), response.getId());
-        assertEquals(p1, response);
+        assertEquals("3", response.get("id").toString());
     }
 }
