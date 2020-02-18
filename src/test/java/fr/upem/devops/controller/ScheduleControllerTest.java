@@ -23,6 +23,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -69,9 +70,9 @@ public class ScheduleControllerTest {
     @Test
     public void getById() {
         List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/schedules", List.class);
-        Schedule output = this.restTemplate.getForObject("http://localhost:" + port + "/schedules/1", Schedule.class);
-        assertEquals(lista.get(0).get("id").toString(), output.getId().toString());
-        assertEquals(((LinkedHashMap) lista.get(0).get("pool")).get("id").toString(), output.getPool().getId().toString());
+        HashMap<String, Object> output = this.restTemplate.getForObject("http://localhost:" + port + "/schedules/1", HashMap.class);
+        assertEquals(lista.get(0).get("id").toString(), output.get("id").toString());
+        assertEquals(lista.get(0).get("pool").toString(), output.get("pool").toString());
     }
 
     @Test
@@ -82,13 +83,11 @@ public class ScheduleControllerTest {
         schedule_new.setPool(pool);
         pool.getSchedules().add(schedule_new);
         Mockito.when(service.save(schedule)).thenReturn(schedule_new);
-        Schedule request = this.restTemplate.postForObject("http://localhost:" + port + "/pools/1/schedules", schedule,
-                Schedule.class);
-        assertEquals(schedule_new.getId(), request.getId());
-        assertEquals(schedule_new.getScheduledActivities(), request.getScheduledActivities());
-        assertEquals(schedule_new.getEndPeriod(), request.getEndPeriod());
-        assertEquals(schedule_new.getStartPeriod(), request.getStartPeriod());
-        assertEquals(schedule_new.getPool(), request.getPool());
+        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/pools/1/schedules", schedule,
+                HashMap.class);
+        assertEquals(schedule_new.getId().toString(), request.get("id").toString());
+        assertEquals(schedule_new.getScheduledActivities().size(), ((List) request.get("scheduledActivities")).size());
+        assertEquals(schedule_new.getPool().getId().toString(), request.get("pool").toString());
     }
 
     @Test
@@ -103,19 +102,20 @@ public class ScheduleControllerTest {
 
     @Test
     public void updateSchedule() {
-        Schedule schedule = this.schedules.get(0);
+        Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
+        schedule.setPool(this.pools.get(0));
         Mockito.when(service.save(schedule)).thenReturn(schedule);
-        schedule.setPool(this.pools.get(2));
+        schedule.setEndPeriod(new Date());
         HttpEntity<Schedule> httpEntity = new HttpEntity<>(schedule);
         Schedule request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.PUT, httpEntity, Schedule.class).getBody();
-        assertEquals(schedule, request);
+        assertNotEquals(schedule.getId().toString(), request.getId().toString());
     }
 
     @Test
     public void deleteSchedule() {
         Schedule schedule = this.schedules.get(0);
         Mockito.when(service.remove(schedule)).thenReturn(schedule);
-        Schedule request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.DELETE, null, Schedule.class).getBody();
-        assertEquals(schedule, request);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.DELETE, null, HashMap.class).getBody();
+        assertEquals(schedule.getId().toString(), request.get("id").toString());
     }
 }
