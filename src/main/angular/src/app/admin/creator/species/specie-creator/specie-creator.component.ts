@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
 import {Specie} from '../../../../model/Specie';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Alimentation} from '../../../../model/Alimentation';
@@ -12,7 +12,7 @@ import {Fish} from "../../../../model/Fish";
   templateUrl: './specie-creator.component.html',
   styleUrls: ['./specie-creator.component.css']
 })
-export class SpecieCreatorComponent implements OnInit {
+export class SpecieCreatorComponent implements OnInit, OnChanges {
   @Input()
   specie: Specie;
   @Output()
@@ -93,5 +93,9 @@ export class SpecieCreatorComponent implements OnInit {
         this.fishList = result;
       }, error => console.log(error)
     );
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    this.refresh();
   }
 }
