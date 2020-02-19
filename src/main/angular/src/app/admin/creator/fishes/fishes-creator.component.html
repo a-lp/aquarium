@@ -39,8 +39,8 @@
     <td>{{fish.distinctSign}}</td>
     <td>{{this.datePipe.transform(fish.arrivalDate, 'dd/MM/yyyy, HH:mm')}}</td>
     <td>{{(fish.returnDate != null) ? this.datePipe.transform(fish.returnDate, 'dd/MM/yyyy, HH:mm') : "Not yet"}}</td>
-    <td>{{(fish.specie != null) ? fish.specie.name : "Unknown"}}</td>
-    <td>{{(fish.pool != null) ? fish.pool.id : "Not assigned to a pool"}}</td>
+    <td>{{(fish.specie != null) ? fish.specie : "Unknown"}}</td>
+    <td>{{(fish.pool != null) ? fish.pool : "Not assigned to a pool"}}</td>
     <th>
       <button>Show</button>
     </th>
