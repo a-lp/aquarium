@@ -53,7 +53,6 @@ public class FishController {
         fish.setArrivalDate(new Date());
         fish.setSpecie(specie);
         fish.setPool(pool);
-        System.out.println(fish);
         return fishService.save(fish);
     }
 

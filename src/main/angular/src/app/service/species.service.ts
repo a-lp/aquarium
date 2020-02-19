@@ -27,7 +27,11 @@ export class SpeciesService {
     return this.http.get('/species/' + name);
   }
 
-  update(name: string, specie: Specie) {
+  update(name: string, specie: Specie): Observable<any> {
     return this.http.put('/species/' + name, specie);
+  }
+
+  getFishes(name: string): Observable<any> {
+    return this.http.get('/species/' + name + '/fishes');
   }
 }

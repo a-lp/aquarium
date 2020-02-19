@@ -58,14 +58,14 @@
           </tr>
           </thead>
           <tbody>
-          <tr *ngFor="let fish of specie.fishList">
+          <tr *ngFor="let fish of fishList">
             <td>{{fish.id}}</td>
             <td>{{fish.name}}</td>
             <td>{{fish.gender}}</td>
             <td>{{fish.distinctSign}}</td>
             <td>{{this.datePipe.transform(fish.arrivalDate, 'dd/MM/yyyy, HH:mm')}}</td>
             <td>{{(fish.returnDate != null) ? this.datePipe.transform(fish.returnDate, 'dd/MM/yyyy, HH:mm') : "Not yet"}}</td>
-            <td>{{fish.pool.id}}</td>
+            <td>{{fish.pool}}</td>
             <td>
               <button [disabled]="fish.returnDate!=null" (click)="retireAnimal(fish)">Retire</button>
             </td>

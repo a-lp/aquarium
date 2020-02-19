@@ -56,7 +56,7 @@ public class SpecieController {
             //TODO: fish non si aggiorna. Non aggiornare questa lista lato controller ma farlo lato angular con servizio fish
             String[] fishIds = parameters.get("fishList").split(",");
             Set<Fish> newFishList = new HashSet<>();
-            for (String id : fishIds){
+            for (String id : fishIds) {
                 Fish fish = fishService.getById(Long.parseLong(id));
                 fish.setSpecie(p);
                 newFishList.add(fish);

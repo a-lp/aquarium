@@ -30,11 +30,13 @@ export class SpecieCreatorComponent implements OnInit {
   alimentations = Object.values(Alimentation);
   field = 0; // Sorting field
   ascendent = true;
+  fishList: Array<Fish> = []
 
   constructor(private speciesService: SpeciesService, private fishService: FishService, private datePipe: DatePipe) {
   }
 
   ngOnInit() {
+    this.refresh();
   }
 
 
@@ -43,23 +45,22 @@ export class SpecieCreatorComponent implements OnInit {
   }
 
   update() {
-    //TODO: gestire l'update dei pesci
     var specie: any = Object.assign({}, this.specie);
     specie.name = this.form.value.name;
     specie.lifeSpan = this.form.value.lifeSpan;
     specie.extinctionLevel = this.form.value.extinctionLevel;
     specie.alimentation = this.form.value.alimentation;
-    //specie.fishList = this.specie.fishList.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
-    specie.fishList = this.specie.fishList[0].id;
-    console.log(specie);
+    //TODO: implementare rimozione dei pesci da specie
+    specie.fishList = this.specie.fishList.map(x => x.toString()).reduce((x, y) => x + ',' + y);
     this.speciesService.update(this.specie.name, specie).subscribe(updatedSpecie => {
-      console.log(updatedSpecie);
+      this.specie = updatedSpecie;
       this.refresh();
       this.onUpdate.emit(updatedSpecie);
     }, error => console.log(error));
   }
 
   refresh() {
+    this.getFishes();
     this.speciesService.getSpecie(this.specie.name).subscribe(
       specie => {
         this.specie = specie;
@@ -85,5 +86,12 @@ export class SpecieCreatorComponent implements OnInit {
     }
     this.field = field;
     this.fishService.sort(this.specie.fishList, this.field, this.ascendent);
+  }
+
+  getFishes() {
+    this.speciesService.getFishes(this.specie.name).subscribe(result => {
+        this.fishList = result;
+      }, error => console.log(error)
+    );
   }
 }
