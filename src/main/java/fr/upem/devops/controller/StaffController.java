@@ -6,6 +6,9 @@ import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
+import java.util.Map;
+
 @RestController
 public class StaffController {
     @Autowired
@@ -32,16 +35,26 @@ public class StaffController {
 
     @PutMapping("/staff/{id}")
     @ResponseBody
-    public Staff updateStaff(@PathVariable String id, @RequestBody Staff staff) {
+    public Staff updateStaff(@PathVariable String id, @RequestBody Map<String, String> parameters) {
         Staff p = getById(id);
-        p.setName(staff.getName());
-        p.setAddress(staff.getAddress());
-        p.setBirthday(staff.getBirthday());
-        p.setPoolsResponsabilities(staff.getPoolsResponsabilities());
-        p.setRole(staff.getRole());
-        p.setSectors(staff.getSectors());
-        p.setSocialSecurity(staff.getSocialSecurity());
-        p.setSurname(staff.getSurname());
+        if (parameters.containsKey("name"))
+            p.setName(parameters.get("name"));
+        if (parameters.containsKey("address"))
+            p.setAddress(parameters.get("address"));
+        if (parameters.containsKey("address"))
+            p.setAddress(parameters.get("address"));
+        if (parameters.containsKey("birthday"))
+            p.setBirthday(new Date(Long.parseLong(parameters.get("birthday"))));
+//        if (parameters.containsKey("poolsResponsabilities"))
+//            p.setPoolsResponsabilities(Long.parseLong(parameters.get("birthday")));
+//        p.setSectors(staff.getSectors());
+
+        if (parameters.containsKey("role"))
+            p.setRole(Staff.StaffRole.valueOf(parameters.get("role")));
+        if (parameters.containsKey("socialSecurity"))
+            p.setSocialSecurity(parameters.get("socialSecurity"));
+        if (parameters.containsKey("surname"))
+            p.setSurname(parameters.get("surname"));
         return service.save(p);
     }
 

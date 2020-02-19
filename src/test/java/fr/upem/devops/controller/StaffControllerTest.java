@@ -2,11 +2,9 @@ package fr.upem.devops.controller;
 
 import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.PoolActivity;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.StaffService;
-import org.assertj.core.util.Sets;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +18,6 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.time.LocalTime;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -74,15 +71,15 @@ public class StaffControllerTest {
     @Test
     public void getById() {
         List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/staff", List.class);
-        Staff output = this.restTemplate.getForObject("http://localhost:" + port + "/staff/1", Staff.class);
-        assertEquals(lista.get(0).get("id").toString(), output.getId().toString());
-        assertEquals(lista.get(0).get("name").toString(), output.getName());
-        assertEquals(lista.get(0).get("surname"), output.getSurname());
+        HashMap<String, Object> output = this.restTemplate.getForObject("http://localhost:" + port + "/staff/1", HashMap.class);
+        assertEquals(lista.get(0).get("id").toString(), output.get("id").toString());
+        assertEquals(lista.get(0).get("name").toString(), output.get("name"));
+        assertEquals(lista.get(0).get("surname"), output.get("surname"));
 //        assertEquals(lista.get(0).get("birthday"), output.getBirthday());
-        assertEquals(lista.get(0).get("socialSecurity"), output.getSocialSecurity());
-        assertEquals(Staff.StaffRole.valueOf(lista.get(0).get("role").toString()), output.getRole());
-        assertEquals(((List) lista.get(0).get("poolsResponsabilities")).size(), output.getPoolsResponsabilities().size());
-        assertEquals(((List) lista.get(0).get("sectors")).size(), output.getSectors().size());
+        assertEquals(lista.get(0).get("socialSecurity"), output.get("socialSecurity"));
+        assertEquals(lista.get(0).get("role"), output.get("role"));
+        assertEquals(((List) lista.get(0).get("poolsResponsabilities")).size(), ((List) output.get("poolsResponsabilities")).size());
+        assertEquals(((List) lista.get(0).get("sectors")).size(), ((List) output.get("sectors")).size());
     }
 
     @Test
@@ -106,19 +103,27 @@ public class StaffControllerTest {
     public void updateStaff() {
         Staff staff = this.staffList.get(0);
         Mockito.when(staffService.save(staff)).thenReturn(staff);
+        HashMap<String, String> parameters = new HashMap<>();
         staff.setSurname("New Surname");
-        staff.assignSector(new Sector());
-        HttpEntity<Staff> httpEntity = new HttpEntity<>(staff);
-        Staff request = this.restTemplate.exchange("http://localhost:" + port + "/staff/1", HttpMethod.PUT, httpEntity, Staff.class).getBody();
-        assertEquals(staff, request);
+        staff.setSocialSecurity("New SeocialSec");
+        parameters.put("surname", staff.getSurname());
+        parameters.put("socialSecurity", staff.getSocialSecurity());
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/staff/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
+        assertEquals(staff.getId().toString(), request.get("id").toString());
+        assertEquals(staff.getSurname(), request.get("surname"));
+        assertEquals(staff.getSocialSecurity(), request.get("socialSecurity"));
     }
 
     @Test
     public void updateNotExistingStaff() {
         Staff staff = new Staff(4L, "Nome4", "Cognome4", "Address4", new Date(), "SocSec4", Staff.StaffRole.WORKER);
+        HashMap<String, String> parameters = new HashMap<>();
+        staff.setSurname("New Surname");
+        staff.setSocialSecurity("New SeocialSec");
         ResourceNotFoundException exception = new ResourceNotFoundException("Staff with id: '" + staff.getId() + "' not found!");
-        Mockito.when(staffService.save(staff)).thenThrow(exception);
-        HttpEntity<Staff> httpEntity = new HttpEntity<>(staff);
+        Mockito.when(staffService.getById(4L)).thenThrow(exception);
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
         ResourceNotFoundException request = this.restTemplate.exchange("http://localhost:" + port + "/staff/4", HttpMethod.PUT, httpEntity, ResourceNotFoundException.class).getBody();
         assertEquals(exception.getMessage(), request.getMessage());
     }
@@ -127,28 +132,8 @@ public class StaffControllerTest {
     public void deleteStaff() {
         Staff staff = this.staffList.get(0);
         Mockito.when(staffService.remove(staff)).thenReturn(staff);
-        Staff request = this.restTemplate.exchange("http://localhost:" + port + "/staff/1", HttpMethod.DELETE, null, Staff.class).getBody();
-        assertEquals(staff, request);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/staff/1", HttpMethod.DELETE, null, HashMap.class).getBody();
+        assertEquals(staff.getId().toString(), request.get("id").toString());
     }
 
-    @Test
-    public void assignActivityToStaff() {
-        Staff staff = this.staffList.get(0);
-        PoolActivity activity = new PoolActivity(1L, LocalTime.of(1, 0), LocalTime.of(2, 0), true, Sets.newHashSet(Collections.singletonList(staff)), null);
-        staff.assignActivity(activity);
-        Staff response = staff;
-        response.assignActivity(activity);
-        Mockito.when(staffService.save(staff)).thenReturn(response);
-        Staff request = this.restTemplate.postForObject("http://localhost:" + port + "/staff", staff,
-                Staff.class);
-        assertEquals(request.getId(), staff.getId());
-        assertEquals(request.getName(), staff.getName());
-        assertEquals(request.getSurname(), staff.getSurname());
-        assertEquals(request.getBirthday().getTime(), staff.getBirthday().getTime());
-        assertEquals(request.getSocialSecurity(), staff.getSocialSecurity());
-        assertEquals(request.getRole(), staff.getRole());
-        assertEquals(request.getPoolsResponsabilities().size(), staff.getPoolsResponsabilities().size());
-        assertEquals(request.getSectors().size(), staff.getSectors().size());
-        assertEquals(request.getActivities().size(), staff.getActivities().size());
-    }
 }
