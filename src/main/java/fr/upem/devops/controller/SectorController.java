@@ -9,10 +9,7 @@ import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 public class SectorController {
@@ -52,10 +49,13 @@ public class SectorController {
 
     @PutMapping("/sectors/{name}")
     @ResponseBody
-    public Sector updateSector(@PathVariable String name, @RequestBody Sector sector) {
+    public Sector updateSector(@PathVariable String name, @RequestBody HashMap<String, String> parameters) {
         Sector p = getByName(name);
-        p.setLocation(sector.getLocation());
-        p.setPools(sector.getPools());
+        if(parameters.containsKey("name"))
+            p.setName(parameters.get("name"));
+        if(parameters.containsKey("location"))
+            p.setLocation(parameters.get("location"));
+//        p.setPools(parameters.getPools());
         return sectorService.save(p);
     }
 
