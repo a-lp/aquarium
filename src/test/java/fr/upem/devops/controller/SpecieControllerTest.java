@@ -71,13 +71,13 @@ public class SpecieControllerTest {
     @Test
     public void getByName() {
         List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/species", List.class);
-        Specie output = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1", Specie.class);
-        assertEquals(lista.get(0).get("id").toString(), output.getId().toString());
-        assertEquals(lista.get(0).get("name"), output.getName());
-        assertEquals(lista.get(0).get("alimentation"), output.getAlimentation().name());
-        assertEquals(lista.get(0).get("extinctionLevel").toString(), output.getExtinctionLevel().toString());
-        assertEquals(lista.get(0).get("lifeSpan").toString(), output.getLifeSpan().toString());
-        assertEquals(((List<Fish>) lista.get(0).get("fishList")).size(), output.getFishList().size());
+        HashMap<String, Object> output = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie1", HashMap.class);
+        assertEquals(lista.get(0).get("id").toString(), output.get("id").toString());
+        assertEquals(lista.get(0).get("name"), output.get("name"));
+        assertEquals(lista.get(0).get("alimentation"), output.get("alimentation"));
+        assertEquals(lista.get(0).get("extinctionLevel").toString(), output.get("extinctionLevel").toString());
+        assertEquals(lista.get(0).get("lifeSpan").toString(), output.get("lifeSpan").toString());
+        assertEquals(((List<Fish>) lista.get(0).get("fishList")).size(), ((List) output.get("fishList")).size());
     }
 
     @Test
@@ -119,17 +119,17 @@ public class SpecieControllerTest {
         parameters.put("extinctionLevel", specie.getExtinctionLevel().toString());
         parameters.put("alimentation", specie.getAlimentation().name());
         HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
-        Specie request = this.restTemplate.exchange("http://localhost:" + port + "/species/Specie1", HttpMethod.PUT, httpEntity, Specie.class).getBody();
-        assertEquals(specie, request);
-        assertEquals(specie.getAlimentation(), request.getAlimentation());
-        assertEquals(specie.getLifeSpan(), request.getLifeSpan());
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/species/Specie1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
+        assertEquals(specie.getId().toString(), request.get("id").toString());
+        assertEquals(specie.getAlimentation().name(), request.get("alimentation"));
+        assertEquals(specie.getLifeSpan().toString(), request.get("lifeSpan").toString());
     }
 
     @Test
     public void deleteSpecie() {
         Specie specie = this.species.get(0);
         Mockito.when(specieService.remove(specie)).thenReturn(specie);
-        Specie request = this.restTemplate.exchange("http://localhost:" + port + "/species/Specie1", HttpMethod.DELETE, null, Specie.class).getBody();
-        assertEquals(specie, request);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/species/Specie1", HttpMethod.DELETE, null, HashMap.class).getBody();
+        assertEquals(specie.getId().toString(), request.get("id").toString());
     }
 }
