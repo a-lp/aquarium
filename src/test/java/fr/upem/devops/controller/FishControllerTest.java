@@ -26,21 +26,19 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class FishControllerTest {
+    Pool pool;
     @MockBean
     private FishService fishService;
     @MockBean
     private SpecieService specieService;
     @MockBean
     private PoolService poolService;
-
     @LocalServerPort
     private int port = 8080;
     @Autowired
     private TestRestTemplate restTemplate;
-
     private List<Fish> fish = new ArrayList<>();
     private List<Specie> species = new ArrayList<>();
-    Pool pool;
 
     @Before
     public void init() {
@@ -144,13 +142,14 @@ public class FishControllerTest {
 
     @Test
     public void updateFish() {
-        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, null);
-        Mockito.when(fishService.save(updateP1)).thenReturn(new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", null, null));
+        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", this.species.get(0), new Pool(1L, 1l, 1.0, Pool.WaterCondition.DIRTY, null));
+        Mockito.when(fishService.save(updateP1)).thenReturn(new Fish(3L, "MauriceColdfish", FishGender.FEMALE, "in padella panato", null, null));
         updateP1.setName("MauriceColdfish");
         HttpEntity<Fish> updated = new HttpEntity<>(updateP1);
-        Fish request = this.restTemplate.exchange("http://localhost:" + port + "/fishes/3", HttpMethod.PUT,
-                updated, Fish.class).getBody();
-        assertEquals(updateP1, request);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/fishes/3", HttpMethod.PUT,
+                updated, HashMap.class).getBody();
+        assertEquals(updateP1.getId().toString(), request.get("id").toString());
+        assertEquals(updateP1.getName(), request.get("name").toString());
     }
 
     @Test

@@ -2,6 +2,7 @@ package fr.upem.devops.controller;
 
 import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Fish;
+import fr.upem.devops.model.FishGender;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Specie;
 import fr.upem.devops.service.FishService;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.Map;
 
 @RestController
 public class FishController {
@@ -67,15 +69,18 @@ public class FishController {
 
     @PutMapping("/fishes/{id}")
     @ResponseBody
-    public Fish updateFish(@PathVariable String id, @RequestBody Fish fish) {
+    public Fish updateFish(@PathVariable String id, @RequestBody Map<String, String> parameters) {
         Fish p = getById(id);
-        p.setName(fish.getName());
-        p.setGender(fish.getGender());
-        p.setDistinctSign(fish.getDistinctSign());
-        p.setArrivalDate(fish.getArrivalDate());
-        p.setReturnDate(fish.getReturnDate());
-        p.setSpecie(fish.getSpecie());
-        p.setPool(fish.getPool());
+        if (parameters.containsKey("name"))
+            p.setName(parameters.get("name"));
+        if (parameters.containsKey("gender"))
+            p.setGender(FishGender.valueOf(parameters.get("gender")));
+        if (parameters.containsKey("distinctSign"))
+            p.setDistinctSign(parameters.get("distinctSign"));
+        if (parameters.containsKey("specie") && !parameters.get("specie").isEmpty())
+            p.setSpecie(specieService.getByName(parameters.get("specie")));
+        if (parameters.containsKey("pool") && !parameters.get("pool").isEmpty())
+            p.setPool(poolService.getById(Long.parseLong(parameters.get("pool"))));
         return fishService.save(p);
     }
 

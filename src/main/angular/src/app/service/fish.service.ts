@@ -27,6 +27,10 @@ export class FishService {
     return this.http.delete('/fishes/' + fish.id);
   }
 
+  update(id: number, fish: Fish): Observable<any> {
+    return this.http.put('/fishes/' + id, fish);
+  }
+
   retireFish(fish: Fish): Observable<any> {
     return this.http.put('/fishes/retire/' + fish.id, fish);
   }
@@ -72,4 +76,5 @@ export class FishService {
         break;
     }
   }
+
 }

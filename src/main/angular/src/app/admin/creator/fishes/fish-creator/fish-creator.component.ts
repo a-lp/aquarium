@@ -12,6 +12,8 @@ import {Fish} from '../../../../model/Fish';
   styleUrls: ['./fish-creator.component.css']
 })
 export class FishCreatorComponent implements OnInit {
+  @Output()
+  onHide: EventEmitter<any> = new EventEmitter<any>();
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     distinctSign: new FormControl('', Validators.required),
@@ -24,6 +26,8 @@ export class FishCreatorComponent implements OnInit {
   species: Array<Specie>;
   @Input()
   pools: Array<Pool>;
+  @Input()
+  fish: Fish;
   @Output()
   onSave: EventEmitter<Fish> = new EventEmitter<Fish>();
 
@@ -38,5 +42,17 @@ export class FishCreatorComponent implements OnInit {
       this.onSave.emit(fish);
       this.form.reset();
     });
+  }
+
+  hideFish() {
+    this.onHide.emit(null);
+  }
+
+  update() {
+    this.fishService.update(this.fish.id, this.form.value).subscribe(
+      fish => {
+        this.onSave.emit();
+      }, error => console.log(error)
+    );
   }
 }

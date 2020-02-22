@@ -7,6 +7,7 @@ import {PoolService} from '../../../service/pool.service';
 import {DatePipe} from '@angular/common';
 import {Specie} from '../../../model/Specie';
 import {Pool} from '../../../model/Pool';
+import {FishGender} from "../../../model/FishGender";
 
 
 @Component({
@@ -23,6 +24,7 @@ export class FishesCreatorComponent implements OnInit {
   onChange: EventEmitter<Fish> = new EventEmitter<Fish>();
   @Input()
   fishes: Array<Fish>;
+  genders = Object.values(FishGender);
   field = 0; // Sorting field
   ascendent = true;
   form = new FormGroup({
@@ -32,6 +34,7 @@ export class FishesCreatorComponent implements OnInit {
     specie: new FormControl(null, Validators.required),
     pool: new FormControl(null, Validators.required)
   });
+  fish: Fish = null;
 
 
   constructor(private fishService: FishService, private speciesService: SpeciesService, private poolService: PoolService, private datePipe: DatePipe) {
@@ -84,5 +87,16 @@ export class FishesCreatorComponent implements OnInit {
         this.onChange.emit(removedFish);
       }
     );
+  }
+
+  save($event: Event) {
+    this.fishService.save(this.form.value).subscribe(fish => {
+      this.onChange.emit(fish);
+      this.form.reset();
+    });
+  }
+
+  selectFish(fish: Fish) {
+    this.fish = fish;
   }
 }
