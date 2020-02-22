@@ -2,10 +2,10 @@ import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges
 import {Specie} from '../../../../model/Specie';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Alimentation} from '../../../../model/Alimentation';
-import {SpeciesService} from "../../../../service/species.service";
-import {DatePipe} from "@angular/common";
-import {FishService} from "../../../../service/fish.service";
-import {Fish} from "../../../../model/Fish";
+import {SpeciesService} from '../../../../service/species.service';
+import {DatePipe} from '@angular/common';
+import {FishService} from '../../../../service/fish.service';
+import {Fish} from '../../../../model/Fish';
 
 @Component({
   selector: 'app-specie-creator',
@@ -30,7 +30,7 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
   alimentations = Object.values(Alimentation);
   field = 0; // Sorting field
   ascendent = true;
-  fishList: Array<Fish> = []
+  fishList: Array<Fish> = [];
 
   constructor(private speciesService: SpeciesService, private fishService: FishService, private datePipe: DatePipe) {
   }
@@ -45,13 +45,12 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
   }
 
   update() {
-    var specie: any = Object.assign({}, this.specie);
+    const specie: any = Object.assign({}, this.specie);
     specie.name = this.form.value.name;
     specie.lifeSpan = this.form.value.lifeSpan;
     specie.extinctionLevel = this.form.value.extinctionLevel;
     specie.alimentation = this.form.value.alimentation;
-    //TODO: implementare rimozione dei pesci da specie
-    specie.fishList = this.specie.fishList.map(x => x.toString()).reduce((x, y) => x + ',' + y);
+    delete specie.fishList;
     this.speciesService.update(this.specie.name, specie).subscribe(updatedSpecie => {
       this.specie = updatedSpecie;
       this.refresh();
@@ -97,5 +96,22 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     this.refresh();
+  }
+
+  removeFishFromSpecie(fish: any) {
+    const specie: any = Object.assign({}, this.specie);
+    if (specie.fishList.length > 0) {
+      specie.fishList = this.specie.fishList.filter(x => x != fish.id);
+    }
+    if (specie.fishList.length > 0) {
+      specie.fishList = specie.fishList.map(x => x.toString()).reduce((x, y) => x + ',' + y);
+    } else {
+      specie.fishList = '';
+    }
+    this.speciesService.update(this.specie.name, specie).subscribe(result => {
+        this.refresh();
+        this.onUpdate.emit(result);
+      },
+      error => console.log(error));
   }
 }

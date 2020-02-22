@@ -56,7 +56,7 @@ export class FishService {
           if (b.specie == null) {
             return (ascendent ? -1 : 1);
           }
-          return ((ascendent ? 1 : -1) * a.specie.name.localeCompare(b.specie.name));
+          return ((ascendent ? 1 : -1) * a.specie.localeCompare(b.specie));
         });
         break;
       case 6:
@@ -67,7 +67,7 @@ export class FishService {
           if (b.pool == null) {
             return (ascendent ? -1 : 1);
           }
-          return (ascendent ? 1 : -1) * a.pool.id - b.pool.id;
+          return ((ascendent ? 1 : -1) * a.pool - b.pool);
         });
         break;
     }

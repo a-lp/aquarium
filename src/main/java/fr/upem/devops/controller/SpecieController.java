@@ -53,15 +53,17 @@ public class SpecieController {
         if (parameters.containsKey("extinctionLevel"))
             p.setExtinctionLevel(Short.parseShort(parameters.get("extinctionLevel")));
         if (parameters.containsKey("fishList")) {
-            //TODO: fish non si aggiorna. Non aggiornare questa lista lato controller ma farlo lato angular con servizio fish
-            String[] fishIds = parameters.get("fishList").split(",");
-            Set<Fish> newFishList = new HashSet<>();
-            for (String id : fishIds) {
-                Fish fish = fishService.getById(Long.parseLong(id));
-                fish.setSpecie(p);
-                newFishList.add(fish);
+            p.getFishList().forEach(fish -> fish.setSpecie(null));
+            if (!parameters.get("fishList").isEmpty()) {
+                String[] fishIds = parameters.get("fishList").split(",");
+                Set<Fish> newFishList = new HashSet<>();
+                for (String id : fishIds) {
+                    Fish fish = fishService.getById(Long.parseLong(id));
+                    fish.setSpecie(p);
+                    newFishList.add(fish);
+                }
+                p.setFishList(newFishList);
             }
-            p.setFishList(newFishList);
         }
         return specieService.save(p);
     }

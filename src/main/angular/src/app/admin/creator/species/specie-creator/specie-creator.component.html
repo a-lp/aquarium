@@ -70,7 +70,7 @@
               <button [disabled]="fish.returnDate!=null" (click)="retireAnimal(fish)">Retire</button>
             </td>
             <td>
-              <button>Remove</button>
+              <button (click)="removeFishFromSpecie(fish)">Remove</button>
             </td>
           </tr>
           </tbody>
