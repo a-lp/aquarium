@@ -35,7 +35,7 @@
   <div>
     <h2 align="center">Fishes List</h2>
     <div class="fish-list">
-      <app-fishes-creator [fishes]="fishList"></app-fishes-creator>
+      <app-fish-list [fishes]="fishList" (onChange)="getFishes(); onChange.emit(null)"></app-fish-list>
     </div>
   </div>
 </div>

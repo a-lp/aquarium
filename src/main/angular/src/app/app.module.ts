@@ -36,6 +36,7 @@ import { SectorCreatorComponent } from './admin/creator/sectors/sector-creator/s
 import { StaffCreatorComponent } from './admin/creator/staffs/staff-creator/staff-creator.component';
 import { ScheduleCreatorComponent } from './admin/creator/schedules/schedule-creator/schedule-creator.component';
 import { ActivityCreatorComponent } from './admin/creator/activities/activity-creator/activity-creator.component';
+import { FishListComponent } from './admin/creator/fishes/fish-list/fish-list.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { ActivityCreatorComponent } from './admin/creator/activities/activity-cr
     SectorCreatorComponent,
     StaffCreatorComponent,
     ScheduleCreatorComponent,
-    ActivityCreatorComponent
+    ActivityCreatorComponent,
+    FishListComponent
   ],
     imports: [
         BrowserModule,

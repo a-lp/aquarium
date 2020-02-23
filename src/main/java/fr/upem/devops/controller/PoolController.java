@@ -37,7 +37,7 @@ public class PoolController {
     }
 
     @GetMapping("/pools/{id}/fishes")
-    public Set<Fish> getFishes(@PathVariable String id) {
+    public Iterable<Fish> getPoolFishes(@PathVariable String id) {
         Pool pool = poolService.getById(Long.parseLong(id));
         return pool.getFishes();
     }

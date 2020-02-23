@@ -23,7 +23,7 @@ export class PoolCreatorComponent implements OnInit {
   });
   conditions = Object.values(WaterCondition);
   @Output()
-  onSave: EventEmitter<Pool> = new EventEmitter<Pool>();
+  onChange: EventEmitter<Pool> = new EventEmitter<Pool>();
   @Input()
   sectors: Array<Sector>;
   @Input()
@@ -32,8 +32,7 @@ export class PoolCreatorComponent implements OnInit {
   staffs: Array<Staff>;
   @Output()
   onHide = new EventEmitter();
-  field = 0; // Sorting field
-  ascendent = true;
+
   fishList: Array<Fish> = [];
 
   constructor(private poolService: PoolService, private fishService: FishService, private datePipe: DatePipe) {
@@ -49,16 +48,14 @@ export class PoolCreatorComponent implements OnInit {
 
   update() {
     this.poolService.update(this.pool.id, this.form.value).subscribe(
-      updatePool => this.onSave.emit()
+      updatePool => this.onChange.emit()
       , error => console.log(error)
     );
   }
 
   getFishes() {
     this.poolService.getFishes(this.pool.id).subscribe(fishes => {
-      console.log(fishes);
       this.fishList = fishes;
-      console.log(fishes);
     }, error => console.log(error));
   }
 }

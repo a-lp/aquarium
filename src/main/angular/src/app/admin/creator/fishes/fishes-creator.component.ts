@@ -25,8 +25,7 @@ export class FishesCreatorComponent implements OnInit {
   @Input()
   fishes: Array<Fish>;
   genders = Object.values(FishGender);
-  field = 0; // Sorting field
-  ascendent = true;
+
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     distinctSign: new FormControl('', Validators.required),
@@ -43,16 +42,6 @@ export class FishesCreatorComponent implements OnInit {
   ngOnInit() {
   }
 
-  sort(field: number) {
-    if (this.field == field) {
-      this.ascendent = !this.ascendent;
-    } else {
-      this.ascendent = true;
-    }
-    this.field = field;
-    this.fishService.sort(this.fishes, this.field, this.ascendent);
-  }
-
   refresh($event: Fish) {
     this.fishService.getAll().subscribe(
       data => {
@@ -64,29 +53,11 @@ export class FishesCreatorComponent implements OnInit {
     );
   }
 
-  retireAnimal(fish: Fish) {
-    this.fishService.retireFish(fish).subscribe(
-      data => {
-        this.refresh(data);
-        this.onChange.emit(fish);
-      },
-      error => console.log(error)
-    );
-  }
-
-  onSaveFish(fish: Fish) {
+  onChangeFish(fish: Fish) {
     this.refresh(fish);
     this.onChange.emit(fish);
   }
 
-  removeFish(fish: Fish) {
-    this.fishService.delete(fish).subscribe(
-      removedFish => {
-        this.refresh(removedFish);
-        this.onChange.emit(removedFish);
-      }
-    );
-  }
 
   save($event: Event) {
     this.fishService.save(this.form.value).subscribe(fish => {
@@ -95,7 +66,4 @@ export class FishesCreatorComponent implements OnInit {
     });
   }
 
-  selectFish(fish: Fish) {
-    this.fish = fish;
-  }
 }
