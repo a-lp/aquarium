@@ -30,4 +30,12 @@ export class PoolService {
   remove(pool: Pool): Observable<any> {
     return this.http.delete('/pools/' + pool.id);
   }
+
+  update(id: number, pool: Pool): Observable<any> {
+    return this.http.put('/pools/' + id, pool);
+  }
+
+  getFishes(id: number): Observable<any> {
+    return this.http.get('/pools/' + id + '/fishes');
+  }
 }

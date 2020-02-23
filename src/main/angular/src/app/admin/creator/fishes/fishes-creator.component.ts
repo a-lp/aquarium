@@ -41,7 +41,6 @@ export class FishesCreatorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.refresh(null);
   }
 
   sort(field: number) {

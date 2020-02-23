@@ -1,9 +1,12 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Pool, WaterCondition} from "../../../../model/Pool";
-import {Sector} from "../../../../model/Sector";
-import {PoolService} from "../../../../service/pool.service";
-import {Staff} from "../../../../model/Staff";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {Pool, WaterCondition} from '../../../../model/Pool';
+import {Sector} from '../../../../model/Sector';
+import {PoolService} from '../../../../service/pool.service';
+import {Staff} from '../../../../model/Staff';
+import {Fish} from "../../../../model/Fish";
+import {FishService} from "../../../../service/fish.service";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-pool-creator',
@@ -24,21 +27,38 @@ export class PoolCreatorComponent implements OnInit {
   @Input()
   sectors: Array<Sector>;
   @Input()
+  pool: Pool;
+  @Input()
   staffs: Array<Staff>;
+  @Output()
+  onHide = new EventEmitter();
+  field = 0; // Sorting field
+  ascendent = true;
+  fishList: Array<Fish> = [];
 
-  constructor(private poolService: PoolService) {
+  constructor(private poolService: PoolService, private fishService: FishService, private datePipe: DatePipe) {
   }
 
   ngOnInit() {
+    this.getFishes();
   }
 
-  save($event: Event) {
-    this.poolService.save(this.form.value).subscribe(pool => {
-        this.onSave.emit(pool);
-        if (pool != null) {
-          this.form.reset();
-        }
-      }
+  hidePool() {
+    this.onHide.emit();
+  }
+
+  update() {
+    this.poolService.update(this.pool.id, this.form.value).subscribe(
+      updatePool => this.onSave.emit()
+      , error => console.log(error)
     );
+  }
+
+  getFishes() {
+    this.poolService.getFishes(this.pool.id).subscribe(fishes => {
+      console.log(fishes);
+      this.fishList = fishes;
+      console.log(fishes);
+    }, error => console.log(error));
   }
 }

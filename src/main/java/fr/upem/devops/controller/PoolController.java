@@ -1,6 +1,7 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.errors.ResourceNotFoundException;
+import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
@@ -10,8 +11,9 @@ import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 public class PoolController {
@@ -32,6 +34,12 @@ public class PoolController {
         Pool pool = poolService.getById(Long.parseLong(id));
         if (pool == null) throw new ResourceNotFoundException("Pool with id '" + id + "' not found!");
         return pool;
+    }
+
+    @GetMapping("/pools/{id}/fishes")
+    public Set<Fish> getFishes(@PathVariable String id) {
+        Pool pool = poolService.getById(Long.parseLong(id));
+        return pool.getFishes();
     }
 
     @PostMapping("/sectors/{sectorId}/responsible/{staffId}/pools")
@@ -56,11 +64,13 @@ public class PoolController {
             p.setMaxCapacity(Long.parseLong(parameters.get("maxCapacity")));
         if (parameters.containsKey("condition"))
             p.setCondition(Pool.WaterCondition.valueOf(parameters.get("condition")));
-        //todo: vedere lo staff
-//        p.setResponsible(p.getResponsible());
-//        p.setFishes(pool.getFishes());
+        if (parameters.containsKey("responsible")) {
+            p.setResponsible(staffService.getById(Long.parseLong(parameters.get("responsible"))));
+        }
 //        p.setSchedules(pool.getSchedules());
-//        p.setSector(p.getSector());
+        if (parameters.containsKey("sector")) {
+            p.setSector(sectorService.getByName(parameters.get("sector")));
+        }
         return poolService.save(p);
     }
 
