@@ -13,6 +13,8 @@ export class ScheduleListComponent implements OnInit {
   schedules: Array<Schedule>;
   @Output()
   onChange: EventEmitter<Schedule> = new EventEmitter<Schedule>();
+  @Output()
+  onSelect: EventEmitter<Schedule> = new EventEmitter<Schedule>();
 
   constructor(private scheduleService: ScheduleService, private datePipe: DatePipe) {
   }
@@ -24,5 +26,9 @@ export class ScheduleListComponent implements OnInit {
     this.scheduleService.delete(schedule).subscribe(removedSchedule => {
       this.onChange.emit(removedSchedule);
     }, error => console.log(error));
+  }
+
+  selectSchedule(schedule: Schedule) {
+    this.onSelect.emit(schedule);
   }
 }

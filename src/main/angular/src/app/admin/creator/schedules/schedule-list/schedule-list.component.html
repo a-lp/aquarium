@@ -24,7 +24,7 @@
     <td>{{this.datePipe.transform(schedule.endPeriod, 'dd/MM/yyyy, HH:mm')}}</td>
     <td>{{schedule.pool}}</td>
     <td>
-      <button>Show</button>
+      <button (click)="selectSchedule(schedule)">Show</button>
     </td>
     <td (click)="removeSchedule(schedule)">
       <button>Remove</button>

@@ -1,2 +1,35 @@
-<app-schedule-creator [pools]="pools" (onSave)="onSaveSchedule($event)"></app-schedule-creator>
-<app-schedule-list [schedules]="schedules" (onChange)="refresh()"></app-schedule-list>
+<div *ngIf="schedule==null">
+  <form [formGroup]="form">
+    <table>
+      <thead>
+      <tr>
+        <th>Start Period</th>
+        <th>End Period</th>
+        <th>Pool</th>
+        <th>Save</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th><input type="date" [min]="today()" formControlName="startPeriod"></th>
+        <th><input type="date" [attr.disabled]="form.value.startPeriod==''?'disabled':null"
+                   [value]="form.value.startPeriod==''?'':form.value.endPeriod"
+                   [min]="form.value.startPeriod"
+                   formControlName="endPeriod"></th>
+        <th><select formControlName="pool">
+          <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
+        </select></th>
+        <th>
+          <button (click)="save()" [disabled]="!form.valid">Save</button>
+        </th>
+      </tr>
+      </tbody>
+    </table>
+  </form>
+  <app-schedule-list (onSelect)="this.schedule = $event" [schedules]="schedules"
+                     (onChange)="refresh()"></app-schedule-list>
+</div>
+<div *ngIf="schedule!=null">
+  <app-schedule-creator [schedule]="schedule" [pools]="pools" (onHide)="this.schedule=null;"
+                        (onChange)="refresh()"></app-schedule-creator>
+</div>
