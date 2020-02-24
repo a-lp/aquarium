@@ -1,31 +1,58 @@
-<app-sector-creator [staffs]="staffs" [pools]="pools" (onSave)="onSaveSector($event)"></app-sector-creator>
-<table>
-  <thead>
-  <tr>
-    <th>
-      ID
-    </th>
-    <th>
-      Name
-    </th>
-    <th>
-      Location
-    </th>
-    <th></th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor=" let sector of sectors">
-    <td>{{sector.id}}</td>
-    <td>{{sector.name}}</td>
-    <td>{{sector.location}}</td>
-    <td>
-      <button>Show</button>
-    </td>
-    <td>
-      <button (click)="removeSector(sector)">Remove</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div *ngIf="this.sector==null">
+  <form [formGroup]="form">
+    <div class="single-choice">
+      <div>
+        <label>Sector Name: </label><input type="text" formControlName="name">
+      </div>
+      <div>
+        <label>Location: </label><input type="text" formControlName="location">
+      </div>
+    </div>
+    <div class="multiple-choice">
+      <div id="staffs">
+        <h3>Staff</h3>
+        <div class="input-entry" *ngFor="let i of staffs">
+          <input type="checkbox" [value]="i" [checked]="this.selectedStaff.includes(i)" (change)="selectElement(i)">
+          <label>{{i.id + ' -' + i.surname + ' ' + i.name}}</label>
+        </div>
+      </div>
+    </div>
+    <button (click)="save()" [disabled]="isDisabled()">Save</button>
+  </form>
+  <table>
+    <thead>
+    <tr>
+      <th>
+        ID
+      </th>
+      <th>
+        Name
+      </th>
+      <th>
+        Location
+      </th>
+      <th></th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor=" let sector of sectors">
+      <td>{{sector.id}}</td>
+      <td>{{sector.name}}</td>
+      <td>{{sector.location}}</td>
+      <td>
+        <button (click)="selectSector(sector)">Show</button>
+      </td>
+      <td>
+        <button (click)="removeSector(sector)">Remove</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+<div *ngIf="this.sector!=null">
+  <app-sector-creator [staffs]="staffs" [sector]="this.sector"
+                      (onHideSector)="this.sector=null"
+                      (onChange)="refresh(); this.onChange.emit(null)"></app-sector-creator>
+</div>
+

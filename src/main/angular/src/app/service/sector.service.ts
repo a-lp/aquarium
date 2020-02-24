@@ -29,7 +29,15 @@ export class SectorService {
     return this.http.get('/sectors/' + name);
   }
 
-  update(sector: Sector): Observable<any> {
-    return this.http.put('/sectors/${sector.name}', sector);
+  update(id: number, sector: Sector): Observable<any> {
+    return this.http.put('/sectors/' + id, sector);
+  }
+
+  getStaffList(name: string): Observable<any> {
+    return this.http.get('sectors/' + name + '/staffs');
+  }
+
+  getPools(name: string): Observable<any> {
+    return this.http.get('/sectors/' + name + '/pools');
   }
 }
