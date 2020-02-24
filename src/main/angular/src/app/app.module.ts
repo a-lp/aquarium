@@ -38,6 +38,7 @@ import { ScheduleCreatorComponent } from './admin/creator/schedules/schedule-cre
 import { ActivityCreatorComponent } from './admin/creator/activities/activity-creator/activity-creator.component';
 import { FishListComponent } from './admin/creator/fishes/fish-list/fish-list.component';
 import { PoolListComponent } from './admin/creator/pools/pool-list/pool-list.component';
+import { ScheduleListComponent } from './admin/creator/schedules/schedule-list/schedule-list.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { PoolListComponent } from './admin/creator/pools/pool-list/pool-list.com
     ScheduleCreatorComponent,
     ActivityCreatorComponent,
     FishListComponent,
-    PoolListComponent
+    PoolListComponent,
+    ScheduleListComponent
   ],
     imports: [
         BrowserModule,

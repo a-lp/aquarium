@@ -38,4 +38,8 @@ export class PoolService {
   getFishes(id: number): Observable<any> {
     return this.http.get('/pools/' + id + '/fishes');
   }
+
+  getSchedules(id: number): Observable<any> {
+    return this.http.get('/pools/' + id + '/schedules');
+  }
 }

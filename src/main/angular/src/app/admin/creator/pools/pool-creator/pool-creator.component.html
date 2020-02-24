@@ -33,9 +33,15 @@
     </form>
   </div>
   <div>
-    <h2 align="center">Fishes List</h2>
-    <div class="fish-list">
-      <app-fish-list [fishes]="fishList" (onChange)="getFishes(); onChange.emit(null)"></app-fish-list>
+    <div class="fish-schedule">
+      <div id="fish">
+        <h3>Fish List</h3>
+        <app-fish-list [fishes]="fishList" (onChange)="getFishes(); onChange.emit(null)"></app-fish-list>
+      </div>
+      <div id="schedules">
+        <h3>Schedule List</h3>
+        <app-schedule-list [schedules]="schedules" (onChange)="getSchedules(); onChange.emit(null)"></app-schedule-list>
+      </div>
     </div>
   </div>
 </div>

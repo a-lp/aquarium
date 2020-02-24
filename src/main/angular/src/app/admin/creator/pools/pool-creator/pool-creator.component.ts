@@ -4,9 +4,9 @@ import {Pool, WaterCondition} from '../../../../model/Pool';
 import {Sector} from '../../../../model/Sector';
 import {PoolService} from '../../../../service/pool.service';
 import {Staff} from '../../../../model/Staff';
-import {Fish} from "../../../../model/Fish";
-import {FishService} from "../../../../service/fish.service";
-import {DatePipe} from "@angular/common";
+import {Fish} from '../../../../model/Fish';
+import {DatePipe} from '@angular/common';
+import {Schedule} from '../../../../model/Schedule';
 
 @Component({
   selector: 'app-pool-creator',
@@ -34,12 +34,14 @@ export class PoolCreatorComponent implements OnInit {
   onHide = new EventEmitter();
 
   fishList: Array<Fish> = [];
+  schedules: Array<Schedule> = [];
 
-  constructor(private poolService: PoolService, private fishService: FishService, private datePipe: DatePipe) {
+  constructor(private poolService: PoolService, private datePipe: DatePipe) {
   }
 
   ngOnInit() {
     this.getFishes();
+    this.getSchedules();
   }
 
   hidePool() {
@@ -56,6 +58,13 @@ export class PoolCreatorComponent implements OnInit {
   getFishes() {
     this.poolService.getFishes(this.pool.id).subscribe(fishes => {
       this.fishList = fishes;
+    }, error => console.log(error));
+  }
+
+  getSchedules() {
+    this.poolService.getSchedules(this.pool.id).subscribe(schedules => {
+      console.log(schedules)
+      this.schedules = schedules;
     }, error => console.log(error));
   }
 }

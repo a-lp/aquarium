@@ -20,10 +20,10 @@ export class SchedulesCreatorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.refresh(null);
+    this.refresh();
   }
 
-  refresh(schedule: Schedule) {
+  refresh() {
     this.scheduleService.getAll().subscribe(
       data => {
         this.schedules = data;
@@ -34,13 +34,7 @@ export class SchedulesCreatorComponent implements OnInit {
 
   onSaveSchedule(schedule: Schedule) {
     this.onChange.emit(schedule);
-    this.refresh(schedule);
+    this.refresh();
   }
 
-  removeSchedule(schedule: Schedule) {
-    this.scheduleService.delete(schedule).subscribe(removedSchedule => {
-      this.refresh(removedSchedule);
-      this.onChange.emit(removedSchedule);
-    }, error => console.log(error));
-  }
 }

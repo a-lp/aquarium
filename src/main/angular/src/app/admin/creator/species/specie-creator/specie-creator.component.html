@@ -25,6 +25,7 @@
           <button (click)="update()" [disabled]="!form.valid">Update</button>
         </div>
       </div>
+      <h3 align="center">Fish List</h3>
       <app-fish-list [fishes]="fishList" (onChange)="getFishes(); this.onUpdate.emit()"></app-fish-list>
     </form>
   </div>

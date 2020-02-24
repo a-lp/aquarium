@@ -1,10 +1,7 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.errors.ResourceNotFoundException;
-import fr.upem.devops.model.Fish;
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.Sector;
-import fr.upem.devops.model.Staff;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.SectorService;
 import fr.upem.devops.service.StaffService;
@@ -38,6 +35,12 @@ public class PoolController {
     public Iterable<Fish> getPoolFishes(@PathVariable String id) {
         Pool pool = getById(id);
         return pool.getFishes();
+    }
+
+    @GetMapping("/pools/{id}/schedules")
+    public Iterable<Schedule> getPoolSchedules(@PathVariable String id) {
+        Pool pool = getById(id);
+        return pool.getSchedules();
     }
 
     @PostMapping("/sectors/{sectorId}/responsible/{staffId}/pools")
