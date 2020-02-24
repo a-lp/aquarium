@@ -1,10 +1,11 @@
 package fr.upem.devops.service;
 
-import fr.upem.devops.model.Fish;
-import fr.upem.devops.model.Pool;
+import fr.upem.devops.model.*;
 import fr.upem.devops.repository.PoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashSet;
 
 @Service
 public class PoolService {
@@ -33,6 +34,10 @@ public class PoolService {
         }
         if (pool.getResponsible() != null)
             pool.getResponsible().removePoolResponsability(pool);
+        for(Schedule schedule: pool.getSchedules())
+            for(PoolActivity activity:schedule.getScheduledActivities())
+                for(Staff staff: activity.getStaffList())
+                    staff.setActivities(new HashSet<>());
         poolRepository.delete(pool);
         return pool;
     }

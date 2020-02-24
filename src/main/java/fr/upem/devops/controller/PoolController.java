@@ -11,9 +11,7 @@ import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 public class PoolController {
@@ -38,7 +36,7 @@ public class PoolController {
 
     @GetMapping("/pools/{id}/fishes")
     public Iterable<Fish> getPoolFishes(@PathVariable String id) {
-        Pool pool = poolService.getById(Long.parseLong(id));
+        Pool pool = getById(id);
         return pool.getFishes();
     }
 
@@ -49,6 +47,7 @@ public class PoolController {
         if (sector == null) throw new ResourceNotFoundException("Sector " + sectorId + " not found!");
         Staff staff = staffService.getById(Long.parseLong(staffId));
         if (staff == null) throw new ResourceNotFoundException("staff " + staffId + " not found!");
+        pool.setCondition(Pool.WaterCondition.CLEAN);
         pool.setSector(sector);
         pool.setResponsible(staff);
         return poolService.save(pool);

@@ -15,11 +15,10 @@ export class PoolsCreatorComponent implements OnInit {
   form = new FormGroup({
     maxCapacity: new FormControl('', Validators.required),
     volume: new FormControl('', Validators.required),
-    condition: new FormControl('', Validators.required),
     sector: new FormControl('', Validators.required),
     responsible: new FormControl('', Validators.required)
   });
-  conditions = Object.values(WaterCondition);
+
   @Input()
   sectors: Array<Sector>;
   @Input()
@@ -53,17 +52,7 @@ export class PoolsCreatorComponent implements OnInit {
     );
   }
 
-  removePool(pool: Pool) {
-    //TODO: gestire errore di costraint
-    this.poolService.remove(pool).subscribe(
-      removedPool => {
-        this.refresh(removedPool);
-        this.onChange.emit(removedPool);
-      }, error => {
-        console.log(error);
-      }
-    );
-  }
+
 
   save($event: Event) {
     this.poolService.save(this.form.value).subscribe(pool => {
@@ -75,7 +64,5 @@ export class PoolsCreatorComponent implements OnInit {
     );
   }
 
-  showPool(pool: Pool) {
-    this.pool = pool;
-  }
+
 }

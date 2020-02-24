@@ -9,7 +9,6 @@
       <tr>
         <th>Max Capacity</th>
         <th>Volume</th>
-        <th>Condition</th>
         <th>Sector</th>
         <th>Responsible</th>
         <th>Save</th>
@@ -19,9 +18,6 @@
       <tr>
         <th><input type="number" formControlName="maxCapacity"></th>
         <th><input type="number" formControlName="volume"></th>
-        <th><select formControlName="condition">
-          <option *ngFor="let i of conditions" [value]="i">{{i}}</option>
-        </select></th>
         <th><select formControlName="sector">
           <option *ngFor="let i of sectors" [value]="i.id">{{i.name}}</option>
         </select></th>
@@ -35,38 +31,5 @@
       </tbody>
     </table>
   </form>
-  <table>
-    <thead>
-    <tr>
-      <th>
-        ID
-      </th>
-      <th>
-        Max Capacity
-      </th>
-      <th>
-        Volume
-      </th>
-      <th>
-        Condition
-      </th>
-      <th></th>
-      <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor=" let pool of pools">
-      <td>{{pool.id}}</td>
-      <td>{{pool.maxCapacity}}</td>
-      <td>{{pool.volume}}</td>
-      <td>{{pool.condition}}</td>
-      <td>
-        <button (click)="showPool(pool)">Show</button>
-      </td>
-      <td>
-        <button (click)="removePool(pool)">Remove</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
+  <app-pool-list [pools]="pools" (onChange)="refresh(null)" (onSelect)="this.pool = $event"></app-pool-list>
 </div>

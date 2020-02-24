@@ -105,19 +105,12 @@ public class ScheduleControllerTest {
         schedule.setStartPeriod(new Date());
         schedule.setEndPeriod(new Date());
         Mockito.when(service.save(schedule)).thenReturn(schedule);
-<<<<<<< Updated upstream
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("endPeriod", schedule.getEndPeriod().getTime() + "");
         parameters.put("startPeriod", schedule.getStartPeriod().getTime() + "");
         HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
         HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
         assertEquals(schedule.getId().toString(), request.get("id").toString());
-=======
-        schedule.setPool(this.pools.get(2));
-        HttpEntity<Schedule> httpEntity = new HttpEntity<>(schedule);
-        Schedule request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.PUT, httpEntity, Schedule.class).getBody();
-        assertEquals(schedule.getId(), request.getId());
->>>>>>> Stashed changes
     }
 
     @Test
