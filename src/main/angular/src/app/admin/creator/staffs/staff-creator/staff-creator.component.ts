@@ -1,8 +1,12 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {StaffRole} from "../../../../model/StaffRole";
-import {Staff} from "../../../../model/Staff";
-import {StaffService} from "../../../../service/staff.service";
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Staff} from '../../../../model/Staff';
+import {StaffService} from '../../../../service/staff.service';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {StaffRole} from '../../../../model/StaffRole';
+import {Pool} from '../../../../model/Pool';
+import {Sector} from '../../../../model/Sector';
+import {PoolActivity} from '../../../../model/PoolActivity';
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-staff-creator',
@@ -10,6 +14,12 @@ import {StaffService} from "../../../../service/staff.service";
   styleUrls: ['./staff-creator.component.css']
 })
 export class StaffCreatorComponent implements OnInit {
+  @Output()
+  onChange: EventEmitter<Staff> = new EventEmitter<Staff>();
+  @Output()
+  onHide: EventEmitter<Staff> = new EventEmitter<Staff>();
+  @Input()
+  staff: Staff = null;
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     surname: new FormControl('', Validators.required),
@@ -19,28 +29,56 @@ export class StaffCreatorComponent implements OnInit {
     role: new FormControl('', Validators.required),
   });
   roles: Array<StaffRole> = Object.values(StaffRole);
-  @Output()
-  onSave: EventEmitter<Staff> = new EventEmitter<Staff>();
+  pools: Array<Pool> = [];
+  sectors: Array<Sector> = [];
+  activities: Array<PoolActivity> = [];
 
-  constructor(private staffService: StaffService) {
+  constructor(private staffService: StaffService, private datePipe: DatePipe) {
   }
 
   ngOnInit() {
+    this.getPools();
+    this.getSectors();
+    this.getActivities();
   }
 
-
-  save() {
-    this.staffService.addStaff(this.form.value).subscribe(staff => {
-      if (staff != null) {
-        this.onSave.emit(staff);
-        this.form.reset();
-      }
-    });
+  hideStaff() {
+    this.onHide.emit();
   }
 
   today() {
     const today = new Date();
     return (today.getFullYear() + '-' + ((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1)
       + '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate()));
+  }
+
+  update() {
+    this.form.value.birthday = new Date(this.form.value.birthday).getTime();
+    this.staffService.update(this.staff.id, this.form.value).subscribe(
+      updateStaff => {
+        this.onChange.emit(null);
+      }, error => console.log(error)
+    );
+  }
+
+  getPools() {
+    this.staffService.getPools(this.staff.id).subscribe(
+      pools => this.pools = pools,
+      error => console.log(error)
+    );
+  }
+
+  getSectors() {
+    this.staffService.getSectors(this.staff.id).subscribe(
+      sectors => this.sectors = sectors,
+      error => console.log(error)
+    );
+  }
+
+  getActivities() {
+    this.staffService.getActivities(this.staff.id).subscribe(
+      activities => this.activities = activities,
+      error => console.log(error)
+    );
   }
 }

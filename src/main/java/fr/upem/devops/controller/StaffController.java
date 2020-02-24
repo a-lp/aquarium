@@ -1,13 +1,18 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.errors.ResourceNotFoundException;
+import fr.upem.devops.model.Pool;
+import fr.upem.devops.model.PoolActivity;
+import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 public class StaffController {
@@ -25,6 +30,24 @@ public class StaffController {
         Staff staff = service.getById(Long.parseLong(id));
         if (staff == null) throw new ResourceNotFoundException("Staff with id: '" + id + "' not found!");
         return staff;
+    }
+
+    @GetMapping("/staff/{id}/pools")
+    public List<Pool> getPools(@PathVariable String id) {
+        Staff staff = getById(id);
+        return staff.getPoolsResponsabilities();
+    }
+
+    @GetMapping("/staff/{id}/sectors")
+    public List<Sector> getSectors(@PathVariable String id) {
+        Staff staff = getById(id);
+        return staff.getSectors();
+    }
+
+    @GetMapping("/staff/{id}/activities")
+    public Set<PoolActivity> getActivities(@PathVariable String id) {
+        Staff staff = getById(id);
+        return staff.getActivities();
     }
 
     @PostMapping("/staff")

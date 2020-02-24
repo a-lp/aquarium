@@ -11,6 +11,8 @@ import {DatePipe} from "@angular/common";
 export class StaffListComponent implements OnInit {
   @Output()
   onChange: EventEmitter<Staff> = new EventEmitter<Staff>();
+  @Output()
+  onSelect: EventEmitter<Staff> = new EventEmitter<Staff>();
   @Input()
   staffs: Array<Staff> = [];
 
@@ -28,5 +30,9 @@ export class StaffListComponent implements OnInit {
         console.log(error);
       }
     );
+  }
+
+  selectStaff(staff: Staff) {
+    this.onSelect.emit(staff);
   }
 }
