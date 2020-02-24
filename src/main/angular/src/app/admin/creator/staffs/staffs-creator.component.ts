@@ -16,28 +16,19 @@ export class StaffsCreatorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.refresh(null);
+    this.refresh();
   }
 
   onSaveStaff(staff: Staff) {
     this.onChange.emit(staff);
-    this.refresh(staff);
+    this.refresh();
   }
 
-  private refresh(staff: Staff) {
+  private refresh() {
     this.staffService.getAll().subscribe(staffs => {
       this.staffs = staffs;
     });
   }
 
-  removeStaff(staff: Staff) {
-    this.staffService.delete(staff).subscribe(
-      removedStaff => {
-        this.refresh(removedStaff);
-        this.onChange.emit(removedStaff);
-      }, error => {
-        console.log(error);
-      }
-    );
-  }
+
 }
