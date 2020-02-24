@@ -3,7 +3,6 @@ h1 {
 }
 
 table {
-  padding: 2em;
   width: 100%;
 }
 
@@ -13,4 +12,30 @@ table thead {
 
 td {
   text-align: center;
+}
+
+form {
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+}
+
+.staff-list {
+  flex: .8;
+  display: flex;
+  justify-content: space-around;
+  padding: 2em 1em;
+  overflow-y: scroll;
+}
+
+#staffs {
+  border: 1px solid black;
+  background: white;
+  overflow-y: scroll;
+  width: 100%;
+  padding: 1em;
+}
+
+th * {
+  width: 95%;
 }

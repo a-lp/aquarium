@@ -10,7 +10,8 @@ import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -59,15 +60,35 @@ public class PoolActivityController {
 
     @PutMapping("/activities/{id}")
     @ResponseBody
-    public PoolActivity updatePoolActivity(@PathVariable String id, @RequestBody PoolActivity poolActivityRequest) {
-        PoolActivity poolActivity = getById(poolActivityRequest.getId().toString());
-        poolActivity.setSchedule(poolActivityRequest.getSchedule());
-        poolActivity.setDescription(poolActivityRequest.getDescription());
-        poolActivity.setOpenToPublic(poolActivityRequest.getOpenToPublic());
-        poolActivity.setEndActivity(poolActivityRequest.getEndActivity());
-        poolActivity.setStartActivity(poolActivityRequest.getStartActivity());
-        poolActivity.setStaffList(poolActivityRequest.getStaffList());
-        poolActivity.setRepeated(poolActivityRequest.getRepeated());
+    public PoolActivity updatePoolActivity(@PathVariable String id, @RequestBody HashMap<String, String> parameters) {
+        PoolActivity poolActivity = getById(id);
+        if (parameters.containsKey("description"))
+            poolActivity.setDescription(parameters.get("description"));
+        if (parameters.containsKey("startActivity"))
+            poolActivity.setStartActivity(LocalTime.parse(parameters.get("startActivity")));
+        if (parameters.containsKey("endActivity"))
+            poolActivity.setEndActivity(LocalTime.parse(parameters.get("endActivity")));
+        if (parameters.containsKey("openToPublic"))
+            poolActivity.setOpenToPublic(Boolean.valueOf(parameters.get("openToPublic")));
+        if (parameters.containsKey("repeated"))
+            poolActivity.setRepeated(Boolean.valueOf(parameters.get("repeated")));
+        if (parameters.containsKey("schedule")) {
+            Schedule schedule = scheduleService.getById(Long.parseLong(parameters.get("schedule")));
+            poolActivity.setSchedule(schedule);
+        }
+        if (parameters.containsKey("staffList")) {
+            poolActivity.getStaffList().forEach(staff -> staff.removeActivity(poolActivity));
+            if (!parameters.get("staffList").isEmpty()) {
+                String[] staffIds = parameters.get("staffList").split(",");
+                Set<Staff> staffList = new HashSet<>();
+                for (String staff_id : staffIds) {
+                    Staff staff = staffService.getById(Long.parseLong(staff_id));
+                    staff.assignActivity(poolActivity);
+                    staffList.add(staff);
+                }
+                poolActivity.setStaffList(staffList);
+            }
+        }
         return service.save(poolActivity);
     }
 

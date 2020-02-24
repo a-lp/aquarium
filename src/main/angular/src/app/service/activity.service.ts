@@ -31,8 +31,8 @@ export class ActivityService {
     return this.http.delete('/activities/' + activity.id);
   }
 
-  update(activity: PoolActivity): Observable<any> {
-    return this.http.put('/activities/' + activity.id, activity);
+  update(id: number, activity: PoolActivity): Observable<any> {
+    return this.http.put('/activities/' + id, activity);
   }
 
 
