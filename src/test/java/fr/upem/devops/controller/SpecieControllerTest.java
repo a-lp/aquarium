@@ -1,10 +1,6 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.errors.ConflictException;
-import fr.upem.devops.model.Alimentation;
-import fr.upem.devops.model.Fish;
-import fr.upem.devops.model.FishGender;
-import fr.upem.devops.model.Specie;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.SpecieService;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,6 +13,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -95,16 +93,6 @@ public class SpecieControllerTest {
         assertEquals(request.getFishList(), specie.getFishList());
     }
 
-    @Test
-    public void addExistentSpecie() {
-        short lf = 1;
-        Specie specie = new Specie(4L, "Specie3", lf++, lf, Alimentation.OMNIVORE, new HashSet<>());
-        ConflictException conflictError = new ConflictException("Another specie named '" + specie.getName() + "' found!");
-        Mockito.when(specieService.save(specie)).thenThrow(conflictError);
-        ConflictException request = this.restTemplate.postForObject("http://localhost:" + port + "/species", specie,
-                ConflictException.class);
-        assertEquals(conflictError.getMessage(), request.getMessage());
-    }
 
     @Test
     public void updateSpecie() {
@@ -127,9 +115,45 @@ public class SpecieControllerTest {
 
     @Test
     public void deleteSpecie() {
-        Specie specie = this.species.get(0);
+        Specie specie = new Specie();
+        specie.setId(10L);
+        specie.setName("SpecieNew");
+        Mockito.when(specieService.getByName(specie.getName())).thenReturn(specie);
         Mockito.when(specieService.remove(specie)).thenReturn(specie);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/species/Specie1", HttpMethod.DELETE, null, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/species/SpecieNew", HttpMethod.DELETE, null, HashMap.class).getBody();
         assertEquals(specie.getId().toString(), request.get("id").toString());
+        assertEquals(specie.getName(), request.get("name").toString());
+    }
+
+
+    @Test
+    public void getByIdNotFound() {
+        Mockito.when(specieService.getById(10L)).thenReturn(null);
+        ResponseEntity<Sector> response = this.restTemplate.getForEntity("http://localhost:" + port + "/species/id/10", Sector.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void getByNameNotFound() {
+        Mockito.when(specieService.getByName("10")).thenReturn(null);
+        ResponseEntity<Sector> response = this.restTemplate.getForEntity("http://localhost:" + port + "/species/10", Sector.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void getByIdBadRequest() {
+        ResponseEntity<Sector> response = this.restTemplate.getForEntity("http://localhost:" + port + "/species/id/asdf", Sector.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void addExistentSpecie() {
+        Specie specie = this.species.get(0);
+        specie.setFishList(new HashSet<>());
+        Mockito.when(specieService.getByName(specie.getName())).thenReturn(specie);
+        ResponseEntity<HashMap> response = this.restTemplate.postForEntity("http://localhost:" + port + "/species", specie,
+                HashMap.class);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("Another specie named '" + specie.getName() + "' found!", response.getBody().get("message"));
     }
 }

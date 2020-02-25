@@ -1,13 +1,15 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.*;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.SectorService;
 import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashSet;
 import java.util.Map;
 
 @RestController
@@ -25,9 +27,15 @@ public class PoolController {
     }
 
     @GetMapping("/pools/{id}")
-    public Pool getById(@PathVariable String id) {
-        Pool pool = poolService.getById(Long.parseLong(id));
-        if (pool == null) throw new ResourceNotFoundException("Pool with id '" + id + "' not found!");
+    public Pool getById(@PathVariable String id) throws ResponseStatusException {
+        Pool pool = null;
+        try {
+            pool = poolService.getById(Long.parseLong(id));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot convert id: '" + id + "' into Long");
+        }
+        if (pool == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Pool with id '" + id + "' not found!");
         return pool;
     }
 
@@ -46,10 +54,8 @@ public class PoolController {
     @PostMapping("/sectors/{sectorId}/responsible/{staffId}/pools")
     @ResponseBody
     public Pool addPool(@RequestBody Pool pool, @PathVariable String sectorId, @PathVariable String staffId) {
-        Sector sector = sectorService.getById(Long.parseLong(sectorId));
-        if (sector == null) throw new ResourceNotFoundException("Sector " + sectorId + " not found!");
-        Staff staff = staffService.getById(Long.parseLong(staffId));
-        if (staff == null) throw new ResourceNotFoundException("staff " + staffId + " not found!");
+        Sector sector = getSector(sectorId);
+        Staff staff = getStaff(staffId);
         pool.setCondition(Pool.WaterCondition.CLEAN);
         pool.setSector(sector);
         pool.setResponsible(staff);
@@ -62,16 +68,23 @@ public class PoolController {
         Pool p = getById(id);
         if (parameters.containsKey("volume"))
             p.setVolume(Double.parseDouble(parameters.get("volume")));
-        if (parameters.containsKey("maxCapacity"))
-            p.setMaxCapacity(Long.parseLong(parameters.get("maxCapacity")));
-        if (parameters.containsKey("condition"))
-            p.setCondition(Pool.WaterCondition.valueOf(parameters.get("condition")));
-        if (parameters.containsKey("responsible")) {
-            p.setResponsible(staffService.getById(Long.parseLong(parameters.get("responsible"))));
+        try {
+            if (parameters.containsKey("maxCapacity"))
+                p.setMaxCapacity(Long.parseLong(parameters.get("maxCapacity")));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxCapacity value '" + parameters.get("maxCapacity") + "' cannot be converted in Long!");
         }
-//        p.setSchedules(pool.getSchedules());
+        try {
+            if (parameters.containsKey("condition"))
+                p.setCondition(Pool.WaterCondition.valueOf(parameters.get("condition")));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "condition value '" + parameters.get("condition") + "' cannot be converted in WaterCondition!");
+        }
+        if (parameters.containsKey("responsible")) {
+            p.setResponsible(getStaff(parameters.get("responsible")));
+        }
         if (parameters.containsKey("sector")) {
-            p.setSector(sectorService.getByName(parameters.get("sector")));
+            p.setSector(getSector(parameters.get("sector")));
         }
         return poolService.save(p);
     }
@@ -79,6 +92,38 @@ public class PoolController {
     @DeleteMapping("/pools/{id}")
     public Pool deletePool(@PathVariable String id) {
         Pool pool = getById(id);
+        if (!pool.getFishes().isEmpty())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Impossible to delete the pool! Fishes assigned to pool '" + pool.getId() + "' must be moved to another pool before removing!");
+        if (pool.getResponsible() != null)
+            pool.getResponsible().removePoolResponsability(pool);
+        for (Schedule schedule : pool.getSchedules())
+            for (PoolActivity activity : schedule.getScheduledActivities())
+                for (Staff staff : activity.getStaffList())
+                    staff.setActivities(new HashSet<>());
         return poolService.remove(pool);
+    }
+
+    private Sector getSector(String id) {
+        Sector sector = null;
+        try {
+            sector = this.sectorService.getById(Long.parseLong(id));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot convert sector id: '" + id + "' into Long");
+        }
+        if (sector == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Sector with id '" + id + "' not found!");
+        return sector;
+    }
+
+    private Staff getStaff(String id) {
+        Staff staff = null;
+        try {
+            staff = this.staffService.getById(Long.parseLong(id));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot convert staff id: '" + id + "' into Long");
+        }
+        if (staff == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff with id '" + id + "' not found!");
+        return staff;
     }
 }

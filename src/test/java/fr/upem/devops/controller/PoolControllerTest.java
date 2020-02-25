@@ -1,6 +1,5 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.*;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.SectorService;
@@ -16,6 +15,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
@@ -112,32 +113,11 @@ public class PoolControllerTest {
     }
 
     @Test
-    public void addPoolSectorNotFound() {
-        Mockito.when(sectorService.getById(4L)).thenThrow(new ResourceNotFoundException("Sector with id '4' not found!"));
-        Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new HashSet<>());
-        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/4/responsible/1/pools", pool,
-                ResourceNotFoundException.class);
-        assertEquals("Sector with id '4' not found!", request.getMessage());
-    }
-
-    @Test
-    public void addPoolResponsibleNotFound() {
-        Mockito.when(sectorService.getById(1L)).thenReturn(sectors.get(0));
-        Mockito.when(staffService.getById(2L)).thenThrow(new ResourceNotFoundException("Staff '2' not found!"));
-        Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new HashSet<>());
-        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/1/responsible/2/pools", pool,
-                ResourceNotFoundException.class);
-        assertEquals("Staff '2' not found!", request.getMessage());
-    }
-
-
-    @Test
     public void updatePool() {
         Pool pool = this.pools.get(0);
         Mockito.when(poolService.save(pool)).thenReturn(pool);
         pool.setCondition(Pool.WaterCondition.DIRTY);
         HashMap<String, String> parameters = new HashMap<>();
-        parameters.put("id", pool.getId().toString());
         parameters.put("maxCapacity", pool.getMaxCapacity().toString());
         parameters.put("volume", pool.getVolume().toString());
         parameters.put("condition", pool.getCondition().name());
@@ -149,9 +129,67 @@ public class PoolControllerTest {
 
     @Test
     public void deletePool() {
-        Pool pool = this.pools.get(0);
+        Pool pool = new Pool(4L, 30L, 30.5, Pool.WaterCondition.DIRTY, new HashSet<>());
+        Mockito.when(poolService.getById(4L)).thenReturn(pool);
         Mockito.when(poolService.remove(pool)).thenReturn(pool);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.DELETE, null, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/pools/4", HttpMethod.DELETE, null, HashMap.class).getBody();
         assertEquals(pool.getId().toString(), request.get("id").toString());
+    }
+
+    /* HTTP EXCEPTIONS */
+
+    @Test
+    public void getByIdNotFound() {
+        Mockito.when(poolService.getById(10L)).thenReturn(null);
+        ResponseEntity<Pool> response = this.restTemplate.getForEntity("http://localhost:" + port + "/schedules/10", Pool.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void getByIdBadRequest() {
+        ResponseEntity<Pool> response = this.restTemplate.getForEntity("http://localhost:" + port + "/schedules/asdf", Pool.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void addPoolSectorNotFound() {
+        Mockito.when(sectorService.getById(2L)).thenReturn(null);
+        ResponseEntity<Pool> response = this.restTemplate.postForEntity("http://localhost:" + port + "/sectors/2/responsible/2/pools", new Pool(),
+                Pool.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void addPoolResponsibleNotFound() {
+        Mockito.when(sectorService.getById(1L)).thenReturn(this.sectors.get(0));
+        Mockito.when(staffService.getById(2L)).thenReturn(null);
+        ResponseEntity<Pool> response = this.restTemplate.postForEntity("http://localhost:" + port + "/sectors/1/responsible/2/pools", new Pool(),
+                Pool.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void updateBadRequest() {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("maxCapacity", "wow");
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT,
+                updated, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("maxCapacity value '" + parameters.get("maxCapacity") + "' cannot be converted in Long!", response.getBody().get("message"));
+        parameters.remove("maxCapacity");
+        parameters.put("condition", "a,2");
+        updated = new HttpEntity<>(parameters);
+        response = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT,
+                updated, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("condition value '" + parameters.get("condition") + "' cannot be converted in WaterCondition!", response.getBody().get("message"));
+    }
+
+    @Test
+    public void deleteBadRequest() {
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.DELETE, null, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Impossible to delete the pool! Fishes assigned to pool '1' must be moved to another pool before removing!", response.getBody().get("message"));
     }
 }

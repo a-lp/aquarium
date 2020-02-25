@@ -1,6 +1,5 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.*;
 import fr.upem.devops.service.FishService;
 import fr.upem.devops.service.PoolService;
@@ -16,6 +15,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
@@ -79,13 +80,6 @@ public class FishControllerTest {
     }
 
     @Test
-    public void getBySpeciesNotFound() {
-        Mockito.when(specieService.getByName("Specie4")).thenThrow(new ResourceNotFoundException("Species 'Specie4' not found!"));
-        ResourceNotFoundException exception = this.restTemplate.getForObject("http://localhost:" + port + "/species/Specie4/fishes", ResourceNotFoundException.class);
-        assertEquals("Species 'Specie4' not found!", exception.getMessage());
-    }
-
-    @Test
     public void getById() {
         List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/fishes", List.class);
         HashMap output = this.restTemplate.getForObject("http://localhost:" + port + "/fishes/2", HashMap.class);
@@ -110,24 +104,6 @@ public class FishControllerTest {
         assertNotNull(request.get("arrivalDate"));
         assertEquals(fish_new.getPool().getId().toString(), request.get("pool").toString());
         assertEquals(fish_new.getSpecie().getName(), request.get("specie"));
-    }
-
-    @Test
-    public void addFishSpecieNotFound() {
-        Mockito.when(specieService.getByName("Specie4")).thenThrow(new ResourceNotFoundException("Species 'Specie4' not found!"));
-        Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
-        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/species/Specie4/pools/1/fishes", fish,
-                ResourceNotFoundException.class);
-        assertEquals("Species 'Specie4' not found!", request.getMessage());
-    }
-
-    @Test
-    public void addFishPoolNotFound() {
-        Mockito.when(poolService.getById(2L)).thenThrow(new ResourceNotFoundException("Pool with id '2' not found!"));
-        Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
-        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/species/Specie1/pools/2/fishes", fish,
-                ResourceNotFoundException.class);
-        assertEquals("Pool with id '2' not found!", request.getMessage());
     }
 
     @Test
@@ -161,4 +137,58 @@ public class FishControllerTest {
                 .getBody();
         assertEquals("3", response.get("id").toString());
     }
+
+    /* HTTP ERRORS */
+
+    @Test
+    public void getBySpeciesNotFound() {
+        Mockito.when(specieService.getByName("Specie4")).thenReturn(null);
+        ResponseEntity<Fish> response = this.restTemplate.getForEntity("http://localhost:" + port + "/species/Specie4/fishes", Fish.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void addFishSpecieNotFound() {
+        Mockito.when(specieService.getByName("Specie4")).thenReturn(null);
+        Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
+        ResponseEntity<Fish> response = this.restTemplate.postForEntity("http://localhost:" + port + "/species/Specie4/pools/2/fishes", fish,
+                Fish.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void addFishPoolNotFound() {
+        Mockito.when(poolService.getById(2L)).thenReturn(null);
+        Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
+        ResponseEntity<Fish> response = this.restTemplate.postForEntity("http://localhost:" + port + "/species/Specie1/pools/2/fishes", fish,
+                Fish.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void getByIdNotFound() {
+        Mockito.when(fishService.getById(10L)).thenReturn(null);
+        ResponseEntity<Fish> response = this.restTemplate.getForEntity("http://localhost:" + port + "/fishes/10", Fish.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void getByIdBadRequest() {
+        ResponseEntity<Fish> response = this.restTemplate.getForEntity("http://localhost:" + port + "/fishes/asdf", Fish.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void updateFishBadRequest() {
+        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", this.species.get(0), new Pool(1L, 1L, 1.0, Pool.WaterCondition.DIRTY, null));
+        Mockito.when(fishService.save(updateP1)).thenReturn(null);
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("gender", "wow");
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
+        ResponseEntity<Fish> response = this.restTemplate.exchange("http://localhost:" + port + "/fishes/3", HttpMethod.PUT,
+                updated, Fish.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
 }
+
+

@@ -1,7 +1,5 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.errors.ConflictException;
-import fr.upem.devops.errors.ResourceNotFoundException;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
@@ -19,6 +17,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.*;
@@ -50,9 +50,9 @@ public class SectorControllerTest {
         Staff st1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
         Staff st2 = new Staff(2L, "Nome2", "Cognome2", "Address2", new Date(), "SocSec2", Staff.StaffRole.MANAGER);
         Staff st3 = new Staff(3L, "Nome3", "Cognome3", "Address3", new Date(), "SocSec3", Staff.StaffRole.WORKER);
-        Pool a1 = new Pool(1L, 1L, 1.0, Pool.WaterCondition.DIRTY, null);
-        Pool a2 = new Pool(2L, 2L, 2.0, Pool.WaterCondition.CLEAN, null);
-        Pool a3 = new Pool(3L, 3L, 3.0, Pool.WaterCondition.DIRTY, null);
+        Pool a1 = new Pool(1L, 1L, 1.0, Pool.WaterCondition.DIRTY, new HashSet<>());
+        Pool a2 = new Pool(2L, 2L, 2.0, Pool.WaterCondition.CLEAN, new HashSet<>());
+        Pool a3 = new Pool(3L, 3L, 3.0, Pool.WaterCondition.DIRTY, new HashSet<>());
 
         s1.addPool(a1);
         s2.addPool(a2);
@@ -83,7 +83,6 @@ public class SectorControllerTest {
         assertEquals(lista.get(0).get("id").toString(), request.get("id").toString());
         assertEquals(lista.get(0).get("name"), request.get("name").toString());
         assertEquals(lista.get(0).get("location"), request.get("location").toString());
-        assertEquals(((List<Pool>) lista.get(0).get("pools")).size(), ((List) request.get("pools")).size());
     }
 
     @Test
@@ -102,42 +101,93 @@ public class SectorControllerTest {
     }
 
     @Test
-    public void addSectorResponsibleNotFound() {
-        Mockito.when(staffService.getById(4L)).thenThrow(new ResourceNotFoundException("Staff 4 not found!"));
-        Sector sec = new Sector("Sector4", "Location4");
-        ResourceNotFoundException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/responsible/4", sec,
-                ResourceNotFoundException.class);
-        assertEquals("Staff 4 not found!", request.getMessage());
-    }
-
-    @Test
-    public void addSectorDuplicatedName() {
-        Sector sec = new Sector("Sector1", "Location4");
-        Mockito.when(sectorService.save(sec)).thenThrow(new ConflictException("Another sector named 'Sector1' found!"));
-        ConflictException request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/responsible/1", sec,
-                ConflictException.class);
-        assertEquals("Another sector named 'Sector1' found!", request.getMessage());
-    }
-
-    @Test
     public void updateSector() {
         Sector sector = this.sectors.get(0);
+        Mockito.when(sectorService.getById(1L)).thenReturn(sector);
         Mockito.when(sectorService.save(sector)).thenReturn(sector);
         sector.setName("New Name");
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("name", sector.getName());
         parameters.put("location", sector.getLocation());
         HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/sectors/Sector1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/sectors/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
         assertEquals(sector.getId().toString(), request.get("id").toString());
         assertEquals(sector.getName(), request.get("name"));
     }
 
     @Test
     public void deleteSector() {
-        Sector sector = this.sectors.get(0);
+        Sector sector = new Sector();
+        sector.setId(100L);
+        Mockito.when(sectorService.getByName("SectorNew")).thenReturn(sector);
         Mockito.when(sectorService.remove(sector)).thenReturn(sector);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/sectors/Sector1", HttpMethod.DELETE, null, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/sectors/SectorNew", HttpMethod.DELETE, null, HashMap.class).getBody();
         assertEquals(sector.getId().toString(), request.get("id").toString());
     }
+
+
+    @Test
+    public void getByIdNotFound() {
+        Mockito.when(sectorService.getById(10L)).thenReturn(null);
+        ResponseEntity<Sector> response = this.restTemplate.getForEntity("http://localhost:" + port + "/sectors/id/10", Sector.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void getByNameNotFound() {
+        Mockito.when(sectorService.getByName("10")).thenReturn(null);
+        ResponseEntity<Sector> response = this.restTemplate.getForEntity("http://localhost:" + port + "/sectors/10", Sector.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void getByIdBadRequest() {
+        ResponseEntity<Sector> response = this.restTemplate.getForEntity("http://localhost:" + port + "/sectors/id/asdf", Sector.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void addSectorResponsibleNotFound() {
+        Mockito.when(staffService.getById(4L)).thenReturn(null);
+        ResponseEntity<Sector> response = this.restTemplate.postForEntity("http://localhost:" + port + "/sectors/responsible/4", new Sector(),
+                Sector.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void addSectorDuplicatedName() {
+        Sector sector = this.sectors.get(0);
+        sector.setPools(null);
+        Mockito.when(sectorService.getByName(sector.getName())).thenReturn(sector);
+        ResponseEntity<HashMap> response = this.restTemplate.postForEntity("http://localhost:" + port + "/sectors/responsible/1", sector,
+                HashMap.class);
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("Duplicate name for sector '" + sector.getName(), response.getBody().get("message"));
+    }
+
+    @Test
+    public void updateBadRequest() {
+        Mockito.when(sectorService.getById(1L)).thenReturn(this.sectors.get(0));
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("staffList", "a,2");
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/sectors/1", HttpMethod.PUT,
+                updated, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Error during conversion of staff ids in Long!", response.getBody().get("message"));
+        parameters.put("staffList", "");
+        updated = new HttpEntity<>(parameters);
+        response = this.restTemplate.exchange("http://localhost:" + port + "/sectors/1", HttpMethod.PUT,
+                updated, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Cannot update sector, no staff found! There must be at least one responsible", response.getBody().get("message"));
+    }
+
+    @Test
+    public void deleteSectorBadRequest() {
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/sectors/Sector1", HttpMethod.DELETE, null, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Cannot delete sector! There are pools in this sector.", response.getBody().get("message"));
+    }
 }
+

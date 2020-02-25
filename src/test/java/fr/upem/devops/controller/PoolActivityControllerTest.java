@@ -1,6 +1,6 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.errors.ResourceNotFoundException;
+import fr.upem.devops.model.Fish;
 import fr.upem.devops.model.PoolActivity;
 import fr.upem.devops.model.Schedule;
 import fr.upem.devops.model.Staff;
@@ -19,6 +19,8 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalTime;
@@ -30,7 +32,7 @@ import static org.junit.Assert.assertEquals;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PoolActivityControllerTest {
     @MockBean
-    private PoolActivityService service;
+    private PoolActivityService activityService;
     @MockBean
     private ScheduleService scheduleService;
     @MockBean
@@ -53,10 +55,10 @@ public class PoolActivityControllerTest {
         activities.add(pa2);
         activities.add(pa3);
 
-        Mockito.when(service.getAll()).thenReturn(activities);
-        Mockito.when(service.getById(1L)).thenReturn(pa1);
-        Mockito.when(service.getById(2L)).thenReturn(pa2);
-        Mockito.when(service.getById(3L)).thenReturn(pa3);
+        Mockito.when(activityService.getAll()).thenReturn(activities);
+        Mockito.when(activityService.getById(1L)).thenReturn(pa1);
+        Mockito.when(activityService.getById(2L)).thenReturn(pa2);
+        Mockito.when(activityService.getById(3L)).thenReturn(pa3);
     }
 
     @Test
@@ -89,7 +91,7 @@ public class PoolActivityControllerTest {
         PoolActivity pa = new PoolActivity(LocalTime.of(4, 0), LocalTime.of(8, 0), true, new HashSet<>(), null);
         PoolActivity pa_new = new PoolActivity(4L, LocalTime.of(4, 0), LocalTime.of(8, 0), true, Sets.newHashSet(Arrays.asList(s1, s2, s3)), schedule);
         schedule.assignActivity(pa_new);
-        Mockito.when(service.save(pa)).thenReturn(pa_new);
+        Mockito.when(activityService.save(pa)).thenReturn(pa_new);
         HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", pa,
                 HashMap.class);
         assertEquals(pa_new.getId().toString(), request.get("id").toString());
@@ -102,42 +104,90 @@ public class PoolActivityControllerTest {
     }
 
     @Test
-    public void addPoolActivityScheduleNotFound() {
-        ResourceNotFoundException notFoundException = new ResourceNotFoundException("Schedule with id '1' not found!");
-        Mockito.when(scheduleService.getById(1L)).thenThrow(notFoundException);
-        ResourceNotFoundException exception = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", new PoolActivity(),
-                ResourceNotFoundException.class);
-        assertEquals(notFoundException.getMessage(), exception.getMessage());
-    }
-
-    @Test
-    public void addPoolActivityResponsibleNotFound() {
-        ResourceNotFoundException notFoundException = new ResourceNotFoundException("Staff with id '1' not found!");
-        Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
-        Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
-        Mockito.when(staffService.getById(1L)).thenThrow(notFoundException);
-        ResourceNotFoundException exception = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", new PoolActivity(),
-                ResourceNotFoundException.class);
-        assertEquals(notFoundException.getMessage(), exception.getMessage());
-    }
-
-    @Test
     public void updatePoolActivity() {
         PoolActivity poolActivity = this.activities.get(0);
-        Mockito.when(service.save(poolActivity)).thenReturn(poolActivity);
-        poolActivity.setDescription("new desc");
-        HttpEntity<PoolActivity> httpEntity = new HttpEntity<>(poolActivity);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
-        assertEquals(poolActivity.getId().toString(), request.get("id").toString());
-        assertEquals(poolActivity.getDescription(), request.get("description"));
+        Mockito.when(activityService.save(poolActivity)).thenReturn(poolActivity);
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("description", "false");
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT, updated, HashMap.class).getBody();
+        assertEquals("1", request.get("id").toString());
+        assertEquals("false", request.get("description"));
+
     }
 
     @Test
     public void deleteActivity() {
         PoolActivity poolActivity = this.activities.get(0);
-        Mockito.when(service.remove(poolActivity)).thenReturn(poolActivity);
+        Mockito.when(activityService.remove(poolActivity)).thenReturn(poolActivity);
         PoolActivity response = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.DELETE, null, PoolActivity.class).getBody();
         assertEquals(Long.valueOf(1L), response.getId());
         assertEquals(poolActivity, response);
+    }
+
+    /* HTTP EXCEPTIONS */
+    @Test
+    public void addPoolActivityScheduleNotFound() {
+        Mockito.when(scheduleService.getById(1L)).thenReturn(null);
+        ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", new PoolActivity(),
+                PoolActivity.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void addPoolActivityResponsibleNotFound() {
+        Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
+        Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
+        Mockito.when(staffService.getById(1L)).thenReturn(null);
+        ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", new PoolActivity(),
+                PoolActivity.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void addPoolActivityResponsibleBadRequest() {
+        Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
+        Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
+        ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/schedule/1/activities/staff/a,3", new PoolActivity(),
+                PoolActivity.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void getByIdNotFound() {
+        Mockito.when(activityService.getById(10L)).thenReturn(null);
+        ResponseEntity<PoolActivity> response = this.restTemplate.getForEntity("http://localhost:" + port + "/activities/10", PoolActivity.class);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void getByIdBadRequest() {
+        ResponseEntity<PoolActivity> response = this.restTemplate.getForEntity("http://localhost:" + port + "/activities/asdf", PoolActivity.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void updateBadRequest() {
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("startActivity", "wow");
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT,
+                updated, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Error converting startActivity: '" + parameters.get("startActivity") + "' into LocalTime!", response.getBody().get("message"));
+        parameters.remove("startActivity");
+        parameters.put("staffList", "a,2");
+        updated = new HttpEntity<>(parameters);
+        response = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT,
+                updated, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Cannot convert staff id: 'a' into Long", response.getBody().get("message"));
+        parameters.remove("staffList");
+        parameters.put("staffList", "");
+        updated = new HttpEntity<>(parameters);
+        response = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT,
+                updated, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Activities must have at least one responsible in charge!", response.getBody().get("message"));
     }
 }

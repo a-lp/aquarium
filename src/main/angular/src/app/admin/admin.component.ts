@@ -13,6 +13,7 @@ import {Sector} from '../model/Sector';
 import {SectorService} from '../service/sector.service';
 import {PoolActivity} from '../model/PoolActivity';
 import {ActivityService} from '../service/activity.service';
+import {StaffRole} from "../model/StaffRole";
 
 @Component({
   selector: 'app-admin',
@@ -23,7 +24,7 @@ export class AdminComponent implements OnInit {
   fishes: Array<Fish> = [];
   species: Array<Specie> = [];
   pools: Array<Pool> = [];
-  staffs: Array<Staff>;
+  staffs: Array<Staff> = [];
   sectors: Array<Sector> = [];
   schedules: Array<Schedule> = [];
   activities: Array<PoolActivity> = [];
@@ -72,4 +73,11 @@ export class AdminComponent implements OnInit {
     this.shown = position;
   }
 
+  managers() {
+    return this.staffs.length > 0 ? this.staffs.filter(staff => staff.role === StaffRole.MANAGER) : [];
+  }
+
+  workers() {
+    return this.staffs.length > 0 ? this.staffs.filter(staff => staff.role === StaffRole.WORKER) : [];
+  }
 }

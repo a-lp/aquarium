@@ -8,6 +8,9 @@ import fr.upem.devops.repository.StaffRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+
 @Service
 public class StaffService {
     @Autowired
@@ -32,16 +35,9 @@ public class StaffService {
     }
 
     public Staff remove(Staff staff) {
-        for (PoolActivity activity : staff.getActivities()) {
-            System.out.println("Before: " + activity.getStaffList().size());
-            activity.removeStaff(staff);
-            System.out.println("After: " + activity.getStaffList().size());
-        }
-        for (Sector sector : staff.getSectors())
-            sector.removeStaff(staff);
-        for (Pool pool : staff.getPoolsResponsabilities())
-            pool.setResponsible(null);
         staffRepository.delete(staff);
+        staff.setActivities(new HashSet<>());
+        staff.setPoolsResponsabilities(new ArrayList<>());
         return staff;
     }
 }

@@ -1,7 +1,6 @@
 package fr.upem.devops.service;
 
 import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Staff;
 import fr.upem.devops.repository.PoolActivityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,8 +29,6 @@ public class PoolActivityService {
     }
 
     public PoolActivity remove(PoolActivity poolActivity) {
-        for (Staff staff : poolActivity.getStaffList())
-            staff.removeActivity(poolActivity);
         poolActivityRepository.delete(poolActivity);
         return poolActivity;
     }

@@ -1,9 +1,14 @@
 package fr.upem.devops.service;
 
-import fr.upem.devops.model.*;
+import fr.upem.devops.model.Pool;
+import fr.upem.devops.model.PoolActivity;
+import fr.upem.devops.model.Schedule;
+import fr.upem.devops.model.Staff;
 import fr.upem.devops.repository.PoolRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 
@@ -29,15 +34,6 @@ public class PoolService {
     }
 
     public Pool remove(Pool pool) {
-        for (Fish f : pool.getFishes()) {
-            f.setPool(null);
-        }
-        if (pool.getResponsible() != null)
-            pool.getResponsible().removePoolResponsability(pool);
-        for(Schedule schedule: pool.getSchedules())
-            for(PoolActivity activity:schedule.getScheduledActivities())
-                for(Staff staff: activity.getStaffList())
-                    staff.setActivities(new HashSet<>());
         poolRepository.delete(pool);
         return pool;
     }
