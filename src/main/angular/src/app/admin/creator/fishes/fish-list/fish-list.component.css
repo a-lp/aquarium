@@ -1,0 +1,20 @@
+.fish-table{
+  padding: 2em;
+  width: 100%;
+}
+
+.fish-table thead{
+  width: 100%;
+}
+
+th:hover {
+  cursor: pointer;
+}
+
+tr{
+  padding: 1em 0;
+}
+
+td{
+  text-align: center;
+}

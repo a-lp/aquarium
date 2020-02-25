@@ -4,6 +4,7 @@ import {Sector} from '../../../model/Sector';
 import {Pool} from '../../../model/Pool';
 import {Staff} from '../../../model/Staff';
 import {PoolService} from '../../../service/pool.service';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-sectors-creator',
@@ -17,18 +18,26 @@ export class SectorsCreatorComponent implements OnInit {
   staffs: Array<Staff> = [];
   @Output()
   onChange: EventEmitter<Sector> = new EventEmitter<Sector>();
-
   @Input()
   sectors: Array<Sector>;
+
+  sector: Sector;
+  form = new FormGroup({
+    name: new FormControl('', Validators.required),
+    location: new FormControl('', Validators.required),
+    staffList: new FormControl('')
+  });
+  selectedStaff: Array<Staff> = [];
+
 
   constructor(private sectorService: SectorService, private poolService: PoolService) {
   }
 
   ngOnInit() {
-    this.refresh(null);
+    this.refresh();
   }
 
-  refresh(sector: Sector) {
+  refresh() {
     this.sectorService.getAll().subscribe(
       data => {
         if (data != null) {
@@ -39,19 +48,44 @@ export class SectorsCreatorComponent implements OnInit {
     );
   }
 
-  onSaveSector(sector: Sector) {
-    this.refresh(sector);
-    this.onChange.emit(sector);
-  }
-
   removeSector(sector: Sector) {
     this.sectorService.delete(sector).subscribe(
       removedSector => {
-        this.refresh(removedSector);
+        this.refresh();
         this.onChange.emit(removedSector);
       }, error => {
         console.log(error);
       }
     );
   }
+
+  save() {
+    this.form.value.staffList = this.selectedStaff.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
+    this.sectorService.save(this.form.value).subscribe(sector => {
+        this.refresh();
+        this.onChange.emit(sector);
+        if (sector != null) {
+          this.form.reset();
+          this.selectedStaff = [];
+        }
+      }
+    );
+  }
+
+  isDisabled() {
+    return !(this.form.valid && this.selectedStaff.length > 0);
+  }
+
+  selectElement(obj: any) {
+    if (this.selectedStaff.includes(obj)) {
+      this.selectedStaff.splice(this.selectedStaff.findIndex(element => obj.id == element.id), 1);
+    } else {
+      this.selectedStaff.push(obj);
+    }
+  }
+
+  selectSector(sector: Sector) {
+    this.sector = sector;
+  }
+
 }

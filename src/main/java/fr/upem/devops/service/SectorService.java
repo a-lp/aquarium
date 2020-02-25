@@ -37,11 +37,6 @@ public class SectorService {
     }
 
     public Sector remove(Sector specie) {
-        for (Staff staff : specie.getStaffList())
-            staff.removeStaff(staff);
-        for (Pool pool : specie.getPools())
-            for (Fish fish : pool.getFishes())
-                fish.setPool(null);
         sectorRepository.delete(specie);
         return specie;
     }

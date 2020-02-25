@@ -2,15 +2,20 @@ h1 {
   text-align: center;
 }
 
-table {
-  width: 100%;
-  padding: 2em;
-}
-
 table thead {
   width: 100%;
 }
 
 td {
   text-align: center;
+}
+
+table {
+  width: 100%;
+  height: 100%;
+  padding: 1em;
+}
+
+th * {
+  width: 95%;
 }

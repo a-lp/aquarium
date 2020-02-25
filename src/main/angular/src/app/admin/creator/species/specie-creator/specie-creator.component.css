@@ -1,8 +1,61 @@
-table{
+.specie-page {
+  display: flex;
+  flex-direction: column;
+  padding: 1%;
+  height: 95%;
+}
+
+.specie-content {
+  max-height: 100%;
+  flex-grow: 1;
+}
+
+.close-button {
+  align-self: center;
+  margin-bottom: 1em;
+}
+
+.close-button:hover {
+  cursor: pointer;
+}
+
+form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.specie-info {
+  flex: .3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fish-list {
+  flex: .7;
+  background: white;
+  padding: 0 1em;
+  overflow-y: scroll;
+}
+
+table {
+  padding: 2em;
   width: 100%;
 }
 
-th *{
-  width: 95%;
+table thead {
+  width: 100%;
 }
 
+th:hover {
+  cursor: pointer;
+}
+
+tr {
+  padding: 1em 0;
+}
+
+td {
+  text-align: center;
+}

@@ -1,32 +1,35 @@
-<form [formGroup]="form">
-  <table>
-    <thead>
-    <tr>
-      <th>Name</th>
-      <th>Distinct Sign</th>
-      <th>Gender</th>
-      <th>Specie</th>
-      <th>Pool</th>
-      <th>Save</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <th><input type="text" formControlName="name"></th>
-      <th><input type="text" formControlName="distinctSign"></th>
-      <th><select formControlName="gender">
-        <option *ngFor="let i of genders" [value]="i">{{i}}</option>
-      </select></th>
-      <th><select formControlName="specie">
-        <option *ngFor="let i of species" [value]="i.name">{{i.name}}</option>
-      </select></th>
-      <th><select formControlName="pool">
-        <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
-      </select></th>
-      <th>
-        <button (click)="save($event)" [disabled]="!form.valid">Save</button>
-      </th>
-    </tr>
-    </tbody>
-  </table>
-</form>
+<div class="fish-page">
+  <div class="close-button">
+    <a (click)="hideFish()">X</a>
+  </div>
+  <div class="fish-content">
+    <form [formGroup]="form">
+      <div class="fish-info">
+        <div id="name">
+          <label>Name</label> <input type="text" formControlName="name" [ngModel]="fish.name">
+        </div>
+        <div id="distinctSign">
+          <label>Distinct Sign</label><input type="text" formControlName="distinctSign" [ngModel]="fish.distinctSign">
+        </div>
+        <div id="gender">
+          <label>Gender</label><select formControlName="gender" [ngModel]="fish.gender">
+          <option *ngFor="let i of genders" [value]="i">{{i}}</option>
+        </select>
+        </div>
+        <div id="specie">
+          <label>Specie</label> <select formControlName="specie" [ngModel]="fish.specie">
+          <option *ngFor="let a of species" [value]="a.name">{{a.name}}</option>
+        </select>
+        </div>
+        <div id="pool">
+          <label>Pool</label> <select formControlName="pool" [ngModel]="fish.pool">
+          <option *ngFor="let a of pools" [value]="a.id">{{a.id}}</option>
+        </select>
+        </div>
+        <div id="update">
+          <button (click)="update()" [disabled]="!form.valid">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

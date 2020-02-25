@@ -1,3 +1,11 @@
+table{
+  width: 100%;
+}
+
+th *{
+  width: 95%;
+}
+
 td{
   text-align: center;
 }
@@ -6,15 +14,3 @@ h1, h2{
   text-align: center;
 }
 
-.fish-table{
-  padding: 2em;
-  width: 100%;
-}
-
-.fish-table thead{
-  width: 100%;
-}
-
-tr{
-  padding: 1em 0;
-}

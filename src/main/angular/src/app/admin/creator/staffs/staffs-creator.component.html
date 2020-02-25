@@ -1,53 +1,38 @@
-<app-staff-creator (onSave)="onSaveStaff($event)"></app-staff-creator>
-<table>
-  <thead>
-  <tr>
-    <th>
-      ID
-    </th>
-    <th>
-      Name
-    </th>
-    <th>
-      Surname
-    </th>
-    <th>
-      Address
-    </th>
-    <th>
-      Birthday
-    </th>
-    <th>
-      Social Security
-    </th>
-    <th>Role</th>
-    <th>Pool Responsibilities</th>
-    <th>Sectors</th>
-    <th>Activities</th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor=" let staff of staffs">
-    <td>{{this.staff.id}}</td>
-    <td>{{this.staff.name}}</td>
-    <td>{{this.staff.surname}}</td>
-    <td>{{this.staff.address}}</td>
-    <td>{{this.staff.birthday}}</td>
-    <td>{{this.staff.socialSecurity}}</td>
-    <td>{{this.staff.role}}</td>
-    <td>
-      <button>Show</button>
-    </td>
-    <td>
-      <button>Show</button>
-    </td>
-    <td>
-      <button>Show</button>
-    </td>
-    <td>
-      <button (click)="removeStaff(staff)">Remove</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div *ngIf="staff==null">
+  <form [formGroup]="form">
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Surname</th>
+        <th>Address</th>
+        <th>Birthday</th>
+        <th>Social Security</th>
+        <th>Role</th>
+        <th>Save</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th><input type="text" formControlName="name"></th>
+        <th><input type="text" formControlName="surname"></th>
+        <th><input type="text" formControlName="address"></th>
+        <th><input type="date" [max]="today()" formControlName="birthday"></th>
+        <th><input type="text" formControlName="socialSecurity"></th>
+        <th><select formControlName="role">
+          <option *ngFor="let i of roles" [value]="i">{{i}}</option>
+        </select></th>
+        <th>
+          <button (click)="save()" [disabled]="!form.valid">Save</button>
+        </th>
+      </tr>
+      </tbody>
+    </table>
+  </form>
+  <app-staff-list [staffs]="staffs" (onChange)="refresh(); this.onChange.emit(null)"
+                  (onSelect)="this.staff=$event"></app-staff-list>
+</div>
+<div *ngIf="staff!=null">
+  <app-staff-creator [staff]="this.staff" (onHide)="this.staff=null;"
+                     (onChange)="refresh(); this.onChange.emit(null);"></app-staff-creator>
+</div>

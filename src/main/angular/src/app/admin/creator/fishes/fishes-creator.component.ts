@@ -7,6 +7,7 @@ import {PoolService} from '../../../service/pool.service';
 import {DatePipe} from '@angular/common';
 import {Specie} from '../../../model/Specie';
 import {Pool} from '../../../model/Pool';
+import {FishGender} from "../../../model/FishGender";
 
 
 @Component({
@@ -23,8 +24,8 @@ export class FishesCreatorComponent implements OnInit {
   onChange: EventEmitter<Fish> = new EventEmitter<Fish>();
   @Input()
   fishes: Array<Fish>;
-  field = 0; // Sorting field
-  ascendent = true;
+  genders = Object.values(FishGender);
+
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     distinctSign: new FormControl('', Validators.required),
@@ -32,55 +33,13 @@ export class FishesCreatorComponent implements OnInit {
     specie: new FormControl(null, Validators.required),
     pool: new FormControl(null, Validators.required)
   });
+  fish: Fish = null;
 
 
   constructor(private fishService: FishService, private speciesService: SpeciesService, private poolService: PoolService, private datePipe: DatePipe) {
   }
 
   ngOnInit() {
-    this.refresh(null);
-  }
-
-  sort(field: number) {
-    console.log(field);
-    if (this.field == field) {
-      this.ascendent = !this.ascendent;
-    } else {
-      this.ascendent = true;
-    }
-    this.field = field;
-    switch (field) {
-      case 0:
-        this.fishes = this.fishes.sort((a, b) => (this.ascendent ? 1 : -1) * a.id.toString().localeCompare(b.id.toString()));
-        break;
-      case 1:
-        this.fishes = this.fishes.sort((a, b) => (this.ascendent ? 1 : -1) * a.name.localeCompare(b.name));
-        break;
-      case 2:
-        this.fishes = this.fishes.sort((a, b) => (this.ascendent ? 1 : -1) * a.gender.localeCompare(b.gender));
-        break;
-      case 3:
-        this.fishes = this.fishes.sort((a, b) => (this.ascendent ? 1 : -1) * (a.arrivalDate == b.arrivalDate ? 0 : (a.arrivalDate > b.arrivalDate ? 1 : -1)));
-        break;
-      case 4:
-        this.fishes = this.fishes.sort((a, b) => (this.ascendent ? 1 : -1) * (a.returnDate == b.returnDate ? 0 : (a.returnDate > b.returnDate ? 1 : -1)));
-        break;
-      case 5:
-        this.fishes = this.fishes.sort((a, b) => (this.ascendent ? 1 : -1) * a.specie.name.localeCompare(b.specie.name));
-        break;
-      case 6:
-        this.fishes = this.fishes.sort((a, b) => {
-          console.log(a, b);
-          if (a.pool == null) {
-            return (this.ascendent ? 1 : -1);
-          }
-          if (b.pool == null) {
-            return (this.ascendent ? -1 : 1);
-          }
-          return (this.ascendent ? 1 : -1) * a.pool.id.toString().localeCompare(b.pool.id.toString());
-        });
-        break;
-    }
   }
 
   refresh($event: Fish) {
@@ -94,27 +53,17 @@ export class FishesCreatorComponent implements OnInit {
     );
   }
 
-  retireAnimal(fish: Fish) {
-    this.fishService.retireFish(fish).subscribe(
-      data => {
-        this.refresh(data);
-        this.onChange.emit(fish);
-      },
-      error => console.log(error)
-    );
-  }
-
-  onSaveFish(fish: Fish) {
+  onChangeFish(fish: Fish) {
     this.refresh(fish);
     this.onChange.emit(fish);
   }
 
-  removeFish(fish: Fish) {
-    this.fishService.delete(fish).subscribe(
-      removedFish => {
-        this.refresh(removedFish);
-        this.onChange.emit(removedFish);
-      }
-    );
+
+  save($event: Event) {
+    this.fishService.save(this.form.value).subscribe(fish => {
+      this.onChange.emit(fish);
+      this.form.reset();
+    });
   }
+
 }

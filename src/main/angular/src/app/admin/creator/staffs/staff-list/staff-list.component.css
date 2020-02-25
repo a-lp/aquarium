@@ -1,0 +1,16 @@
+h1 {
+  text-align: center;
+}
+
+table {
+  padding: 2em;
+  width: 100%;
+}
+
+table thead {
+  width: 100%;
+}
+
+td {
+  text-align: center;
+}

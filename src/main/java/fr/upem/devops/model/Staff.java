@@ -1,14 +1,15 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Staff.class)
 public class Staff implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,13 +21,14 @@ public class Staff implements Serializable {
     private String socialSecurity;
     private StaffRole role;
     @OneToMany(mappedBy = "responsible")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Pool> poolsResponsabilities = new ArrayList<>();
     @ManyToMany(mappedBy = "staffList")
-    @JsonIgnoreProperties("staffList")
+    @JsonIdentityReference(alwaysAsId = true)
     private List<Sector> sectors = new ArrayList<>();
     @ManyToMany
-    @JsonIgnoreProperties("staffList")
-    private List<PoolActivity> activities = new ArrayList<>();
+    @JsonIdentityReference(alwaysAsId = true)
+    private Set<PoolActivity> activities = new HashSet<>();
 
     public Staff() {
     }
@@ -131,11 +133,11 @@ public class Staff implements Serializable {
         this.role = role;
     }
 
-    public List<PoolActivity> getActivities() {
+    public Set<PoolActivity> getActivities() {
         return activities;
     }
 
-    public void setActivities(List<PoolActivity> activities) {
+    public void setActivities(Set<PoolActivity> activities) {
         this.activities = activities;
     }
 
@@ -174,6 +176,10 @@ public class Staff implements Serializable {
 
     public void removeActivity(PoolActivity poolActivity) {
         this.activities.remove(poolActivity);
+    }
+
+    public void removeSector(Sector sector) {
+        this.sectors.remove(sector);
     }
 
     public enum StaffRole {

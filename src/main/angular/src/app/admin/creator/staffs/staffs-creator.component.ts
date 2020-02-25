@@ -1,6 +1,8 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {StaffService} from '../../../service/staff.service';
 import {Staff} from '../../../model/Staff';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {StaffRole} from "../../../model/StaffRole";
 
 @Component({
   selector: 'app-staffs-creator',
@@ -11,33 +13,43 @@ export class StaffsCreatorComponent implements OnInit {
   @Output()
   onChange: EventEmitter<Staff> = new EventEmitter<Staff>();
   staffs: Array<Staff> = [];
+  staff: Staff = null;
+  form = new FormGroup({
+    name: new FormControl('', Validators.required),
+    surname: new FormControl('', Validators.required),
+    address: new FormControl('', Validators.required),
+    birthday: new FormControl('', Validators.required),
+    socialSecurity: new FormControl('', Validators.required),
+    role: new FormControl('', Validators.required),
+  });
+  roles: Array<StaffRole> = Object.values(StaffRole);
 
   constructor(private staffService: StaffService) {
   }
 
   ngOnInit() {
-    this.refresh(null);
+    this.refresh();
   }
 
-  onSaveStaff(staff: Staff) {
-    this.onChange.emit(staff);
-    this.refresh(staff);
-  }
-
-  private refresh(staff: Staff) {
+  private refresh() {
     this.staffService.getAll().subscribe(staffs => {
       this.staffs = staffs;
     });
   }
 
-  removeStaff(staff: Staff) {
-    this.staffService.delete(staff).subscribe(
-      removedStaff => {
-        this.refresh(removedStaff);
-        this.onChange.emit(removedStaff);
-      }, error => {
-        console.log(error);
+  save() {
+    this.staffService.addStaff(this.form.value).subscribe(staff => {
+      if (staff != null) {
+        this.onChange.emit(staff);
+        this.refresh();
+        this.form.reset();
       }
-    );
+    });
+  }
+
+  today() {
+    const today = new Date();
+    return (today.getFullYear() + '-' + ((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1)
+      + '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate()));
   }
 }

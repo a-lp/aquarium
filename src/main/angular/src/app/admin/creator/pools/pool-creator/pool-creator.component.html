@@ -1,28 +1,47 @@
-<form [formGroup]="form">
-  <table>
-    <thead>
-    <tr>
-      <th>Max Capacity</th>
-      <th>Volume</th>
-      <th>Condition</th>
-      <th>Sector</th>
-      <th>Save</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <th><input type="number" formControlName="maxCapacity"></th>
-      <th><input type="number" formControlName="volume"></th>
-      <th><select formControlName="condition">
-        <option *ngFor="let i of conditions" [value]="i">{{i}}</option>
-      </select></th>
-      <th><select formControlName="sector">
-        <option *ngFor="let i of sectors" [value]="i.id">{{i.name}}</option>
-      </select></th>
-      <th>
-        <button (click)="save($event)" [disabled]="!form.valid">Save</button>
-      </th>
-    </tr>
-    </tbody>
-  </table>
-</form>
+<div class="pool-page">
+  <div class="close-button">
+    <a (click)="hidePool()">X</a>
+  </div>
+  <div class="pool-content">
+    <form [formGroup]="form">
+      <div class="pool-info">
+        <div>
+          <label>Max Capacity</label> <input type="number" formControlName="maxCapacity" [ngModel]="pool.maxCapacity">
+        </div>
+        <div>
+          <label>Volume</label> <input type="number" formControlName="volume" [ngModel]="pool.volume">
+        </div>
+        <div>
+          <label>Condition</label><select formControlName="condition" [ngModel]="pool.condition">
+          <option *ngFor="let i of conditions" [value]="i">{{i}}</option>
+        </select>
+        </div>
+        <div>
+          <label>Responsible</label><select formControlName="responsible" [ngModel]="pool.responsible">
+          <option *ngFor="let i of staffs" [value]="i.id">{{i.surname + " " + i.name}}</option>
+        </select>
+        </div>
+        <div>
+          <label>Sector</label><select formControlName="sector" [ngModel]="pool.sector">
+          <option *ngFor="let i of sectors" [value]="i.name">{{i.name}}</option>
+        </select>
+        </div>
+        <div>
+          <button (click)="update()" [disabled]="!form.valid">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  <div>
+    <div class="fish-schedule">
+      <div id="fish">
+        <h3>Fish List</h3>
+        <app-fish-list [fishes]="fishList" (onChange)="getFishes(); onChange.emit(null)"></app-fish-list>
+      </div>
+      <div id="schedules">
+        <h3>Schedule List</h3>
+        <app-schedule-list [schedules]="schedules" (onChange)="getSchedules(); onChange.emit(null)"></app-schedule-list>
+      </div>
+    </div>
+  </div>
+</div>

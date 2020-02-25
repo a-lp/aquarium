@@ -27,7 +27,19 @@ export class StaffService {
     return this.http.delete('/staff/' + staff.id);
   }
 
-  update(staff: Staff): Observable<any> {
-    return this.http.put('/staff/' + staff.id, staff);
+  update(id: number, staff: Staff): Observable<any> {
+    return this.http.put('/staff/' + id, staff);
+  }
+
+  getPools(id: number): Observable<any> {
+    return this.http.get('/staff/' + id + '/pools');
+  }
+
+  getSectors(id: number): Observable<any> {
+    return this.http.get('/staff/' + id + '/sectors');
+  }
+
+  getActivities(id: number): Observable<any> {
+    return this.http.get('/staff/' + id + '/activities');
   }
 }

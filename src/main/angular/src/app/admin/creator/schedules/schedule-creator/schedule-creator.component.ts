@@ -1,8 +1,10 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Specie} from "../../../../model/Specie";
-import {Schedule} from "../../../../model/Schedule";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {ScheduleService} from "../../../../service/schedule.service";
+import {Schedule} from '../../../../model/Schedule';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ScheduleService} from '../../../../service/schedule.service';
+import {Pool} from '../../../../model/Pool';
+import {PoolActivity} from '../../../../model/PoolActivity';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-schedule-creator',
@@ -11,34 +13,53 @@ import {ScheduleService} from "../../../../service/schedule.service";
 })
 export class ScheduleCreatorComponent implements OnInit {
   @Input()
-  pools: Array<Specie>;
+  pools: Array<Pool>;
+  @Input()
+  schedule: Schedule;
   @Output()
-  onSave: EventEmitter<Schedule> = new EventEmitter<Schedule>();
+  onHide: EventEmitter<Schedule> = new EventEmitter<Schedule>();
+  @Output()
+  onChange: EventEmitter<Schedule> = new EventEmitter<Schedule>();
 
   form = new FormGroup({
     startPeriod: new FormControl('', Validators.required),
     endPeriod: new FormControl('', Validators.required),
     pool: new FormControl(null, Validators.required)
   });
+  activities: Array<PoolActivity> = [];
 
-  constructor(private scheduleService: ScheduleService) {
+  constructor(private scheduleService: ScheduleService, private datePipe: DatePipe) {
   }
 
   ngOnInit() {
+    this.getActivities();
   }
 
-  save() {
-    this.scheduleService.save(this.form.value).subscribe(schedule => {
-      this.onSave.emit(schedule);
-      if (schedule != null) {
-        this.form.reset();
+  hideSchedule() {
+    this.onHide.emit(null);
+  }
+
+  update() {
+    this.form.value.startPeriod = new Date(this.form.value.startPeriod).getTime();
+    this.form.value.endPeriod = new Date(this.form.value.endPeriod).getTime();
+    this.scheduleService.update(this.schedule.id, this.form.value).subscribe(
+      updateSchedule => {
+        this.onChange.emit();
       }
-    });
+    );
   }
 
   today() {
     const today = new Date();
     return (today.getFullYear() + '-' + ((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1) +
       '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate()));
+  }
+
+  private getActivities() {
+    this.scheduleService.getActivities(this.schedule.id).subscribe(
+      activities => {
+        this.activities = activities;
+      }, error => console.log(error)
+    );
   }
 }

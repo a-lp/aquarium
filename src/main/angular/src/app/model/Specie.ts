@@ -7,5 +7,5 @@ export class Specie {
   lifeSpan: number;
   extinctionLevel: number;
   alimentation: Alimentation;
-  animalList: Array<Fish>;
+  fishList: Array<Fish>;
 }

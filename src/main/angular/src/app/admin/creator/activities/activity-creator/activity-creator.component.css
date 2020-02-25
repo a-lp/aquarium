@@ -1,25 +1,38 @@
-.staff-list{
-  flex: .8;
+.activity-page {
   display: flex;
-  justify-content: space-around;
-  max-height: 60vh;
-  padding: 2em 1em;
-
+  flex-direction: column;
+  padding: 1%;
+  height: 95%;
 }
 
-#staffs{
-  border: 1px solid black;
-  background: white;
-  overflow-y: scroll;
-  width: 100%;
-  padding: 1em;
+.activity-content {
+  max-height: 100%;
+  flex-grow: 1;
 }
 
-table{
-  width: 100%;
+.close-button {
+  align-self: center;
+  margin-bottom: 1em;
 }
 
-th *{
-  width: 95%;
+.close-button:hover {
+  cursor: pointer;
+}
+
+h3 {
+  text-align: center;
+}
+
+form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.activity-info {
+  flex: .3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 

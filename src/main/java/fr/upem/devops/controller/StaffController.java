@@ -1,10 +1,17 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.errors.ResourceNotFoundException;
+import fr.upem.devops.model.Pool;
+import fr.upem.devops.model.PoolActivity;
+import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.*;
 
 @RestController
 public class StaffController {
@@ -13,18 +20,42 @@ public class StaffController {
 
     @GetMapping("/staff")
     public Iterable<Staff> getAll() {
-        Iterable<Staff> result = service.getAll();
-        return result;
+        return service.getAll();
     }
 
     @GetMapping("/staff/{id}")
     public Staff getById(@PathVariable String id) {
-        Staff staff = service.getById(Long.parseLong(id));
-        if (staff == null) throw new ResourceNotFoundException("Staff with id: '" + id + "' not found!");
+        Staff staff = null;
+        try {
+            staff = service.getById(Long.parseLong(id));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot convert id: '" + id + "' into Long");
+        }
+        if (staff == null)
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff with id: '" + id + "' not found!");
         return staff;
     }
 
+    @GetMapping("/staff/{id}/pools")
+    public List<Pool> getPools(@PathVariable String id) {
+        Staff staff = getById(id);
+        return staff.getPoolsResponsabilities();
+    }
+
+    @GetMapping("/staff/{id}/sectors")
+    public List<Sector> getSectors(@PathVariable String id) {
+        Staff staff = getById(id);
+        return staff.getSectors();
+    }
+
+    @GetMapping("/staff/{id}/activities")
+    public Set<PoolActivity> getActivities(@PathVariable String id) {
+        Staff staff = getById(id);
+        return staff.getActivities();
+    }
+
     @PostMapping("/staff")
+    @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public Staff addStaff(@RequestBody Staff staff) {
         return service.save(staff);
@@ -32,21 +63,54 @@ public class StaffController {
 
     @PutMapping("/staff/{id}")
     @ResponseBody
-    public Staff updateStaff(@PathVariable String id, @RequestBody Staff staff) {
+    public Staff updateStaff(@PathVariable String id, @RequestBody Map<String, String> parameters) {
         Staff p = getById(id);
-        p.setName(staff.getName());
-        p.setAddress(staff.getAddress());
-        p.setBirthday(staff.getBirthday());
-        p.setPoolsResponsabilities(staff.getPoolsResponsabilities());
-        p.setRole(staff.getRole());
-        p.setSectors(staff.getSectors());
-        p.setSocialSecurity(staff.getSocialSecurity());
-        p.setSurname(staff.getSurname());
+
+        if (parameters.containsKey("name"))
+            p.setName(parameters.get("name"));
+        if (parameters.containsKey("address"))
+            p.setAddress(parameters.get("address"));
+        if (parameters.containsKey("surname"))
+            p.setSurname(parameters.get("surname"));
+        if (parameters.containsKey("address"))
+            p.setAddress(parameters.get("address"));
+        if (parameters.containsKey("socialSecurity"))
+            p.setSocialSecurity(parameters.get("socialSecurity"));
+        try {
+            if (parameters.containsKey("birthday"))
+                p.setBirthday(new Date(Long.parseLong(parameters.get("birthday"))));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'" + parameters.get("birthday") + "' is not a valid value to be converted in date. Insert a Long representing the time in milliseconds");
+        }
+        try {
+            if (parameters.containsKey("role"))
+                p.setRole(Staff.StaffRole.valueOf(parameters.get("role")));
+        } catch (IllegalArgumentException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "'" + parameters.get("role") + "' is not a valid value to be converted in StaffRole.");
+        }
+
         return service.save(p);
     }
 
     @DeleteMapping("/staff/{id}")
     public Staff deleteStaff(@PathVariable String id) {
-        return service.remove(getById(id));
+        Staff staff = getById(id);
+        for (PoolActivity activity : staff.getActivities()) {
+            if (activity.getStaffList().size() == 1)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Activities must have at least one responsible! Removing this staff, will also remove the only one responsible");
+            activity.removeStaff(staff);
+        }
+        for (Sector sector : staff.getSectors()) {
+            if (sector.getStaffList().size() == 1)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sectors must have at least one responsible! Removing this staff, will also remove the only one responsible");
+            sector.removeStaff(staff);
+        }
+        return service.remove(staff);
+    }
+
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Error during conversione of the input request!")
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    @ResponseBody
+    void onHttpMessageNotReadableException(HttpMessageNotReadableException exception) {
     }
 }

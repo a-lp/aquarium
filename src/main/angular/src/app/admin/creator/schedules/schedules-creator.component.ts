@@ -2,6 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {ScheduleService} from '../../../service/schedule.service';
 import {Schedule} from '../../../model/Schedule';
 import {Pool} from '../../../model/Pool';
+import {FormControl, FormGroup, Validators} from "@angular/forms";
 
 @Component({
   selector: 'app-schedules-creator',
@@ -16,14 +17,22 @@ export class SchedulesCreatorComponent implements OnInit {
   @Input()
   schedules: Array<Schedule> = [];
 
+  schedule: Schedule;
+
+  form = new FormGroup({
+    startPeriod: new FormControl('', Validators.required),
+    endPeriod: new FormControl('', Validators.required),
+    pool: new FormControl(null, Validators.required)
+  });
+
   constructor(private scheduleService: ScheduleService) {
   }
 
   ngOnInit() {
-    this.refresh(null);
+    this.refresh();
   }
 
-  refresh(schedule: Schedule) {
+  refresh() {
     this.scheduleService.getAll().subscribe(
       data => {
         this.schedules = data;
@@ -32,15 +41,18 @@ export class SchedulesCreatorComponent implements OnInit {
     );
   }
 
-  onSaveSchedule(schedule: Schedule) {
-    this.onChange.emit(schedule);
-    this.refresh(schedule);
+  save() {
+    this.scheduleService.save(this.form.value).subscribe(schedule => {
+      this.onChange.emit(schedule);
+      if (schedule != null) {
+        this.form.reset();
+      }
+    });
   }
 
-  removeSchedule(schedule: Schedule) {
-    this.scheduleService.delete(schedule).subscribe(removedSchedule => {
-      this.refresh(removedSchedule);
-      this.onChange.emit(removedSchedule);
-    }, error => console.log(error));
+  today() {
+    const today = new Date();
+    return (today.getFullYear() + '-' + ((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1) +
+      '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate()));
   }
 }

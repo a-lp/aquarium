@@ -1,38 +1,37 @@
-<form [formGroup]="form">
-  <table>
-    <thead>
-    <tr>
-      <th>Description</th>
-      <th>Start Activity</th>
-      <th>End Activity</th>
-      <th>Open to public</th>
-      <th>Repeated</th>
-      <th>Schedule</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr>
-      <th><input type="text" formControlName="description"></th>
-      <th><input type="time" formControlName="startActivity"></th>
-      <th><input type="time" [min]="form.value.startActivity" formControlName="endActivity"></th>
-      <th><input type="checkbox" formControlName="openToPublic"></th>
-      <th><input type="checkbox" formControlName="repeated"></th>
-      <th><select formControlName="schedule">
-        <option *ngFor="let i of schedules" [value]="i.id">{{i.id}}</option>
-      </select></th>
-      <th>
-        <button (click)="save()" [disabled]="isDisabled()">Save</button>
-      </th>
-    </tr>
-    </tbody>
-  </table>
-  <div class="staff-list">
-    <div id="staffs">
-      <h3>Staff</h3>
-      <div class="input-entry" *ngFor="let i of staffs">
-        <input type="checkbox" [value]="i" [checked]="this.selectedStaff.includes(i)" (change)="selectStaff(i)">
-        <label>{{i.id + ' -' + i.surname.toUpperCase() + ' ' + i.name}}</label>
-      </div>
-    </div>
+<div class="activity-page">
+  <div class="close-button">
+    <a (click)="hideActivity()">X</a>
   </div>
-</form>
+  <div class="activity-content">
+    <form [formGroup]="form">
+      <div class="activity-info">
+        <div><Label>Description: </Label><input type="text" formControlName="description"
+                                                [ngModel]="activity.description"></div>
+        <div><Label>Start Activity: </Label><input type="time" formControlName="startActivity"
+                                                   [ngModel]="activity.startActivity"></div>
+        <div><Label>End Activity: </Label><input type="time" [min]="form.value.startActivity"
+                                                 formControlName="endActivity"
+                                                 [ngModel]="activity.endActivity"></div>
+        <div><Label>Open to public: </Label><input type="checkbox" [checked]="activity.openToPublic?'checked':''"
+                                                   formControlName="openToPublic"></div>
+        <div><Label>Repeated: </Label><input type="checkbox" [checked]="activity.repeated?'checked':''"
+                                             formControlName="repeated"></div>
+        <div><Label>Schedule: </Label><select formControlName="schedule" [ngModel]="activity.schedule">
+          <option *ngFor="let i of schedules" [value]="i.id">{{i.id}}</option>
+        </select></div>
+        <div class="staff-list">
+          <div id="staffs">
+            <h3>Staff</h3>
+            <div class="input-entry" *ngFor="let i of staffs">
+              <input type="checkbox" [value]="i" [checked]="isIncluded(i)" (change)="selectStaff(i)">
+              <label>{{i.id + ' -' + i.surname + ' ' + i.name}}</label>
+            </div>
+          </div>
+        </div>
+        <div>
+          <button (click)="update()" [disabled]="isDisabled()">Update</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

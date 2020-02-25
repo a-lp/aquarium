@@ -1,53 +1,39 @@
-<app-fish-creator [species]="species" [pools]="pools" (onSave)="onSaveFish($event)"></app-fish-creator>
-<table class="fish-table">
-  <thead>
-  <tr>
-    <th (click)="sort(0)">
-      ID{{this.field == 0 ? (this.ascendent ? "▼" : "▲") : ""}}
-    </th>
-    <th (click)="sort(1)">
-      Name{{this.field == 1 ? (this.ascendent ? "▼" : "▲") : ""}}
-    </th>
-    <th (click)="sort(2)">
-      Gender{{this.field == 2 ? (this.ascendent ? "▼" : "▲") : ""}}
-    </th>
-    <th>
-      Distinct Sign
-    </th>
-    <th (click)="sort(3)">
-      Arrival Date{{this.field == 3 ? (this.ascendent ? "▼" : "▲") : ""}}
-    </th>
-    <th (click)="sort(4)">
-      Return Date{{this.field == 4 ? (this.ascendent ? "▼" : "▲") : ""}}
-    </th>
-    <th (click)="sort(5)">
-      Specie{{this.field == 5 ? (this.ascendent ? "▼" : "▲") : ""}}
-    </th>
-    <th (click)="sort(6)">
-      Pool{{this.field == 6 ? (this.ascendent ? "▼" : "▲") : ""}}
-    </th>
-    <th>
-      Retire
-    </th>
-    <th></th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr *ngFor="let fish of fishes">
-    <td>{{fish.id}}</td>
-    <td>{{fish.name}}</td>
-    <td>{{fish.gender.toString().toLocaleUpperCase()}}</td>
-    <td>{{fish.distinctSign}}</td>
-    <td>{{this.datePipe.transform(fish.arrivalDate, 'dd/MM/yyyy, HH:mm')}}</td>
-    <td>{{(fish.returnDate != null) ? this.datePipe.transform(fish.returnDate, 'dd/MM/yyyy, HH:mm') : "Not yet"}}</td>
-    <td>{{(fish.specie != null) ? fish.specie.name : "Unknown"}}</td>
-    <td>{{(fish.pool != null) ? fish.pool.id : "Not assigned to a pool"}}</td>
-    <td>
-      <button [disabled]="fish.returnDate!=null" (click)="retireAnimal(fish)">RETIRE</button>
-    </td>
-    <td>
-      <button (click)="removeFish(fish)">Remove</button>
-    </td>
-  </tr>
-  </tbody>
-</table>
+<div *ngIf="fish!=null">
+  <app-fish-creator [fish]="this.fish" [species]="species" [pools]="pools" (onSave)="onChangeFish($event)"
+                    (onHide)="this.fish=null;"></app-fish-creator>
+</div>
+<div *ngIf="fish==null">
+  <form [formGroup]="form">
+    <table>
+      <thead>
+      <tr>
+        <th>Name</th>
+        <th>Distinct Sign</th>
+        <th>Gender</th>
+        <th>Specie</th>
+        <th>Pool</th>
+        <th>Save</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <th><input type="text" formControlName="name"></th>
+        <th><input type="text" formControlName="distinctSign"></th>
+        <th><select formControlName="gender">
+          <option *ngFor="let i of genders" [value]="i">{{i}}</option>
+        </select></th>
+        <th><select formControlName="specie">
+          <option *ngFor="let i of species" [value]="i.name">{{i.name}}</option>
+        </select></th>
+        <th><select formControlName="pool">
+          <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
+        </select></th>
+        <th>
+          <button (click)="save($event)" [disabled]="!form.valid">Save</button>
+        </th>
+      </tr>
+      </tbody>
+    </table>
+  </form>
+  <app-fish-list [fishes]="fishes" (onSelection)="this.fish=$event" (onChange)="onChangeFish(null)"></app-fish-list>
+</div>

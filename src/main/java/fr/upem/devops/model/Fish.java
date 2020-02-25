@@ -1,12 +1,15 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Fish.class)
 public class Fish implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,10 +22,11 @@ public class Fish implements Serializable {
     private Date returnDate;
     @ManyToOne
     @JoinColumn(name = "fish_specie_id")
-    @JsonIgnoreProperties("fishList")
+    @JsonIdentityReference(alwaysAsId = true)
     private Specie specie;
     @ManyToOne
     @JoinColumn(name = "fish_pool_id")
+    @JsonIdentityReference(alwaysAsId = true)
     private Pool pool;
 
     public Fish() {

@@ -1,14 +1,17 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = Schedule.class)
 public class Schedule implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,22 +20,23 @@ public class Schedule implements Serializable {
     private Date endPeriod;
     @ManyToOne
     @JoinColumn(name = "calendar_pool")
+    @JsonIdentityReference(alwaysAsId=true)
     private Pool pool;
     @OneToMany(mappedBy = "schedule", cascade = CascadeType.REMOVE)
-    @JsonBackReference
-    private List<PoolActivity> scheduledActivities = new ArrayList<>();
+    @JsonIdentityReference(alwaysAsId=true)
+    private Set<PoolActivity> scheduledActivities = new HashSet<>();
 
     public Schedule() {
     }
 
-    public Schedule(Long id, Date startPeriod, Date endPeriod, List<PoolActivity> scheduledActivities) {
+    public Schedule(Long id, Date startPeriod, Date endPeriod, Set<PoolActivity> scheduledActivities) {
         this.id = id;
         this.startPeriod = startPeriod;
         this.endPeriod = endPeriod;
         this.scheduledActivities = scheduledActivities;
     }
 
-    public Schedule(Date startPeriod, Date endPeriod, List<PoolActivity> scheduledActivities) {
+    public Schedule(Date startPeriod, Date endPeriod, Set<PoolActivity> scheduledActivities) {
         this.startPeriod = startPeriod;
         this.endPeriod = endPeriod;
         this.scheduledActivities = scheduledActivities;
@@ -70,11 +74,11 @@ public class Schedule implements Serializable {
         this.pool = pool;
     }
 
-    public List<PoolActivity> getScheduledActivities() {
+    public Set<PoolActivity> getScheduledActivities() {
         return scheduledActivities;
     }
 
-    public void setScheduledActivities(List<PoolActivity> activities) {
+    public void setScheduledActivities(Set<PoolActivity> activities) {
         this.scheduledActivities = activities;
     }
 
@@ -101,5 +105,15 @@ public class Schedule implements Serializable {
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "Schedule{" +
+                "id=" + id +
+                ", startPeriod=" + startPeriod +
+                ", endPeriod=" + endPeriod +
+                ", pool=" + (pool==null?"undefined":pool.getId()) +
+                '}';
     }
 }

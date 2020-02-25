@@ -2,7 +2,7 @@ import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {PoolActivity} from '../../../../model/PoolActivity';
 import {Schedule} from '../../../../model/Schedule';
 import {Staff} from '../../../../model/Staff';
-import {FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
+import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivityService} from '../../../../service/activity.service';
 
 @Component({
@@ -12,12 +12,17 @@ import {ActivityService} from '../../../../service/activity.service';
 })
 export class ActivityCreatorComponent implements OnInit {
   @Output()
-  onSave = new EventEmitter<PoolActivity>();
+  onUpdate = new EventEmitter<PoolActivity>();
+  @Output()
+  onHide = new EventEmitter();
   @Input()
   schedules: Array<Schedule>;
   @Input()
   staffs: Array<Staff>;
-  selectedStaff: Array<Staff> = [];
+  @Input()
+  activity: PoolActivity;
+  @Input()
+  selectedStaff: Array<number>;
 
   form = new FormGroup({
     description: new FormControl('', Validators.required),
@@ -36,27 +41,37 @@ export class ActivityCreatorComponent implements OnInit {
   }
 
 
-  save() {
-    this.form.value.staffList = this.selectedStaff.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
-    this.activityService.save(this.form.value).subscribe(activity => {
-        console.log(activity);
-        this.onSave.emit(activity);
-        if (activity != null) {
-          this.form.reset();
-        }
-      }
+  hideActivity() {
+    this.onHide.emit();
+  }
+
+  update() {
+    this.form.value.staffList = this.selectedStaff.map(x => x.toString()).reduce((x, y) => x + ',' + y);
+    this.activityService.update(this.activity.id, this.form.value).subscribe(activity => {
+        this.onUpdate.emit(activity);
+      }, error => console.log(error)
     );
+  }
+
+
+  selectStaff(staff: Staff) {
+    if (this.selectedStaff.includes(staff.id)) {
+      this.selectedStaff.splice(this.selectedStaff.findIndex(element => staff.id == element), 1);
+    } else {
+      this.selectedStaff.push(staff.id);
+    }
   }
 
   isDisabled() {
     return !(this.form.valid && this.selectedStaff.length > 0);
   }
 
-  selectStaff(staff: Staff) {
-    if (this.selectedStaff.includes(staff)) {
-      this.selectedStaff.splice(this.selectedStaff.findIndex(element => staff.id == element.id), 1);
-    } else {
-      this.selectedStaff.push(staff);
+  isIncluded(i: Staff) {
+    for (const s of this.selectedStaff) {
+      if (s == i.id) {
+        return true;
+      }
     }
+    return false;
   }
 }

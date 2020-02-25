@@ -1,13 +1,16 @@
 package fr.upem.devops.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "name", scope = Sector.class)
 public class Sector implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,16 +18,16 @@ public class Sector implements Serializable {
     private String name;
     private String location;
     @OneToMany(mappedBy = "sector", cascade = CascadeType.REMOVE)
-    @JsonIgnoreProperties("sector")
-    private List<Pool> pools = new ArrayList<>();
+    @JsonIdentityReference(alwaysAsId=true)
+    private Set<Pool> pools = new HashSet<>();
     @ManyToMany
     @JoinTable(
             name = "sectors_staffs",
             joinColumns = @JoinColumn(name = "staff_id"),
             inverseJoinColumns = @JoinColumn(name = "sector_id")
     )
-    @JsonIgnoreProperties("sectors")
-    private List<Staff> staffList = new ArrayList<>();
+    @JsonIdentityReference(alwaysAsId=true)
+    private Set<Staff> staffList = new HashSet<>();
 
     public Sector() {
     }
@@ -40,7 +43,7 @@ public class Sector implements Serializable {
         this.location = location;
     }
 
-    public Sector(Long id, String name, String location, List<Pool> pools) {
+    public Sector(Long id, String name, String location, Set<Pool> pools) {
         this.id = id;
         this.name = name;
         this.location = location;
@@ -71,11 +74,11 @@ public class Sector implements Serializable {
         this.location = location;
     }
 
-    public List<Pool> getPools() {
+    public Set<Pool> getPools() {
         return pools;
     }
 
-    public void setPools(List<Pool> pools) {
+    public void setPools(Set<Pool> pools) {
         this.pools = pools;
     }
 
@@ -83,11 +86,11 @@ public class Sector implements Serializable {
         this.pools.add(pool);
     }
 
-    public List<Staff> getStaffList() {
+    public Set<Staff> getStaffList() {
         return staffList;
     }
 
-    public void setStaffList(List<Staff> staffList) {
+    public void setStaffList(Set<Staff> staffList) {
         this.staffList = staffList;
     }
 

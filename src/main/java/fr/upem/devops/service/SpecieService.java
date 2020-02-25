@@ -36,9 +36,6 @@ public class SpecieService {
     }
 
     public Specie remove(Specie specie) {
-//        Hibernate.initialize(specie.getFishList()); // Make EAGER
-        for (Fish fish : specie.getFishList())
-            fish.setSpecie(null);
         specieRepository.delete(specie);
         return specie;
     }

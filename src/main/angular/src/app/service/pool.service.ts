@@ -12,10 +12,11 @@ export class PoolService {
   }
 
   save(pool: Pool): Observable<any> {
-    console.log(pool)
     const sectorId = pool.sector;
+    const responsible = pool.responsible;
+    pool.responsible = null;
     pool.sector = null;
-    return this.http.post('/sectors/' + sectorId + '/pools', pool);
+    return this.http.post('/sectors/' + sectorId + '/responsible/' + responsible + '/pools', pool);
   }
 
   getAll(): Observable<any> {
@@ -28,5 +29,17 @@ export class PoolService {
 
   remove(pool: Pool): Observable<any> {
     return this.http.delete('/pools/' + pool.id);
+  }
+
+  update(id: number, pool: Pool): Observable<any> {
+    return this.http.put('/pools/' + id, pool);
+  }
+
+  getFishes(id: number): Observable<any> {
+    return this.http.get('/pools/' + id + '/fishes');
+  }
+
+  getSchedules(id: number): Observable<any> {
+    return this.http.get('/pools/' + id + '/schedules');
   }
 }

@@ -36,8 +36,11 @@ export class ScheduleService {
     return this.http.delete('/schedules/' + schedule.id);
   }
 
-  update(schedule: Schedule): Observable<any> {
-    return this.http.put('/schedules/' + schedule.id, schedule);
+  update(id: number, schedule: Schedule): Observable<any> {
+    return this.http.put('/schedules/' + id, schedule);
   }
 
+  getActivities(id: number): Observable<any> {
+    return this.http.get('/schedules/' + id + '/activities');
+  }
 }

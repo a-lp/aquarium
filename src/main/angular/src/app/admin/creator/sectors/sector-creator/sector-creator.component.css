@@ -1,33 +1,62 @@
-form {
+.sector-page {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  padding: 1%;
+  height: 95%;
 }
 
-.single-choice {
-  flex: .2;
-  height: 100%;
-  display: flex;
-  justify-content: space-around;
-  padding-top: 2em;
-}
-.multiple-choice {
-  flex: .8;
-  display: flex;
-  justify-content: space-around;
-  padding: 2em 1em;
-  max-height: 60vh;
+.sector-content {
+  max-height: 100%;
+  flex-grow: 1;
 }
 
-#staffs{
+.close-button {
+  align-self: center;
+  margin-bottom: 1em;
+}
+
+.close-button:hover {
+  cursor: pointer;
+}
+
+h3 {
+  text-align: center;
+}
+
+form {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.sector-info {
+  flex: .3;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.fish-schedule {
+  display: flex;
+}
+
+.fish-schedule * {
+  flex: 1;
+}
+
+#fish {
+  flex: .6;
+  border-right: 1px solid black;
+}
+
+#schedules {
+  flex: .4;
+}
+
+#staffs {
   border: 1px solid black;
   background: white;
   overflow-y: scroll;
-  width: 100%;
+  width: 50%;
   padding: 1em;
-}
-button {
-  width: fit-content;
-  align-self: center;
-  margin-top: 2em;
 }
