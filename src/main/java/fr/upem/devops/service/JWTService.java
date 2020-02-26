@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import fr.upem.devops.model.Staff;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -24,12 +25,14 @@ public class JWTService {
 
     }
 
-    public String create(String username) {
+    public String create(String username, Staff profile) {
         Instant issuedAt = Instant.now();
         return JWT.create()
                 .withIssuedAt(Date.from(issuedAt))
                 .withExpiresAt(Date.from(issuedAt.plusSeconds(defaultExpiration)))
                 .withClaim("username", username)
+                .withClaim("id", profile.getId().toString())
+                .withClaim("role", profile.getRole().name())
                 .sign(algorithm);
     }
 

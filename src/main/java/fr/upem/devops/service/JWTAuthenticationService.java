@@ -21,7 +21,7 @@ public class JWTAuthenticationService implements UserAuthenticationService {
         return userService
                 .getByUsername(username)
                 .filter(user -> Objects.equals(password, user.getPassword()))
-                .map(user -> jwtService.create(username))
+                .map(user -> jwtService.create(username, user.getProfile()))
                 .orElseThrow(() -> new BadCredentialsException("Invalid username or password."));
     }
 
@@ -39,6 +39,5 @@ public class JWTAuthenticationService implements UserAuthenticationService {
 
     @Override
     public void logout(String username) {
-        // ...
     }
 }

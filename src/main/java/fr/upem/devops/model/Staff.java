@@ -185,4 +185,5 @@ public class Staff implements Serializable {
     public enum StaffRole {
         ADMIN, MANAGER, WORKER
     }
+
 }

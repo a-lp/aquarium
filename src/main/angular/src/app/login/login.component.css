@@ -6,15 +6,31 @@
   justify-content: center;
 }
 
-form{
-  padding-bottom: 10em;
+form {
+  width: 20em;
 }
 
-form div{
-  padding: 1em;
+form div {
+  padding-top: 1em;
+  width: 100%;
 }
 
-.login-button{
+form div label {
+  width: 100%;
+}
+
+label > * {
+  width: 100%;
+}
+
+.register {
   display: flex;
+  justify-content: center;
+}
+
+.buttons {
+  width: 20em;
+  display: flex;
+  padding: 1em;
   justify-content: space-around;
 }

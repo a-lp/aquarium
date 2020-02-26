@@ -1,5 +1,6 @@
 package fr.upem.devops.service;
 
+import fr.upem.devops.model.Staff;
 import fr.upem.devops.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ public class UserRegistrationService {
     @Autowired
     private UserAuthenticationService authenticationService;
 
-    public String register(String username, String password) throws IllegalArgumentException {
+    public String register(String username, String password, Staff profile) throws IllegalArgumentException {
         userService.getByUsername(username)
                 .ifPresent(u -> {
                     throw new IllegalArgumentException("Username already in use.");
@@ -20,6 +21,7 @@ public class UserRegistrationService {
         User user = new User();
         user.setUsername(username);
         user.setPassword(password);
+        user.setProfile(profile);
         userService.save(user);
 
         return authenticationService.login(username, password);

@@ -1,15 +1,41 @@
 <div class="login-form">
   <h2>Login Page</h2>
-  <form [formGroup]="form">
+  <p>{{error}}</p>
+  <form [style]="isRegistration()?'padding-bot: 10em':''" [formGroup]="formLogin">
     <div>
-      <label>Username : <input type="text" formControlName="username"/></label>
+      <label>Username: <input type="text" formControlName="username"/></label>
     </div>
     <div>
       <label>Password: <input type="password" formControlName="password"/></label>
     </div>
-    <div class="login-button">
-      <button (click)="login()" [disabled]="!form.valid">Login</button>
-      <button (click)="register()" [disabled]="!form.valid">Register</button>
+  </form>
+  <form *ngIf="isRegistration()" [formGroup]="form">
+    <div>
+      <label>Name: <input type="text" formControlName="name"></label>
+    </div>
+    <div>
+      <label>Surname: <input type="text" formControlName="surname"></label>
+    </div>
+    <div>
+      <label>Address: <input type="text" formControlName="address"></label>
+    </div>
+    <div>
+      <label>Birthday: <input type="date" [max]="today()" formControlName="birthday"></label>
+    </div>
+    <div>
+      <label>Social Security: <input type="text" formControlName="socialSecurity"></label>
+    </div>
+    <div>
+      <label>Role: <select formControlName="role">
+        <option *ngFor="let i of roles" [value]="i">{{i}}</option>
+      </select></label>
+    </div>
+    <div class="register">
+      <button (click)="save()" [disabled]="(!formLogin.valid || !form.valid)">Save</button>
     </div>
   </form>
+  <div class="buttons">
+    <button (click)="login()" [disabled]="!formLogin.valid">Login</button>
+    <button id="register" (click)="register()">Register</button>
+  </div>
 </div>
