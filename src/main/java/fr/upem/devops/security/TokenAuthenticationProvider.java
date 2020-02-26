@@ -34,7 +34,7 @@ public class TokenAuthenticationProvider extends AbstractUserDetailsAuthenticati
                                         .password(u.getPassword())
                                         .roles("user")
                                         .build()))
-                .orElseThrow(() -> new BadCredentialsException("Invalid fr.upem.devops.authentication token=" + token));
+                .orElseThrow(() -> new BadCredentialsException("Invalid authentication token=" + token));
     }
 
 }

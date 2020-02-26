@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
 
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
@@ -19,9 +21,12 @@ public class PublicEndpointsController {
     private UserAuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public Object register(
-            @RequestParam("username") String username,
-            @RequestParam("password") String password) {
+    public Object register(@RequestBody HashMap<String, String> parameters) {
+        String username = null, password = null;
+        if (parameters.containsKey("username")) username = parameters.get("username");
+        else return ResponseEntity.badRequest().body("Required String parameter 'username' is not present");
+        if (parameters.containsKey("password")) password = parameters.get("password");
+        else return ResponseEntity.badRequest().body("Required String parameter 'password' is not present");
         try {
             return registrationService
                     .register(username, password);
@@ -31,9 +36,12 @@ public class PublicEndpointsController {
     }
 
     @PostMapping("/login")
-    public Object login(
-            @RequestParam("username") String username,
-            @RequestParam("password") String password) {
+    public Object login(@RequestBody HashMap<String, String> parameters) {
+        String username = null, password = null;
+        if (parameters.containsKey("username")) username = parameters.get("username");
+        else return ResponseEntity.badRequest().body("Required String parameter 'username' is not present");
+        if (parameters.containsKey("password")) password = parameters.get("password");
+        else return ResponseEntity.badRequest().body("Required String parameter 'password' is not present");
         try {
             return authenticationService
                     .login(username, password);

@@ -1,0 +1,15 @@
+<div class="login-form">
+  <h2>Login Page</h2>
+  <form [formGroup]="form">
+    <div>
+      <label>Username : <input type="text" formControlName="username"/></label>
+    </div>
+    <div>
+      <label>Password: <input type="password" formControlName="password"/></label>
+    </div>
+    <div class="login-button">
+      <button (click)="login()" [disabled]="!form.valid">Login</button>
+      <button (click)="register()" [disabled]="!form.valid">Register</button>
+    </div>
+  </form>
+</div>

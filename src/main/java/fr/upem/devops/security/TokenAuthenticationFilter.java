@@ -24,7 +24,7 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
             HttpServletResponse response) {
         String token = Optional.ofNullable(request.getHeader(AUTHORIZATION))
                 .map(v -> v.replace(BEARER, "").trim())
-                .orElseThrow(() -> new BadCredentialsException("Missing fr.upem.devops.authentication token."));
+                .orElseThrow(() -> new BadCredentialsException("Missing authentication token."));
 
         Authentication auth = new UsernamePasswordAuthenticationToken(token, token);
         return getAuthenticationManager().authenticate(auth);

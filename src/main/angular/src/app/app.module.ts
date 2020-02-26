@@ -27,19 +27,20 @@ import {StaffComponent} from './staffs/staff/staff.component';
 import {SectorsCreatorComponent} from './admin/creator/sectors/sectors-creator.component';
 import {ActivityComponent} from './activities/activity/activity.component';
 import {ActivitiesComponent} from './activities/activities.component';
-import { SectorsComponent } from './sectors/sectors.component';
-import { SectorComponent } from './sectors/sector/sector.component';
-import { FishCreatorComponent } from './admin/creator/fishes/fish-creator/fish-creator.component';
-import { SpecieCreatorComponent } from './admin/creator/species/specie-creator/specie-creator.component';
-import { PoolCreatorComponent } from './admin/creator/pools/pool-creator/pool-creator.component';
-import { SectorCreatorComponent } from './admin/creator/sectors/sector-creator/sector-creator.component';
-import { StaffCreatorComponent } from './admin/creator/staffs/staff-creator/staff-creator.component';
-import { ScheduleCreatorComponent } from './admin/creator/schedules/schedule-creator/schedule-creator.component';
-import { ActivityCreatorComponent } from './admin/creator/activities/activity-creator/activity-creator.component';
-import { FishListComponent } from './admin/creator/fishes/fish-list/fish-list.component';
-import { PoolListComponent } from './admin/creator/pools/pool-list/pool-list.component';
-import { ScheduleListComponent } from './admin/creator/schedules/schedule-list/schedule-list.component';
-import { StaffListComponent } from './admin/creator/staffs/staff-list/staff-list.component';
+import {SectorsComponent} from './sectors/sectors.component';
+import {SectorComponent} from './sectors/sector/sector.component';
+import {FishCreatorComponent} from './admin/creator/fishes/fish-creator/fish-creator.component';
+import {SpecieCreatorComponent} from './admin/creator/species/specie-creator/specie-creator.component';
+import {PoolCreatorComponent} from './admin/creator/pools/pool-creator/pool-creator.component';
+import {SectorCreatorComponent} from './admin/creator/sectors/sector-creator/sector-creator.component';
+import {StaffCreatorComponent} from './admin/creator/staffs/staff-creator/staff-creator.component';
+import {ScheduleCreatorComponent} from './admin/creator/schedules/schedule-creator/schedule-creator.component';
+import {ActivityCreatorComponent} from './admin/creator/activities/activity-creator/activity-creator.component';
+import {FishListComponent} from './admin/creator/fishes/fish-list/fish-list.component';
+import {PoolListComponent} from './admin/creator/pools/pool-list/pool-list.component';
+import {ScheduleListComponent} from './admin/creator/schedules/schedule-list/schedule-list.component';
+import {StaffListComponent} from './admin/creator/staffs/staff-list/staff-list.component';
+import {LoginComponent} from './login/login.component';
 
 @NgModule({
   declarations: [
@@ -77,33 +78,38 @@ import { StaffListComponent } from './admin/creator/staffs/staff-list/staff-list
     FishListComponent,
     PoolListComponent,
     ScheduleListComponent,
-    StaffListComponent
+    StaffListComponent,
+    LoginComponent
   ],
-    imports: [
-        BrowserModule,
-        AppRoutingModule,
-        HttpClientModule,
-        ReactiveFormsModule,
-        RouterModule.forRoot([
-            {
-                path: 'fishes',
-                component: FishesComponent
-            },
-            {
-                path: 'species',
-                component: SpeciesComponent
-            },
-            {
-                path: 'pools',
-                component: PoolsComponent
-            },
-            {
-                path: 'admin',
-                component: AdminComponent
-            }
-        ], {useHash: true}),
-        FormsModule
-    ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    ReactiveFormsModule,
+    RouterModule.forRoot([
+      {
+        path: 'fishes',
+        component: FishesComponent
+      },
+      {
+        path: 'species',
+        component: SpeciesComponent
+      },
+      {
+        path: 'pools',
+        component: PoolsComponent
+      },
+      {
+        path: 'admin',
+        component: AdminComponent
+      },
+      {
+        path: 'login',
+        component: LoginComponent
+      }
+    ], {useHash: true}),
+    FormsModule
+  ],
   providers: [DatePipe, {provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent]
 })

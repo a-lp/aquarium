@@ -13,7 +13,7 @@ import {Sector} from '../model/Sector';
 import {SectorService} from '../service/sector.service';
 import {PoolActivity} from '../model/PoolActivity';
 import {ActivityService} from '../service/activity.service';
-import {StaffRole} from "../model/StaffRole";
+import {StaffRole} from '../model/StaffRole';
 
 @Component({
   selector: 'app-admin',

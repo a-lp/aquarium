@@ -1,11 +1,14 @@
 <div class="homepage">
   <nav>
     <ul class="navigation-menu">
-      <li><a routerLink="/view-fishes">Fishes</a></li>
-      <li><a routerLink="/view-species">Species</a></li>
-      <li><a routerLink="/view-pools">Pools</a></li>
-      <li><a href="">Login</a></li>
-      <li><a routerLink="/view-admin">Admin</a></li>
+      <li><a routerLink="/fishes">Fishes</a></li>
+      <li><a routerLink="/species">Species</a></li>
+      <li><a routerLink="/pools">Pools</a></li>
+      <li *ngIf="authenticationService.isLogged()==null"><a routerLink="/login">Login</a></li>
+      <li *ngIf="authenticationService.isLogged()!=null"><a (click)="this.authenticationService.logout()"
+                                                            routerLink="/login">Logout</a>
+      </li>
+      <li><a routerLink="/admin">Admin</a></li>
     </ul>
   </nav>
   <main class="content">
