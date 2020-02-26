@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {AuthenticationService} from "../service/authentication.service";
-import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-login',
@@ -14,11 +13,13 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
 
-  constructor(private authenticationService: AuthenticationService, private router: Router) {
+  constructor(private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
-    if (this.authenticationService.isLogged() != null) this.router.navigate(['/']);
+    if (this.authenticationService.isLogged() != null) {
+      this.authenticationService.redirect('/');
+    }
   }
 
   login() {

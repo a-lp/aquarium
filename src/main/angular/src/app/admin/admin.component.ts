@@ -14,6 +14,7 @@ import {SectorService} from '../service/sector.service';
 import {PoolActivity} from '../model/PoolActivity';
 import {ActivityService} from '../service/activity.service';
 import {StaffRole} from '../model/StaffRole';
+import {AuthenticationService} from "../service/authentication.service";
 
 @Component({
   selector: 'app-admin',
@@ -36,10 +37,13 @@ export class AdminComponent implements OnInit {
   constructor(private fishService: FishService, private speciesService: SpeciesService,
               private poolService: PoolService, private scheduleService: ScheduleService,
               private staffService: StaffService, private sectorService: SectorService,
-              private activityService: ActivityService) {
+              private activityService: ActivityService, private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
+    if (this.authenticationService.isLogged() == null) {
+      this.authenticationService.redirect('/login');
+    }
     this.refresh();
 
   }
