@@ -12,11 +12,11 @@ export class ActivityService {
   }
 
   getAll(): Observable<any> {
-    return this.http.get('/activities');
+    return this.http.get('/api/activities');
   }
 
   getById(id: number): Observable<any> {
-    return this.http.get('/activities/' + id);
+    return this.http.get('/api/activities/' + id);
   }
 
   save(activity: PoolActivity): Observable<any> {
@@ -24,15 +24,15 @@ export class ActivityService {
     const scheduleId = activity.schedule;
     activity.schedule = null;
     activity.staffList = [];
-    return this.http.post('/schedule/' + scheduleId + '/activities/staff/' + resp, activity);
+    return this.http.post('/api/schedule/' + scheduleId + '/activities/staff/' + resp, activity);
   }
 
   delete(activity: PoolActivity): Observable<any> {
-    return this.http.delete('/activities/' + activity.id);
+    return this.http.delete('/api/activities/' + activity.id);
   }
 
   update(id: number, activity: PoolActivity): Observable<any> {
-    return this.http.put('/activities/' + id, activity);
+    return this.http.put('/api/activities/' + id, activity);
   }
 
 

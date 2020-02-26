@@ -26,12 +26,12 @@ public class PoolActivityController {
     @Autowired
     private ScheduleService scheduleService;
 
-    @GetMapping("/activities")
+    @GetMapping("/api/activities")
     public Iterable<PoolActivity> getAll() {
         return service.getAll();
     }
 
-    @GetMapping("/activities/{id}")
+    @GetMapping("/api/activities/{id}")
     public PoolActivity getById(@PathVariable String id) {
         PoolActivity activity = null;
         try {
@@ -44,7 +44,7 @@ public class PoolActivityController {
         return activity;
     }
 
-    @PostMapping("/schedule/{scheduleId}/activities/staff/{staffResponsible}")
+    @PostMapping("/api/schedule/{scheduleId}/activities/staff/{staffResponsible}")
     @ResponseBody
     public PoolActivity addPoolActivity(@RequestBody PoolActivity activity, @PathVariable String scheduleId, @PathVariable List<String> staffResponsible) {
         Schedule schedule = getSchedule(scheduleId);
@@ -55,7 +55,7 @@ public class PoolActivityController {
     }
 
 
-    @PutMapping("/activities/{id}")
+    @PutMapping("/api/activities/{id}")
     @ResponseBody
     public PoolActivity updatePoolActivity(@PathVariable String id, @RequestBody HashMap<String, String> parameters) {
         PoolActivity poolActivity = getById(id);
@@ -108,7 +108,7 @@ public class PoolActivityController {
     }
 
 
-    @DeleteMapping("/activities/{id}")
+    @DeleteMapping("/api/activities/{id}")
     public PoolActivity deleteActivity(@PathVariable String id) {
         PoolActivity poolActivity = getById(id);
         for (Staff staff : poolActivity.getStaffList())

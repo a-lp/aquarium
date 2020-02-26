@@ -18,12 +18,12 @@ public class StaffController {
     @Autowired
     private StaffService service;
 
-    @GetMapping("/staff")
+    @GetMapping("/api/staff")
     public Iterable<Staff> getAll() {
         return service.getAll();
     }
 
-    @GetMapping("/staff/{id}")
+    @GetMapping("/api/staff/{id}")
     public Staff getById(@PathVariable String id) {
         Staff staff = null;
         try {
@@ -36,32 +36,32 @@ public class StaffController {
         return staff;
     }
 
-    @GetMapping("/staff/{id}/pools")
+    @GetMapping("/api/staff/{id}/pools")
     public List<Pool> getPools(@PathVariable String id) {
         Staff staff = getById(id);
         return staff.getPoolsResponsabilities();
     }
 
-    @GetMapping("/staff/{id}/sectors")
+    @GetMapping("/api/staff/{id}/sectors")
     public List<Sector> getSectors(@PathVariable String id) {
         Staff staff = getById(id);
         return staff.getSectors();
     }
 
-    @GetMapping("/staff/{id}/activities")
+    @GetMapping("/api/staff/{id}/activities")
     public Set<PoolActivity> getActivities(@PathVariable String id) {
         Staff staff = getById(id);
         return staff.getActivities();
     }
 
-    @PostMapping("/staff")
+    @PostMapping("/api/staff")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public Staff addStaff(@RequestBody Staff staff) {
         return service.save(staff);
     }
 
-    @PutMapping("/staff/{id}")
+    @PutMapping("/api/staff/{id}")
     @ResponseBody
     public Staff updateStaff(@PathVariable String id, @RequestBody Map<String, String> parameters) {
         Staff p = getById(id);
@@ -92,7 +92,7 @@ public class StaffController {
         return service.save(p);
     }
 
-    @DeleteMapping("/staff/{id}")
+    @DeleteMapping("/api/staff/{id}")
     public Staff deleteStaff(@PathVariable String id) {
         Staff staff = getById(id);
         for (PoolActivity activity : staff.getActivities()) {

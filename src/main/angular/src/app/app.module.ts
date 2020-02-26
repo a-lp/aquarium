@@ -86,19 +86,19 @@ import { StaffListComponent } from './admin/creator/staffs/staff-list/staff-list
         ReactiveFormsModule,
         RouterModule.forRoot([
             {
-                path: 'view-fishes',
+                path: 'fishes',
                 component: FishesComponent
             },
             {
-                path: 'view-species',
+                path: 'species',
                 component: SpeciesComponent
             },
             {
-                path: 'view-pools',
+                path: 'pools',
                 component: PoolsComponent
             },
             {
-                path: 'view-admin',
+                path: 'admin',
                 component: AdminComponent
             }
         ], {useHash: true}),

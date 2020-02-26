@@ -75,14 +75,14 @@ public class PoolControllerTest {
 
     @Test
     public void getAll() {
-        Set Seta = this.restTemplate.getForObject("http://localhost:" + port + "/pools", Set.class);
+        Set Seta = this.restTemplate.getForObject("http://localhost:" + port + "/api/pools", Set.class);
         assertEquals(3, Seta.size());
     }
 
     @Test
     public void getById() {
-        List<HashMap> poolSet = this.restTemplate.getForObject("http://localhost:" + port + "/pools", List.class);
-        HashMap<String, Object> request = this.restTemplate.getForObject("http://localhost:" + port + "/pools/1", HashMap.class);
+        List<HashMap> poolSet = this.restTemplate.getForObject("http://localhost:" + port + "/api/pools", List.class);
+        HashMap<String, Object> request = this.restTemplate.getForObject("http://localhost:" + port + "/api/pools/1", HashMap.class);
         assertEquals(poolSet.get(0).get("id").toString(), request.get("id").toString());
         assertEquals(poolSet.get(0).get("maxCapacity").toString(), request.get("maxCapacity").toString());
         assertEquals(poolSet.get(0).get("volume"), request.get("volume"));
@@ -102,7 +102,7 @@ public class PoolControllerTest {
         pool_new.setResponsible(s1);
         Mockito.when(staffService.getById(1L)).thenReturn(s1);
         Mockito.when(poolService.save(pool)).thenReturn(pool_new);
-        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/sectors/1/responsible/1/pools", pool,
+        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/api/sectors/1/responsible/1/pools", pool,
                 HashMap.class);
         assertEquals(pool.getId().toString(), request.get("id").toString());
         assertEquals(pool.getCondition().name(), request.get("condition"));
@@ -122,7 +122,7 @@ public class PoolControllerTest {
         parameters.put("volume", pool.getVolume().toString());
         parameters.put("condition", pool.getCondition().name());
         HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
         assertEquals(pool.getId().toString(), request.get("id").toString());
         assertEquals(pool.getCondition().name(), request.get("condition"));
     }
@@ -132,7 +132,7 @@ public class PoolControllerTest {
         Pool pool = new Pool(4L, 30L, 30.5, Pool.WaterCondition.DIRTY, new HashSet<>());
         Mockito.when(poolService.getById(4L)).thenReturn(pool);
         Mockito.when(poolService.remove(pool)).thenReturn(pool);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/pools/4", HttpMethod.DELETE, null, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/4", HttpMethod.DELETE, null, HashMap.class).getBody();
         assertEquals(pool.getId().toString(), request.get("id").toString());
     }
 
@@ -141,20 +141,20 @@ public class PoolControllerTest {
     @Test
     public void getByIdNotFound() {
         Mockito.when(poolService.getById(10L)).thenReturn(null);
-        ResponseEntity<Pool> response = this.restTemplate.getForEntity("http://localhost:" + port + "/schedules/10", Pool.class);
+        ResponseEntity<Pool> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/schedules/10", Pool.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     public void getByIdBadRequest() {
-        ResponseEntity<Pool> response = this.restTemplate.getForEntity("http://localhost:" + port + "/schedules/asdf", Pool.class);
+        ResponseEntity<Pool> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/schedules/asdf", Pool.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
     public void addPoolSectorNotFound() {
         Mockito.when(sectorService.getById(2L)).thenReturn(null);
-        ResponseEntity<Pool> response = this.restTemplate.postForEntity("http://localhost:" + port + "/sectors/2/responsible/2/pools", new Pool(),
+        ResponseEntity<Pool> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/2/responsible/2/pools", new Pool(),
                 Pool.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -163,7 +163,7 @@ public class PoolControllerTest {
     public void addPoolResponsibleNotFound() {
         Mockito.when(sectorService.getById(1L)).thenReturn(this.sectors.get(0));
         Mockito.when(staffService.getById(2L)).thenReturn(null);
-        ResponseEntity<Pool> response = this.restTemplate.postForEntity("http://localhost:" + port + "/sectors/1/responsible/2/pools", new Pool(),
+        ResponseEntity<Pool> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/1/responsible/2/pools", new Pool(),
                 Pool.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -173,14 +173,14 @@ public class PoolControllerTest {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("maxCapacity", "wow");
         HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
-        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT,
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("maxCapacity value '" + parameters.get("maxCapacity") + "' cannot be converted in Long!", response.getBody().get("message"));
         parameters.remove("maxCapacity");
         parameters.put("condition", "a,2");
         updated = new HttpEntity<>(parameters);
-        response = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.PUT,
+        response = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("condition value '" + parameters.get("condition") + "' cannot be converted in WaterCondition!", response.getBody().get("message"));
@@ -188,7 +188,7 @@ public class PoolControllerTest {
 
     @Test
     public void deleteBadRequest() {
-        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/pools/1", HttpMethod.DELETE, null, HashMap.class);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/1", HttpMethod.DELETE, null, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Impossible to delete the pool! Fishes assigned to pool '1' must be moved to another pool before removing!", response.getBody().get("message"));
     }

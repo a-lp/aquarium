@@ -63,14 +63,14 @@ public class PoolActivityControllerTest {
 
     @Test
     public void getAll() {
-        List lista = this.restTemplate.getForObject("http://localhost:" + port + "/activities", List.class);
+        List lista = this.restTemplate.getForObject("http://localhost:" + port + "/api/activities", List.class);
         assertEquals(3, lista.size());
     }
 
     @Test
     public void getById() {
-        List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/activities", List.class);
-        PoolActivity output = this.restTemplate.getForObject("http://localhost:" + port + "/activities/1", PoolActivity.class);
+        List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/api/activities", List.class);
+        PoolActivity output = this.restTemplate.getForObject("http://localhost:" + port + "/api/activities/1", PoolActivity.class);
         assertEquals(lista.get(0).get("id").toString(), output.getId().toString());
         assertEquals(lista.get(0).get("description"), output.getDescription());
         assertEquals(lista.get(0).get("openToPublic"), output.getOpenToPublic());
@@ -92,7 +92,7 @@ public class PoolActivityControllerTest {
         PoolActivity pa_new = new PoolActivity(4L, LocalTime.of(4, 0), LocalTime.of(8, 0), true, Sets.newHashSet(Arrays.asList(s1, s2, s3)), schedule);
         schedule.assignActivity(pa_new);
         Mockito.when(activityService.save(pa)).thenReturn(pa_new);
-        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", pa,
+        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/api/schedule/1/activities/staff/1,2,3", pa,
                 HashMap.class);
         assertEquals(pa_new.getId().toString(), request.get("id").toString());
         assertEquals(pa_new.getDescription(), request.get("description"));
@@ -110,7 +110,7 @@ public class PoolActivityControllerTest {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("description", "false");
         HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT, updated, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/activities/1", HttpMethod.PUT, updated, HashMap.class).getBody();
         assertEquals("1", request.get("id").toString());
         assertEquals("false", request.get("description"));
 
@@ -120,7 +120,7 @@ public class PoolActivityControllerTest {
     public void deleteActivity() {
         PoolActivity poolActivity = this.activities.get(0);
         Mockito.when(activityService.remove(poolActivity)).thenReturn(poolActivity);
-        PoolActivity response = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.DELETE, null, PoolActivity.class).getBody();
+        PoolActivity response = this.restTemplate.exchange("http://localhost:" + port + "/api/activities/1", HttpMethod.DELETE, null, PoolActivity.class).getBody();
         assertEquals(Long.valueOf(1L), response.getId());
         assertEquals(poolActivity, response);
     }
@@ -129,7 +129,7 @@ public class PoolActivityControllerTest {
     @Test
     public void addPoolActivityScheduleNotFound() {
         Mockito.when(scheduleService.getById(1L)).thenReturn(null);
-        ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", new PoolActivity(),
+        ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/schedule/1/activities/staff/1,2,3", new PoolActivity(),
                 PoolActivity.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -139,7 +139,7 @@ public class PoolActivityControllerTest {
         Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
         Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
         Mockito.when(staffService.getById(1L)).thenReturn(null);
-        ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/schedule/1/activities/staff/1,2,3", new PoolActivity(),
+        ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/schedule/1/activities/staff/1,2,3", new PoolActivity(),
                 PoolActivity.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -148,7 +148,7 @@ public class PoolActivityControllerTest {
     public void addPoolActivityResponsibleBadRequest() {
         Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
         Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
-        ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/schedule/1/activities/staff/a,3", new PoolActivity(),
+        ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/schedule/1/activities/staff/a,3", new PoolActivity(),
                 PoolActivity.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -156,13 +156,13 @@ public class PoolActivityControllerTest {
     @Test
     public void getByIdNotFound() {
         Mockito.when(activityService.getById(10L)).thenReturn(null);
-        ResponseEntity<PoolActivity> response = this.restTemplate.getForEntity("http://localhost:" + port + "/activities/10", PoolActivity.class);
+        ResponseEntity<PoolActivity> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/activities/10", PoolActivity.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     public void getByIdBadRequest() {
-        ResponseEntity<PoolActivity> response = this.restTemplate.getForEntity("http://localhost:" + port + "/activities/asdf", PoolActivity.class);
+        ResponseEntity<PoolActivity> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/activities/asdf", PoolActivity.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
@@ -171,21 +171,21 @@ public class PoolActivityControllerTest {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("startActivity", "wow");
         HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
-        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT,
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/activities/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Error converting startActivity: '" + parameters.get("startActivity") + "' into LocalTime!", response.getBody().get("message"));
         parameters.remove("startActivity");
         parameters.put("staffList", "a,2");
         updated = new HttpEntity<>(parameters);
-        response = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT,
+        response = this.restTemplate.exchange("http://localhost:" + port + "/api/activities/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Cannot convert staff id: 'a' into Long", response.getBody().get("message"));
         parameters.remove("staffList");
         parameters.put("staffList", "");
         updated = new HttpEntity<>(parameters);
-        response = this.restTemplate.exchange("http://localhost:" + port + "/activities/1", HttpMethod.PUT,
+        response = this.restTemplate.exchange("http://localhost:" + port + "/api/activities/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Activities must have at least one responsible in charge!", response.getBody().get("message"));

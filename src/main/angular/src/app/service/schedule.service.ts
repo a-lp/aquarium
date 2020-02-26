@@ -14,33 +14,33 @@ export class ScheduleService {
 
 
   getAll(): Observable<any> {
-    return this.http.get('/schedules');
+    return this.http.get('/api/schedules');
   }
 
   getById(id: number): Observable<any> {
-    return this.http.get('/schedules/' + id);
+    return this.http.get('/api/schedules/' + id);
   }
 
   save(schedule: Schedule): Observable<any> {
     const poolId = schedule.pool;
     schedule.pool = null;
-    return this.http.post('/pools/' + poolId + '/schedules', schedule);
+    return this.http.post('/api/pools/' + poolId + '/schedules', schedule);
   }
 
   assignAPoolActivityToSchedule(id: number, activity: PoolActivity): Observable<any> {
     // TODO: gestire la persistenza di staff.
-    return this.http.post('/schedules/' + id + '/assign-activity', activity);
+    return this.http.post('/api/schedules/' + id + '/assign-activity', activity);
   }
 
   delete(schedule: Schedule): Observable<any> {
-    return this.http.delete('/schedules/' + schedule.id);
+    return this.http.delete('/api/schedules/' + schedule.id);
   }
 
   update(id: number, schedule: Schedule): Observable<any> {
-    return this.http.put('/schedules/' + id, schedule);
+    return this.http.put('/api/schedules/' + id, schedule);
   }
 
   getActivities(id: number): Observable<any> {
-    return this.http.get('/schedules/' + id + '/activities');
+    return this.http.get('/api/schedules/' + id + '/activities');
   }
 }

@@ -16,30 +16,30 @@ export class PoolService {
     const responsible = pool.responsible;
     pool.responsible = null;
     pool.sector = null;
-    return this.http.post('/sectors/' + sectorId + '/responsible/' + responsible + '/pools', pool);
+    return this.http.post('/api/sectors/' + sectorId + '/responsible/' + responsible + '/pools', pool);
   }
 
   getAll(): Observable<any> {
-    return this.http.get('/pools');
+    return this.http.get('/api/pools');
   }
 
   getPool(id: string): Observable<any> {
-    return this.http.get('/pools/' + id);
+    return this.http.get('/api/pools/' + id);
   }
 
   remove(pool: Pool): Observable<any> {
-    return this.http.delete('/pools/' + pool.id);
+    return this.http.delete('/api/pools/' + pool.id);
   }
 
   update(id: number, pool: Pool): Observable<any> {
-    return this.http.put('/pools/' + id, pool);
+    return this.http.put('/api/pools/' + id, pool);
   }
 
   getFishes(id: number): Observable<any> {
-    return this.http.get('/pools/' + id + '/fishes');
+    return this.http.get('/api/pools/' + id + '/fishes');
   }
 
   getSchedules(id: number): Observable<any> {
-    return this.http.get('/pools/' + id + '/schedules');
+    return this.http.get('/api/pools/' + id + '/schedules');
   }
 }

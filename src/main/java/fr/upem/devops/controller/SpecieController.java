@@ -18,19 +18,19 @@ public class SpecieController {
     @Autowired
     private FishService fishService;
 
-    @GetMapping("/species")
+    @GetMapping("/api/species")
     public Iterable<Specie> getAll() {
         return specieService.getAll();
     }
 
-    @GetMapping("/species/{name}")
+    @GetMapping("/api/species/{name}")
     public Specie getByName(@PathVariable String name) {
         Specie specie = specieService.getByName(name);
         if (specie == null) throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Specie '" + name + "' not found!");
         return specie;
     }
 
-    @GetMapping("/species/id/{id}")
+    @GetMapping("/api/species/id/{id}")
     public Specie getById(@PathVariable String id) {
         Specie specie = null;
         try {
@@ -43,7 +43,7 @@ public class SpecieController {
         return specie;
     }
 
-    @PostMapping("/species")
+    @PostMapping("/api/species")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public Specie addSpecie(@RequestBody Specie specie) {
@@ -55,7 +55,7 @@ public class SpecieController {
         throw new ResponseStatusException(HttpStatus.CONFLICT, "Another specie named '" + specie.getName() + "' found!");
     }
 
-    @PutMapping("/species/{name}")
+    @PutMapping("/api/species/{name}")
     @ResponseBody
     public Specie updateSpecie(@PathVariable String name, @RequestBody Map<String, String> parameters) {
         Specie p = getByName(name);
@@ -78,7 +78,7 @@ public class SpecieController {
         return specieService.save(p);
     }
 
-    @DeleteMapping("/species/{name}")
+    @DeleteMapping("/api/species/{name}")
     public Specie deleteSpecie(@PathVariable String name) {
         Specie specie = getByName(name);
         if (!specie.getFishList().isEmpty())

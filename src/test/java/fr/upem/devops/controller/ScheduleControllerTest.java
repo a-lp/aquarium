@@ -63,14 +63,14 @@ public class ScheduleControllerTest {
 
     @Test
     public void getAll() {
-        List lista = this.restTemplate.getForObject("http://localhost:" + port + "/schedules", List.class);
+        List lista = this.restTemplate.getForObject("http://localhost:" + port + "/api/schedules", List.class);
         assertEquals(3, lista.size());
     }
 
     @Test
     public void getById() {
-        List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/schedules", List.class);
-        HashMap<String, Object> output = this.restTemplate.getForObject("http://localhost:" + port + "/schedules/1", HashMap.class);
+        List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/api/schedules", List.class);
+        HashMap<String, Object> output = this.restTemplate.getForObject("http://localhost:" + port + "/api/schedules/1", HashMap.class);
         assertEquals(lista.get(0).get("id").toString(), output.get("id").toString());
         assertEquals(lista.get(0).get("pool").toString(), output.get("pool").toString());
     }
@@ -83,7 +83,7 @@ public class ScheduleControllerTest {
         schedule_new.setPool(pool);
         pool.getSchedules().add(schedule_new);
         Mockito.when(scheduleService.save(schedule)).thenReturn(schedule_new);
-        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/pools/1/schedules", schedule,
+        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/api/pools/1/schedules", schedule,
                 HashMap.class);
         assertEquals(schedule_new.getId().toString(), request.get("id").toString());
         assertEquals(schedule_new.getScheduledActivities().size(), ((List) request.get("scheduledActivities")).size());
@@ -100,7 +100,7 @@ public class ScheduleControllerTest {
         parameters.put("endPeriod", schedule.getEndPeriod().getTime() + "");
         parameters.put("startPeriod", schedule.getStartPeriod().getTime() + "");
         HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/schedules/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
         assertEquals(schedule.getId().toString(), request.get("id").toString());
     }
 
@@ -108,7 +108,7 @@ public class ScheduleControllerTest {
     public void deleteSchedule() {
         Schedule schedule = this.schedules.get(0);
         Mockito.when(scheduleService.remove(schedule)).thenReturn(schedule);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.DELETE, null, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/schedules/1", HttpMethod.DELETE, null, HashMap.class).getBody();
         assertEquals(schedule.getId().toString(), request.get("id").toString());
     }
 
@@ -117,20 +117,20 @@ public class ScheduleControllerTest {
     @Test
     public void getByIdNotFound() {
         Mockito.when(scheduleService.getById(10L)).thenReturn(null);
-        ResponseEntity<Schedule> response = this.restTemplate.getForEntity("http://localhost:" + port + "/schedules/10", Schedule.class);
+        ResponseEntity<Schedule> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/schedules/10", Schedule.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     public void getByIdBadRequest() {
-        ResponseEntity<Schedule> response = this.restTemplate.getForEntity("http://localhost:" + port + "/schedules/asdf", Schedule.class);
+        ResponseEntity<Schedule> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/schedules/asdf", Schedule.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
     public void addSchedulePoolNotFound() {
         Mockito.when(poolService.getById(2L)).thenReturn(null);
-        ResponseEntity<Schedule> response = this.restTemplate.postForEntity("http://localhost:" + port + "/pools/2/schedules", new Schedule(),
+        ResponseEntity<Schedule> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/pools/2/schedules", new Schedule(),
                 Schedule.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -140,7 +140,7 @@ public class ScheduleControllerTest {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("startPeriod", "wow");
         HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
-        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/schedules/1", HttpMethod.PUT,
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/schedules/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Error converting startPeriod: '" + parameters.get("startPeriod") + "' into Date!", response.getBody().get("message"));

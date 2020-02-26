@@ -21,12 +21,12 @@ public class ScheduleController {
     @Autowired
     private PoolService poolService;
 
-    @GetMapping("/schedules")
+    @GetMapping("/api/schedules")
     public Iterable<Schedule> getAll() {
         return service.getAll();
     }
 
-    @GetMapping("/schedules/{id}")
+    @GetMapping("/api/schedules/{id}")
     public Schedule getById(@PathVariable String id) {
         Schedule schedule = null;
         try {
@@ -39,13 +39,13 @@ public class ScheduleController {
         return schedule;
     }
 
-    @GetMapping("/schedules/{id}/activities")
+    @GetMapping("/api/schedules/{id}/activities")
     public Set<PoolActivity> getActivities(@PathVariable String id) {
         Schedule schedule = getById(id);
         return schedule.getScheduledActivities();
     }
 
-    @PostMapping("pools/{poolId}/schedules")
+    @PostMapping("/api/pools/{poolId}/schedules")
     @ResponseBody
     public Schedule addSchedule(@RequestBody Schedule schedule, @PathVariable String poolId) {
         Pool pool = getPool(poolId);
@@ -53,7 +53,7 @@ public class ScheduleController {
         return service.save(schedule);
     }
 
-    @PutMapping("/schedules/{id}")
+    @PutMapping("/api/schedules/{id}")
     @ResponseBody
     public Schedule updateSchedule(@PathVariable String id, @RequestBody HashMap<String, String> schedule) {
         Schedule p = getById(id);
@@ -75,7 +75,7 @@ public class ScheduleController {
         return service.save(p);
     }
 
-    @DeleteMapping("/schedules/{id}")
+    @DeleteMapping("/api/schedules/{id}")
     public Schedule deleteSchedule(@PathVariable String id) {
         Schedule schedule = getById(id);
         schedule.getPool().removeSchedule(schedule);

@@ -26,19 +26,19 @@ public class FishController {
     @Autowired
     private PoolService poolService;
 
-    @GetMapping("/fishes")
+    @GetMapping("/api/fishes")
     public Iterable<Fish> getAll() {
         return fishService.getAll();
     }
 
-    @GetMapping("/species/{specieName}/fishes")
+    @GetMapping("/api/species/{specieName}/fishes")
     public Iterable<Fish> getBySpecies(@PathVariable String specieName) {
         Specie specie = getSpecie(specieName);
         return specie.getFishList();
     }
 
 
-    @GetMapping("/fishes/{id}")
+    @GetMapping("/api/fishes/{id}")
     public Fish getById(@PathVariable String id) {
         Fish fish = null;
         try {
@@ -51,7 +51,7 @@ public class FishController {
         return fish;
     }
 
-    @PostMapping("/species/{specieName}/pools/{poolId}/fishes")
+    @PostMapping("/api/species/{specieName}/pools/{poolId}/fishes")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
     public Fish addFish(@RequestBody Fish fish, @PathVariable String specieName, @PathVariable String poolId) throws ResponseStatusException {
@@ -64,7 +64,7 @@ public class FishController {
     }
 
 
-    @PutMapping("/fishes/retire/{id}")
+    @PutMapping("/api/fishes/retire/{id}")
     @ResponseBody
     public Fish retireFish(@PathVariable String id) {
         Fish fishUpdated = getById(id);
@@ -72,7 +72,7 @@ public class FishController {
         return fishService.save(fishUpdated);
     }
 
-    @PutMapping("/fishes/{id}")
+    @PutMapping("/api/fishes/{id}")
     @ResponseBody
     public Fish updateFish(@PathVariable String id, @RequestBody Map<String, String> parameters) {
         Fish p = getById(id);
@@ -95,7 +95,7 @@ public class FishController {
         return fishService.save(p);
     }
 
-    @DeleteMapping("/fishes/{id}")
+    @DeleteMapping("/api/fishes/{id}")
     public Fish deleteFish(@PathVariable String id) {
         return fishService.remove(getById(id));
     }

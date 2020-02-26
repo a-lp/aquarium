@@ -22,12 +22,12 @@ public class SectorController {
     @Autowired
     private StaffService staffService;
 
-    @GetMapping("/sectors")
+    @GetMapping("/api/sectors")
     public Iterable<Sector> getAll() {
         return sectorService.getAll();
     }
 
-    @GetMapping("/sectors/{name}")
+    @GetMapping("/api/sectors/{name}")
     public Sector getByName(@PathVariable String name) {
         Sector sector = sectorService.getByName(name);
         if (sector == null)
@@ -35,7 +35,7 @@ public class SectorController {
         return sector;
     }
 
-    @GetMapping("/sectors/id/{id}")
+    @GetMapping("/api/sectors/id/{id}")
     public Sector getById(@PathVariable String id) {
         Sector sector = null;
         try {
@@ -48,19 +48,19 @@ public class SectorController {
         return sector;
     }
 
-    @GetMapping("/sectors/{name}/staffs")
+    @GetMapping("/api/sectors/{name}/staffs")
     public Iterable<Staff> getSectorStaffs(@PathVariable String name) {
         Sector sector = getByName(name);
         return sector.getStaffList();
     }
 
-    @GetMapping("/sectors/{name}/pools")
+    @GetMapping("/api/sectors/{name}/pools")
     public Iterable<Pool> getSectorPools(@PathVariable String name) {
         Sector sector = getByName(name);
         return sector.getPools();
     }
 
-    @PostMapping("/sectors/responsible/{ids}")
+    @PostMapping("/api/sectors/responsible/{ids}")
     @ResponseBody
     public Sector addSector(@RequestBody Sector sector, @PathVariable List<String> ids) {
         try {
@@ -77,7 +77,7 @@ public class SectorController {
         throw new ResponseStatusException(HttpStatus.CONFLICT, "Duplicate name for sector '" + sector.getName());
     }
 
-    @PutMapping("/sectors/{id}")
+    @PutMapping("/api/sectors/{id}")
     @ResponseBody
     public Sector updateSector(@PathVariable String id, @RequestBody HashMap<String, String> parameters) {
         Sector p = getById(id);
@@ -105,7 +105,7 @@ public class SectorController {
         return sectorService.save(p);
     }
 
-    @DeleteMapping("/sectors/{name}")
+    @DeleteMapping("/api/sectors/{name}")
     public Sector deleteSector(@PathVariable String name) {
         Sector sector = getByName(name);
         for (Staff staff : sector.getStaffList())

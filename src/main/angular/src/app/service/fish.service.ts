@@ -12,7 +12,7 @@ export class FishService {
   }
 
   getAll(): Observable<any> {
-    return this.http.get('/fishes');
+    return this.http.get('/api/fishes');
   }
 
   save(fish: Fish): Observable<any> {
@@ -20,19 +20,19 @@ export class FishService {
     const pool = fish.pool;
     fish.specie = null;
     fish.pool = null;
-    return this.http.post('/species/' + specie + '/pools/' + pool + '/fishes', fish);
+    return this.http.post('/api/species/' + specie + '/pools/' + pool + '/fishes', fish);
   }
 
   delete(fish: Fish): Observable<any> {
-    return this.http.delete('/fishes/' + fish.id);
+    return this.http.delete('/api/fishes/' + fish.id);
   }
 
   update(id: number, fish: Fish): Observable<any> {
-    return this.http.put('/fishes/' + id, fish);
+    return this.http.put('/api/fishes/' + id, fish);
   }
 
   retireFish(fish: Fish): Observable<any> {
-    return this.http.put('/fishes/retire/' + fish.id, fish);
+    return this.http.put('/api/fishes/retire/' + fish.id, fish);
   }
 
   sort(fishes: Array<Fish>, field: number, ascendent: boolean) {

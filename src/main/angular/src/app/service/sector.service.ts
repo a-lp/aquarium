@@ -14,30 +14,30 @@ export class SectorService {
   save(sector: Sector): Observable<any> {
     const resp = sector.staffList;
     sector.staffList = [];
-    return this.http.post('/sectors/responsible/' + resp, sector);
+    return this.http.post('/api/sectors/responsible/' + resp, sector);
   }
 
   getAll(): Observable<any> {
-    return this.http.get('/sectors');
+    return this.http.get('/api/sectors');
   }
 
   delete(sector: Sector): Observable<any> {
-    return this.http.delete('/sectors/' + sector.name);
+    return this.http.delete('/api/sectors/' + sector.name);
   }
 
   getSector(name: string): Observable<any> {
-    return this.http.get('/sectors/' + name);
+    return this.http.get('/api/sectors/' + name);
   }
 
   update(id: number, sector: Sector): Observable<any> {
-    return this.http.put('/sectors/' + id, sector);
+    return this.http.put('/api/sectors/' + id, sector);
   }
 
   getStaffList(name: string): Observable<any> {
-    return this.http.get('sectors/' + name + '/staffs');
+    return this.http.get('/api/sectors/' + name + '/staffs');
   }
 
   getPools(name: string): Observable<any> {
-    return this.http.get('/sectors/' + name + '/pools');
+    return this.http.get('/api/sectors/' + name + '/pools');
   }
 }

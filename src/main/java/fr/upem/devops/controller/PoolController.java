@@ -21,12 +21,12 @@ public class PoolController {
     @Autowired
     private StaffService staffService;
 
-    @GetMapping("/pools")
+    @GetMapping("/api/pools")
     public Iterable<Pool> getAll() {
         return poolService.getAll();
     }
 
-    @GetMapping("/pools/{id}")
+    @GetMapping("/api/pools/{id}")
     public Pool getById(@PathVariable String id) throws ResponseStatusException {
         Pool pool = null;
         try {
@@ -39,19 +39,19 @@ public class PoolController {
         return pool;
     }
 
-    @GetMapping("/pools/{id}/fishes")
+    @GetMapping("/api/pools/{id}/fishes")
     public Iterable<Fish> getPoolFishes(@PathVariable String id) {
         Pool pool = getById(id);
         return pool.getFishes();
     }
 
-    @GetMapping("/pools/{id}/schedules")
+    @GetMapping("/api/pools/{id}/schedules")
     public Iterable<Schedule> getPoolSchedules(@PathVariable String id) {
         Pool pool = getById(id);
         return pool.getSchedules();
     }
 
-    @PostMapping("/sectors/{sectorId}/responsible/{staffId}/pools")
+    @PostMapping("/api/sectors/{sectorId}/responsible/{staffId}/pools")
     @ResponseBody
     public Pool addPool(@RequestBody Pool pool, @PathVariable String sectorId, @PathVariable String staffId) {
         Sector sector = getSector(sectorId);
@@ -62,7 +62,7 @@ public class PoolController {
         return poolService.save(pool);
     }
 
-    @PutMapping("/pools/{id}")
+    @PutMapping("/api/pools/{id}")
     @ResponseBody
     public Pool updatePool(@PathVariable String id, @RequestBody Map<String, String> parameters) {
         Pool p = getById(id);
@@ -89,7 +89,7 @@ public class PoolController {
         return poolService.save(p);
     }
 
-    @DeleteMapping("/pools/{id}")
+    @DeleteMapping("/api/pools/{id}")
     public Pool deletePool(@PathVariable String id) {
         Pool pool = getById(id);
         if (!pool.getFishes().isEmpty())
