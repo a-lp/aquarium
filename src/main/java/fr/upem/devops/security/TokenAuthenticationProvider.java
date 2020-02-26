@@ -1,4 +1,4 @@
-package fr.upem.devops.authentication;
+package fr.upem.devops.security;
 
 import fr.upem.devops.service.UserAuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;

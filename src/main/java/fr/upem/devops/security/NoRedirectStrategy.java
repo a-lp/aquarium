@@ -1,4 +1,4 @@
-package fr.upem.devops.authentication;
+package fr.upem.devops.security;
 
 import org.springframework.security.web.RedirectStrategy;
 

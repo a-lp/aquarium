@@ -1,5 +1,8 @@
-package fr.upem.devops.authentication;
+package fr.upem.devops.configuration;
 
+import fr.upem.devops.security.NoRedirectStrategy;
+import fr.upem.devops.security.TokenAuthenticationFilter;
+import fr.upem.devops.security.TokenAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +30,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final RequestMatcher PUBLIC_URLS = new OrRequestMatcher(
-            new AntPathRequestMatcher("/register"),
-            new AntPathRequestMatcher("/login")
+//            new AntPathRequestMatcher("/register"),
+//            new AntPathRequestMatcher("/login"),
+//            new AntPathRequestMatcher("/")
+            new AntPathRequestMatcher("/*")
+
     );
     private static final RequestMatcher PROTECTED_URLS = new NegatedRequestMatcher(PUBLIC_URLS);
 

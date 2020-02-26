@@ -1,4 +1,4 @@
-package fr.upem.devops.authentication;
+package fr.upem.devops.service;
 
 import fr.upem.devops.model.User;
 import org.springframework.security.authentication.BadCredentialsException;

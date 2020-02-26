@@ -1,4 +1,4 @@
-package fr.upem.devops.authentication;
+package fr.upem.devops.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
