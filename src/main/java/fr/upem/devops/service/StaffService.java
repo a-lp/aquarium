@@ -1,10 +1,9 @@
 package fr.upem.devops.service;
 
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
+import fr.upem.devops.model.User;
 import fr.upem.devops.repository.StaffRepository;
+import fr.upem.devops.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +14,8 @@ import java.util.HashSet;
 public class StaffService {
     @Autowired
     private StaffRepository staffRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     public Iterable<Staff> getAll() {
 
@@ -35,9 +36,14 @@ public class StaffService {
     }
 
     public Staff remove(Staff staff) {
+        staff.setCredentials(null);
         staffRepository.delete(staff);
         staff.setActivities(new HashSet<>());
         staff.setPoolsResponsabilities(new ArrayList<>());
         return staff;
+    }
+
+    public Iterable<User> getProfiles() {
+        return userRepository.findAll();
     }
 }

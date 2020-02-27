@@ -2,6 +2,8 @@ package fr.upem.devops.model;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 @Entity
 public class User implements Serializable {
@@ -11,7 +13,7 @@ public class User implements Serializable {
     private String username;
     private String password;
     private String token;
-    @OneToOne
+    @OneToOne(mappedBy = "credentials")
     private Staff profile;
 
     public User() {
@@ -85,7 +87,28 @@ public class User implements Serializable {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", token='" + token + '\'' +
-                ", profile=" + profile +
+                ", profile=" + profile.getId() +
                 '}';
+    }
+
+    public String hashPassword(String passwordToHash) {
+        String generatedPassword = null;
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            md.update(passwordToHash.getBytes());
+            byte[] bytes = md.digest();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+            generatedPassword = sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return generatedPassword;
+    }
+
+    public boolean checkPassword(String password) {
+        return hashPassword(password).equals(this.password);
     }
 }

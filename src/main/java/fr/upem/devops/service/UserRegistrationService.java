@@ -20,8 +20,9 @@ public class UserRegistrationService {
 
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(user.hashPassword(password));
         user.setProfile(profile);
+        profile.setCredentials(user);
         userService.save(user);
 
         return authenticationService.login(username, password);

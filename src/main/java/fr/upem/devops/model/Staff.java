@@ -29,6 +29,8 @@ public class Staff implements Serializable {
     @ManyToMany
     @JsonIdentityReference(alwaysAsId = true)
     private Set<PoolActivity> activities = new HashSet<>();
+    @OneToOne(cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private User credentials;
 
     public Staff() {
     }
@@ -144,6 +146,15 @@ public class Staff implements Serializable {
     public void assignActivity(PoolActivity activity) {
         this.activities.add(activity);
     }
+
+    public User getCredentials() {
+        return credentials;
+    }
+
+    public void setCredentials(User credentials) {
+        this.credentials = credentials;
+    }
+
 
     @Override
     public boolean equals(Object obj) {

@@ -1,10 +1,8 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Sector;
-import fr.upem.devops.model.Staff;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.StaffService;
+import fr.upem.devops.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -34,6 +32,11 @@ public class StaffController {
         if (staff == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff with id: '" + id + "' not found!");
         return staff;
+    }
+
+    @GetMapping("/api/staff/profiles")
+    public Iterable<User> profiles() {
+        return service.getProfiles();
     }
 
     @GetMapping("/api/staff/{id}/pools")

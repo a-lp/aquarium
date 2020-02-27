@@ -6,7 +6,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -15,12 +14,16 @@ public class JWTAuthenticationService implements UserAuthenticationService {
     private JWTService jwtService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private StaffService staffService;
 
     @Override
     public String login(String username, String password) throws BadCredentialsException {
+
         return userService
                 .getByUsername(username)
-                .filter(user -> Objects.equals(password, user.getPassword()))
+                .filter(user -> user.checkPassword(password))
+                .filter(user -> user.getProfile() != null)
                 .map(user -> jwtService.create(username, user.getProfile()))
                 .orElseThrow(() -> new BadCredentialsException("Invalid username or password."));
     }
@@ -29,6 +32,10 @@ public class JWTAuthenticationService implements UserAuthenticationService {
     public User authenticateByToken(String token) {
         try {
             Object username = jwtService.verify(token).get("username");
+            Object profile = jwtService.verify(token).get("id");
+            if (profile == null || staffService.getById(Long.parseLong(profile.toString())) == null) {
+                throw new BadCredentialsException("No profile associated!");
+            }
             return Optional.ofNullable(username)
                     .flatMap(name -> userService.getByUsername(String.valueOf(name)))
                     .orElseThrow(() -> new UsernameNotFoundException("User '" + username + "' not found."));
