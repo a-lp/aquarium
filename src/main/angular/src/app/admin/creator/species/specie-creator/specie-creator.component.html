@@ -26,6 +26,7 @@
         </div>
       </div>
       <h3 align="center">Fish List</h3>
-      <app-fish-list [fishes]="fishList" (onChange)="getFishes(); this.onUpdate.emit()"></app-fish-list>
+      <app-fish-list [fishes]="fishList" (onChange)="getFishes(); this.onUpdate.emit()" (onError)="this.onError.emit($event)"></app-fish-list>
     </form>
   </div>
+</div>

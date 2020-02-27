@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {ScheduleService} from '../../../service/schedule.service';
 import {Schedule} from '../../../model/Schedule';
 import {Pool} from '../../../model/Pool';
@@ -22,6 +22,8 @@ export class SchedulesCreatorComponent implements OnInit {
     pool: new FormControl(null, Validators.required)
   });
 
+  onError = new EventEmitter<string>();
+
   constructor(private scheduleService: ScheduleService, private poolService: PoolService) {
   }
 
@@ -35,16 +37,14 @@ export class SchedulesCreatorComponent implements OnInit {
         if (data != null) {
           this.schedules = data;
         }
-      },
-      error => console.log(error)
+      }, error => this.onError.emit(error)
     );
     this.poolService.getAll().subscribe(
       data => {
         if (data != null) {
           this.pools = data;
         }
-      },
-      error => console.log(error)
+      }, error => this.onError.emit(error)
     );
   }
 
@@ -54,7 +54,7 @@ export class SchedulesCreatorComponent implements OnInit {
         this.form.reset();
         this.refresh();
       }
-    });
+    }, error => this.onError.emit(error));
   }
 
   today() {

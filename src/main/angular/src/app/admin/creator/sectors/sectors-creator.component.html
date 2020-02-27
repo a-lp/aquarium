@@ -53,6 +53,6 @@
 <div *ngIf="this.sector!=null">
   <app-sector-creator [staffs]="staffs" [sector]="this.sector"
                       (onHideSector)="this.sector=null"
-                      (onChange)="refresh(); this.onChange.emit(null)"></app-sector-creator>
+                      (onChange)="refresh();" (onError)="this.onError.emit($event)"></app-sector-creator>
 </div>
 

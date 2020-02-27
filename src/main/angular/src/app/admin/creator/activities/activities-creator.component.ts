@@ -1,11 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {PoolActivity} from '../../../model/PoolActivity';
 import {Schedule} from '../../../model/Schedule';
 import {Staff} from '../../../model/Staff';
 import {ActivityService} from '../../../service/activity.service';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {ScheduleService} from "../../../service/schedule.service";
-import {StaffService} from "../../../service/staff.service";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {ScheduleService} from '../../../service/schedule.service';
+import {StaffService} from '../../../service/staff.service';
+import {StaffRole} from '../../../model/StaffRole';
 
 @Component({
   selector: 'app-activities-creator',
@@ -19,7 +20,7 @@ export class ActivitiesCreatorComponent implements OnInit {
 
   activity: PoolActivity = null;
   selectedStaff: Array<Staff> = [];
-
+  onError = new EventEmitter<any>();
   form = new FormGroup({
     description: new FormControl('', Validators.required),
     startActivity: new FormControl('', Validators.required),
@@ -42,23 +43,23 @@ export class ActivitiesCreatorComponent implements OnInit {
       if (data != null) {
         this.activities = data;
       }
-    });
+    }, error => this.onError.emit(error));
     this.scheduleService.getAll().subscribe(data => {
       if (data != null) {
         this.schedules = data;
       }
-    });
+    }, error => this.onError.emit(error));
     this.staffService.getAll().subscribe(data => {
       if (data != null) {
-        this.staffs = data;
+        this.staffs = data.filter(staff => staff.role == StaffRole.WORKER);
       }
-    });
+    }, error => this.onError.emit(error));
   }
 
   removeActivity(activity: PoolActivity) {
     this.activityService.delete(activity).subscribe(removedActivity => {
       this.refresh();
-    }, error => console.log(error));
+    }, error => this.onError.emit(error));
   }
 
   save() {
@@ -67,7 +68,7 @@ export class ActivitiesCreatorComponent implements OnInit {
         if (activity != null) {
           this.form.reset();
         }
-      }
+      }, error => this.onError.emit(error)
     );
   }
 

@@ -1,10 +1,9 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Fish} from '../../../model/Fish';
 import {FishService} from '../../../service/fish.service';
 import {SpeciesService} from '../../../service/species.service';
 import {PoolService} from '../../../service/pool.service';
-import {DatePipe} from '@angular/common';
 import {Specie} from '../../../model/Specie';
 import {Pool} from '../../../model/Pool';
 import {FishGender} from '../../../model/FishGender';
@@ -30,8 +29,10 @@ export class FishesCreatorComponent implements OnInit {
   });
   fish: Fish = null;
 
+  onError = new EventEmitter<any>();
 
-  constructor(private fishService: FishService, private speciesService: SpeciesService, private poolService: PoolService, private datePipe: DatePipe) {
+  constructor(private fishService: FishService, private speciesService: SpeciesService,
+              private poolService: PoolService) {
   }
 
   ngOnInit() {
@@ -44,23 +45,20 @@ export class FishesCreatorComponent implements OnInit {
         if (data != null) {
           this.species = data;
         }
-      },
-      error => console.log(error)
+      }, error => this.onError.emit(error.error.message)
     );
     this.poolService.getAll().subscribe(
       data => {
         if (data != null) {
           this.pools = data;
         }
-      },
-      error => console.log(error));
+      }, error => this.onError.emit(error.error.message));
     this.fishService.getAll().subscribe(
       data => {
         if (data != null) {
           this.fishes = data;
         }
-      },
-      error => console.log(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 
@@ -68,10 +66,13 @@ export class FishesCreatorComponent implements OnInit {
     this.refresh();
   }
 
-  save($event: Event) {
+  save() {
     this.fishService.save(this.form.value).subscribe(fish => {
-      this.form.reset();
-    });
+      if (fish != null) {
+        this.form.reset();
+        this.refresh();
+      }
+    }, error => this.onError.emit(error.error.message));
   }
 
 }

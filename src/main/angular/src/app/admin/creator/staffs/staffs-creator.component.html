@@ -29,10 +29,10 @@
       </tbody>
     </table>
   </form>
-  <app-staff-list [staffs]="staffs" (onChange)="refresh(); this.onChange.emit(null)"
+  <app-staff-list (onError)="this.onError.emit($event)" [staffs]="staffs" (onChange)="refresh();"
                   (onSelect)="this.staff=$event"></app-staff-list>
 </div>
 <div *ngIf="staff!=null">
   <app-staff-creator [staff]="this.staff" (onHide)="this.staff=null;"
-                     (onChange)="refresh(); this.onChange.emit(null);"></app-staff-creator>
+                     (onChange)="refresh();" (onError)="this.onError.emit($event)"></app-staff-creator>
 </div>

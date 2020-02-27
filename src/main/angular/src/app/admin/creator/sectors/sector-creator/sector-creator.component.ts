@@ -3,7 +3,7 @@ import {SectorService} from '../../../../service/sector.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Staff} from '../../../../model/Staff';
 import {Sector} from '../../../../model/Sector';
-import {Pool} from "../../../../model/Pool";
+import {Pool} from '../../../../model/Pool';
 
 @Component({
   selector: 'app-sector-creator',
@@ -13,6 +13,8 @@ import {Pool} from "../../../../model/Pool";
 export class SectorCreatorComponent implements OnInit {
   @Output()
   onHideSector = new EventEmitter();
+  @Output()
+  onError = new EventEmitter<string>();
   @Output()
   onChange = new EventEmitter();
   @Input()
@@ -54,7 +56,7 @@ export class SectorCreatorComponent implements OnInit {
     this.form.value.staffList = this.selectedStaff.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
     this.sectorService.update(this.sector.id, this.form.value).subscribe(
       updateSector => this.onChange.emit()
-      , error => console.log(error)
+      , error => this.onError.emit(error)
     );
   }
 
@@ -63,7 +65,7 @@ export class SectorCreatorComponent implements OnInit {
       staffList => {
         this.selectedStaff = staffList;
       },
-      error => console.log(error)
+      error => this.onError.emit(error)
     );
   }
 
@@ -79,7 +81,7 @@ export class SectorCreatorComponent implements OnInit {
   private getPoolList() {
     this.sectorService.getPools(this.sector.name).subscribe(
       pools => this.pools = pools,
-      error => console.log(error)
+      error => this.onError.emit(error)
     );
   }
 }

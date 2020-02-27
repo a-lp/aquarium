@@ -1,34 +1,45 @@
 <div class="content">
   <nav class="sidebar">
     <ul>
-      <li [class]="shown==0?'selected':''"><a (click)="shown=0;" routerLink="fishes"><img src="../../assets/fish.svg"
-                                                                                          width="50px"
-                                                                                          height="50px">Fishes</a></li>
-      <li [class]="shown==1?'selected':''"><a (click)="shown=1;" routerLink="species"><img
+      <li [class]="shown=='fishes'?'selected':''"><a (click)="shown='fishes';" routerLink="fishes"><img
+        src="../../assets/fish.svg"
+        width="50px"
+        height="50px">Fishes</a></li>
+      <li [class]="shown=='species'?'selected':''"><a (click)="shown='species';" routerLink="species"><img
         src="../../assets/species.svg"
         width="50px"
         height="50px">Species</a></li>
-      <li [class]="shown==2?'selected':''"><a (click)="shown=2;" routerLink="pools"><img src="../../assets/pools.svg"
-                                                                                         width="50px"
-                                                                                         height="50px">Pools</a></li>
-      <li [class]="shown==3?'selected':''"><a (click)="shown=3;" routerLink="sectors"><img src="../../assets/sector.svg"
-                                                                                           width="50px"
-                                                                                           height="50px">Sectors</a>
+      <li [class]="shown=='pools'?'selected':''"><a (click)="shown='pools';" routerLink="pools"><img
+        src="../../assets/pools.svg"
+        width="50px"
+        height="50px">Pools</a></li>
+      <li [class]="shown=='sectors'?'selected':''"><a (click)="shown='sectors';" routerLink="sectors"><img
+        src="../../assets/sector.svg"
+        width="50px"
+        height="50px">Sectors</a>
       </li>
-      <li [class]="shown==4?'selected':''"><a (click)="shown=4;" routerLink="staffs"><img src="../../assets/staff.svg"
-                                                                                          width="50px"
-                                                                                          height="50px">Staff</a></li>
-      <li [class]="shown==5?'selected':''"><a (click)="shown=5;" routerLink="schedules"><img
+      <li [class]="shown=='staffs'?'selected':''"><a (click)="shown='staffs';" routerLink="staffs"><img
+        src="../../assets/staff.svg"
+        width="50px"
+        height="50px">Staff</a></li>
+      <li [class]="shown=='schedules'?'selected':''"><a (click)="shown='schedules';" routerLink="schedules"><img
         src="../../assets/schedule.svg"
         width="50px"
         height="50px">Schedules</a></li>
-      <li [class]="shown==6?'selected':''"><a (click)="shown=6;" routerLink="activities"><img
+      <li [class]="shown=='activities'?'selected':''"><a (click)="shown='activities';" routerLink="activities"><img
         src="../../assets/activities.svg"
         width="50px"
         height="50px">Activities</a></li>
     </ul>
   </nav>
-  <div #components class="creator-content">
-    <router-outlet></router-outlet>
+  <div class="creator-content">
+    <router-outlet (activate)="activateCompoent($event)" (deactivate)="deactivateCompoent($event)"></router-outlet>
+  </div>
+  <div *ngIf="error!=null" (click)="closeErrorPage()" class="error">
+    <div class="error-content">
+      <div class="error-info">
+        <p class="info">{{error.error.message}}</p>
+      </div>
+    </div>
   </div>
 </div>

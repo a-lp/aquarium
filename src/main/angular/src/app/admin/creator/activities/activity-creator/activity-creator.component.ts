@@ -14,6 +14,8 @@ export class ActivityCreatorComponent implements OnInit {
   @Output()
   onUpdate = new EventEmitter<PoolActivity>();
   @Output()
+  onError = new EventEmitter<any>();
+  @Output()
   onHide = new EventEmitter();
   @Input()
   schedules: Array<Schedule>;
@@ -49,7 +51,7 @@ export class ActivityCreatorComponent implements OnInit {
     this.form.value.staffList = this.selectedStaff.map(x => x.toString()).reduce((x, y) => x + ',' + y);
     this.activityService.update(this.activity.id, this.form.value).subscribe(activity => {
         this.onUpdate.emit(activity);
-      }, error => console.log(error)
+      }, error => this.onError.emit(error)
     );
   }
 

@@ -20,6 +20,8 @@ export class ScheduleCreatorComponent implements OnInit {
   onHide: EventEmitter<Schedule> = new EventEmitter<Schedule>();
   @Output()
   onChange: EventEmitter<Schedule> = new EventEmitter<Schedule>();
+  @Output()
+  onError: EventEmitter<string> = new EventEmitter<string>();
 
   form = new FormGroup({
     startPeriod: new FormControl('', Validators.required),
@@ -45,7 +47,7 @@ export class ScheduleCreatorComponent implements OnInit {
     this.scheduleService.update(this.schedule.id, this.form.value).subscribe(
       updateSchedule => {
         this.onChange.emit();
-      }
+      }, error => this.onError.emit(error)
     );
   }
 
@@ -59,7 +61,7 @@ export class ScheduleCreatorComponent implements OnInit {
     this.scheduleService.getActivities(this.schedule.id).subscribe(
       activities => {
         this.activities = activities;
-      }, error => console.log(error)
+      }, error => this.onError.emit(error)
     );
   }
 }

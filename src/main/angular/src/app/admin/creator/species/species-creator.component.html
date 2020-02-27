@@ -1,80 +1,82 @@
-<div *ngIf="specie==null" class="creator">
-  <form [formGroup]="form">
-    <table>
+<div class="container">
+  <div *ngIf="specie==null" class="creator">
+    <form [formGroup]="form">
+      <table>
+        <thead>
+        <tr>
+          <th>Name</th>
+          <th>Life Span</th>
+          <th>Extinction Level</th>
+          <th>Alimentation</th>
+          <th>Save</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <th>
+            <input type="text" formControlName="name">
+          </th>
+          <th>
+            <input type="number" formControlName="lifeSpan">
+          </th>
+          <th>
+            <select formControlName="extinctionLevel">
+              <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">{{i}}</option>
+            </select>
+          </th>
+          <th>
+            <select formControlName="alimentation">
+              <option *ngFor="let a of alimentations" [value]="a">{{a}}</option>
+            </select>
+          </th>
+          <th>
+            <button (click)="save()" [disabled]="!form.valid">Save</button>
+          </th>
+        </tr>
+        </tbody>
+      </table>
+    </form>
+    <table class="species-table">
       <thead>
       <tr>
-        <th>Name</th>
-        <th>Life Span</th>
-        <th>Extinction Level</th>
-        <th>Alimentation</th>
-        <th>Save</th>
+        <th>
+          ID
+        </th>
+        <th>
+          Name
+        </th>
+        <th>
+          Alimentation
+        </th>
+        <th>
+          Extinction Level
+        </th>
+        <th>
+          Life Span
+        </th>
+        <th></th>
+        <th></th>
       </tr>
       </thead>
       <tbody>
-      <tr>
-        <th>
-          <input type="text" formControlName="name">
-        </th>
-        <th>
-          <input type="number" formControlName="lifeSpan">
-        </th>
-        <th>
-          <select formControlName="extinctionLevel">
-            <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">{{i}}</option>
-          </select>
-        </th>
-        <th>
-          <select formControlName="alimentation">
-            <option *ngFor="let a of alimentations" [value]="a">{{a}}</option>
-          </select>
-        </th>
-        <th>
-          <button (click)="save()" [disabled]="!form.valid">Save</button>
-        </th>
+      <tr *ngFor=" let specie of species" (show)="showFishes($event)">
+        <td>{{specie.id}}</td>
+        <td>{{specie.name}}</td>
+        <td>{{specie.alimentation}}</td>
+        <td>{{specie.extinctionLevel}}</td>
+        <td>{{specie.lifeSpan}}</td>
+        <td>
+          <button (click)="showFishes(specie)">Show</button>
+        </td>
+        <td>
+          <button (click)="removeSpecie(specie)">Remove</button>
+        </td>
       </tr>
       </tbody>
     </table>
-  </form>
-  <table class="species-table">
-    <thead>
-    <tr>
-      <th>
-        ID
-      </th>
-      <th>
-        Name
-      </th>
-      <th>
-        Alimentation
-      </th>
-      <th>
-        Extinction Level
-      </th>
-      <th>
-        Life Span
-      </th>
-      <th></th>
-      <th></th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor=" let specie of species" (show)="showFishes($event)">
-      <td>{{specie.id}}</td>
-      <td>{{specie.name}}</td>
-      <td>{{specie.alimentation}}</td>
-      <td>{{specie.extinctionLevel}}</td>
-      <td>{{specie.lifeSpan}}</td>
-      <td>
-        <button (click)="showFishes(specie)">Show</button>
-      </td>
-      <td>
-        <button (click)="removeSpecie(specie)">Remove</button>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-</div>
-<div *ngIf="specie!=null" class="single-element">
-  <app-specie-creator (onUpdate)="refresh($event); this.onChange.emit($event)" (onHide)="hideSpecie()"
-                      [specie]="specie"></app-specie-creator>
+  </div>
+  <div *ngIf="specie!=null" class="single-element">
+    <app-specie-creator (onUpdate)="refresh();" (onHide)="hideSpecie()"
+                        [specie]="specie" (onError)="this.onError.emit($event)"></app-specie-creator>
+  </div>
 </div>

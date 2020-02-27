@@ -6,7 +6,7 @@ import {StaffRole} from '../../../../model/StaffRole';
 import {Pool} from '../../../../model/Pool';
 import {Sector} from '../../../../model/Sector';
 import {PoolActivity} from '../../../../model/PoolActivity';
-import {DatePipe} from "@angular/common";
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-staff-creator',
@@ -16,6 +16,8 @@ import {DatePipe} from "@angular/common";
 export class StaffCreatorComponent implements OnInit {
   @Output()
   onChange: EventEmitter<Staff> = new EventEmitter<Staff>();
+  @Output()
+  onError: EventEmitter<string> = new EventEmitter<string>();
   @Output()
   onHide: EventEmitter<Staff> = new EventEmitter<Staff>();
   @Input()
@@ -57,28 +59,28 @@ export class StaffCreatorComponent implements OnInit {
     this.staffService.update(this.staff.id, this.form.value).subscribe(
       updateStaff => {
         this.onChange.emit(null);
-      }, error => console.log(error)
+      }, error => this.onError.emit(error)
     );
   }
 
   getPools() {
     this.staffService.getPools(this.staff.id).subscribe(
       pools => this.pools = pools,
-      error => console.log(error)
+      error => this.onError.emit(error)
     );
   }
 
   getSectors() {
     this.staffService.getSectors(this.staff.id).subscribe(
       sectors => this.sectors = sectors,
-      error => console.log(error)
+      error => this.onError.emit(error)
     );
   }
 
   getActivities() {
     this.staffService.getActivities(this.staff.id).subscribe(
       activities => this.activities = activities,
-      error => console.log(error)
+      error => this.onError.emit(error)
     );
   }
 }

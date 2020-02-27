@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {Fish} from '../../../../model/Fish';
-import {FishService} from "../../../../service/fish.service";
-import {DatePipe} from "@angular/common";
+import {FishService} from '../../../../service/fish.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-fish-list',
@@ -13,6 +13,8 @@ export class FishListComponent implements OnInit {
   fishes: Array<Fish>;
   @Output()
   onChange = new EventEmitter();
+  @Output()
+  onError = new EventEmitter<any>();
   @Output()
   onSelection = new EventEmitter<Fish>();
   field = 0; // Sorting field
@@ -28,8 +30,7 @@ export class FishListComponent implements OnInit {
     this.fishService.retireFish(fish).subscribe(
       data => {
         this.onChange.emit(fish);
-      },
-      error => console.log(error)
+      }, error => this.onError.emit(error)
     );
   }
 
@@ -51,7 +52,7 @@ export class FishListComponent implements OnInit {
     this.fishService.delete(fish).subscribe(
       removedFish => {
         this.onChange.emit(removedFish);
-      }
+      }, error => this.onError.emit(error)
     );
   }
 }

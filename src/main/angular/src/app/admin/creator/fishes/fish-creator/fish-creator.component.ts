@@ -14,6 +14,8 @@ import {Fish} from '../../../../model/Fish';
 export class FishCreatorComponent implements OnInit {
   @Output()
   onHide: EventEmitter<any> = new EventEmitter<any>();
+  @Output()
+  onError: EventEmitter<any> = new EventEmitter<any>();
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     distinctSign: new FormControl('', Validators.required),
@@ -41,7 +43,7 @@ export class FishCreatorComponent implements OnInit {
     this.fishService.save(this.form.value).subscribe(fish => {
       this.onSave.emit(fish);
       this.form.reset();
-    });
+    }, error => this.onError.emit(error));
   }
 
   hideFish() {
@@ -52,7 +54,7 @@ export class FishCreatorComponent implements OnInit {
     this.fishService.update(this.fish.id, this.form.value).subscribe(
       fish => {
         this.onSave.emit();
-      }, error => console.log(error)
+      }, error => this.onError.emit(error)
     );
   }
 }

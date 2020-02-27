@@ -84,6 +84,6 @@
 <div *ngIf="this.activity!=null">
   <app-activity-creator [activity]="activity" [schedules]="schedules" [staffs]="staffs"
                         [selectedStaff]="activity.staffList"
-                        (onHide)="this.activity=null" (onUpdate)="refresh()"></app-activity-creator>
+                        (onHide)="this.activity=null" (onUpdate)="refresh()" (onError)="this.onError.emit($event)"></app-activity-creator>
 </div>
 

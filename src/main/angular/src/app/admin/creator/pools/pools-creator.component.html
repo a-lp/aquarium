@@ -1,6 +1,6 @@
 <div *ngIf="this.pool!=null">
   <app-pool-creator (onHide)="this.pool=null;" [pool]="this.pool" [staffs]="staffs" [sectors]="sectors"
-                    (onChange)="onSavePool($event)"></app-pool-creator>
+                    (onChange)="onSavePool($event)" (onError)="this.onError.emit($event)"></app-pool-creator>
 </div>
 <div *ngIf="this.pool==null">
   <form [formGroup]="form">
@@ -25,11 +25,12 @@
           <option *ngFor="let i of staffs" [value]="i.id">{{i.surname + " " + i.name}}</option>
         </select></th>
         <th>
-          <button (click)="save($event)" [disabled]="!form.valid">Save</button>
+          <button (click)="save()" [disabled]="!form.valid">Save</button>
         </th>
       </tr>
       </tbody>
     </table>
   </form>
-  <app-pool-list [pools]="pools" (onChange)="refresh(null)" (onSelect)="this.pool = $event"></app-pool-list>
+  <app-pool-list [pools]="pools" (onChange)="refresh()" (onSelect)="this.pool = $event"
+                 (onError)="this.onError.emit($event)"></app-pool-list>
 </div>

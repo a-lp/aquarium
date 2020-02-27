@@ -32,6 +32,8 @@ export class PoolCreatorComponent implements OnInit {
   staffs: Array<Staff>;
   @Output()
   onHide = new EventEmitter();
+  @Output()
+  onError = new EventEmitter<string>();
 
   fishList: Array<Fish> = [];
   schedules: Array<Schedule> = [];
@@ -51,20 +53,20 @@ export class PoolCreatorComponent implements OnInit {
   update() {
     this.poolService.update(this.pool.id, this.form.value).subscribe(
       updatePool => this.onChange.emit()
-      , error => console.log(error)
+      , error => this.onError.emit(error)
     );
   }
 
   getFishes() {
     this.poolService.getFishes(this.pool.id).subscribe(fishes => {
       this.fishList = fishes;
-    }, error => console.log(error));
+    }, error => this.onError.emit(error));
   }
 
   getSchedules() {
     this.poolService.getSchedules(this.pool.id).subscribe(schedules => {
       console.log(schedules)
       this.schedules = schedules;
-    }, error => console.log(error));
+    }, error => this.onError.emit(error));
   }
 }

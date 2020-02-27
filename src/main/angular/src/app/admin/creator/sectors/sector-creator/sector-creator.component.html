@@ -28,7 +28,7 @@
     <div class="fish-schedule">
       <div id="pools">
         <h3 align="center">Pools</h3>
-        <app-pool-list [pools]="pools"></app-pool-list>
+        <app-pool-list [pools]="pools" (onError)="this.onError.emit($event)"></app-pool-list>
       </div>
     </div>
   </div>

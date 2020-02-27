@@ -1,8 +1,8 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {StaffService} from '../../../service/staff.service';
 import {Staff} from '../../../model/Staff';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {StaffRole} from "../../../model/StaffRole";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {StaffRole} from '../../../model/StaffRole';
 
 @Component({
   selector: 'app-staffs-creator',
@@ -21,6 +21,7 @@ export class StaffsCreatorComponent implements OnInit {
     role: new FormControl('', Validators.required),
   });
   roles: Array<StaffRole> = Object.values(StaffRole);
+  onError = new EventEmitter<string>();
 
   constructor(private staffService: StaffService) {
   }
@@ -34,7 +35,7 @@ export class StaffsCreatorComponent implements OnInit {
       if (staffs != null) {
         this.staffs = staffs;
       }
-    });
+    }, error => this.onError.emit(error));
   }
 
   save() {
@@ -43,7 +44,7 @@ export class StaffsCreatorComponent implements OnInit {
         this.refresh();
         this.form.reset();
       }
-    });
+    }, error => this.onError.emit(error));
   }
 
   today() {

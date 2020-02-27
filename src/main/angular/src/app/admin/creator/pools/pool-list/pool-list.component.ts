@@ -14,6 +14,8 @@ export class PoolListComponent implements OnInit {
   onSelect: EventEmitter<Pool> = new EventEmitter<Pool>();
   @Output()
   onChange: EventEmitter<Pool> = new EventEmitter<Pool>();
+  @Output()
+  onError: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(private poolService: PoolService) {
   }
@@ -27,7 +29,7 @@ export class PoolListComponent implements OnInit {
       removedPool => {
         this.onChange.emit(removedPool);
       }, error => {
-        console.log(error);
+        this.onError.emit(error);
       }
     );
   }

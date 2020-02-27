@@ -1,7 +1,7 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {Staff} from "../../../../model/Staff";
-import {StaffService} from "../../../../service/staff.service";
-import {DatePipe} from "@angular/common";
+import {Staff} from '../../../../model/Staff';
+import {StaffService} from '../../../../service/staff.service';
+import {DatePipe} from '@angular/common';
 
 @Component({
   selector: 'app-staff-list',
@@ -15,6 +15,8 @@ export class StaffListComponent implements OnInit {
   onSelect: EventEmitter<Staff> = new EventEmitter<Staff>();
   @Input()
   staffs: Array<Staff> = [];
+  @Output()
+  onError = new EventEmitter<string>();
 
   constructor(private staffService: StaffService, private datePipe: DatePipe) {
   }
@@ -26,9 +28,7 @@ export class StaffListComponent implements OnInit {
     this.staffService.delete(staff).subscribe(
       removedStaff => {
         this.onChange.emit(removedStaff);
-      }, error => {
-        console.log(error);
-      }
+      }, error => this.onError.emit(error)
     );
   }
 

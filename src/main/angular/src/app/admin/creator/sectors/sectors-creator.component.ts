@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {SectorService} from '../../../service/sector.service';
 import {Sector} from '../../../model/Sector';
 import {Pool} from '../../../model/Pool';
@@ -17,6 +17,8 @@ export class SectorsCreatorComponent implements OnInit {
   pools: Array<Pool> = [];
   staffs: Array<Staff> = [];
   sectors: Array<Sector> = [];
+
+  onError = new EventEmitter<string>();
 
   sector: Sector;
   form = new FormGroup({
@@ -40,24 +42,21 @@ export class SectorsCreatorComponent implements OnInit {
         if (data != null) {
           this.sectors = data;
         }
-      },
-      error => console.log(error)
+      }, error => this.onError.emit(error)
     );
     this.poolService.getAll().subscribe(
       data => {
         if (data != null) {
           this.pools = data;
         }
-      },
-      error => console.log(error)
+      }, error => this.onError.emit(error)
     );
     this.staffService.getAll().subscribe(
       data => {
         if (data != null) {
           this.staffs = data.filter(staff => staff.role === StaffRole.MANAGER);
         }
-      },
-      error => console.log(error)
+      }, error => this.onError.emit(error)
     );
   }
 
@@ -65,9 +64,7 @@ export class SectorsCreatorComponent implements OnInit {
     this.sectorService.delete(sector).subscribe(
       removedSector => {
         this.refresh();
-      }, error => {
-        console.log(error);
-      }
+      }, error => this.onError.emit(error)
     );
   }
 
@@ -79,7 +76,7 @@ export class SectorsCreatorComponent implements OnInit {
           this.form.reset();
           this.selectedStaff = [];
         }
-      }
+      }, error => this.onError.emit(error)
     );
   }
 

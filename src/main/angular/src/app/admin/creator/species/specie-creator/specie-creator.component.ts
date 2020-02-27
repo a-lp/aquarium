@@ -19,6 +19,8 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
   onHide: EventEmitter<any> = new EventEmitter<any>();
   @Output()
   onUpdate: EventEmitter<any> = new EventEmitter<any>();
+  @Output()
+  onError: EventEmitter<any> = new EventEmitter<any>();
 
   form = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -55,7 +57,7 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
       this.specie = updatedSpecie;
       this.refresh();
       this.onUpdate.emit(updatedSpecie);
-    }, error => console.log(error));
+    }, error => this.onError.emit(error));
   }
 
   refresh() {
@@ -63,7 +65,7 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
     this.speciesService.getSpecie(this.specie.name).subscribe(
       specie => {
         this.specie = specie;
-      }, error => console.log(error)
+      }, error => this.onError.emit(error)
     );
   }
 
@@ -73,7 +75,7 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
         this.refresh();
         this.onUpdate.emit(fish);
       },
-      error => console.log(error)
+      error => this.onError.emit(error)
     );
   }
 
@@ -90,7 +92,7 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
   getFishes() {
     this.speciesService.getFishes(this.specie.name).subscribe(result => {
         this.fishList = result;
-      }, error => console.log(error)
+      }, error => this.onError.emit(error)
     );
   }
 
@@ -112,6 +114,6 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
         this.refresh();
         this.onUpdate.emit(result);
       },
-      error => console.log(error));
+      error => this.onError.emit(error));
   }
 }

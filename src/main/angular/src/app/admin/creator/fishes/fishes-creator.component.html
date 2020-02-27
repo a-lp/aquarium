@@ -1,6 +1,6 @@
 <div *ngIf="fish!=null">
   <app-fish-creator [fish]="this.fish" [species]="species" [pools]="pools" (onSave)="onChangeFish($event)"
-                    (onHide)="this.fish=null;"></app-fish-creator>
+                    (onHide)="this.fish=null;" (onError)="this.onError.emit($event)"></app-fish-creator>
 </div>
 <div *ngIf="fish==null">
   <form [formGroup]="form">
@@ -29,11 +29,12 @@
           <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
         </select></th>
         <th>
-          <button (click)="save($event)" [disabled]="!form.valid">Save</button>
+          <button (click)="save()" [disabled]="!form.valid">Save</button>
         </th>
       </tr>
       </tbody>
     </table>
   </form>
-  <app-fish-list [fishes]="fishes" (onSelection)="this.fish=$event" (onChange)="onChangeFish(null)"></app-fish-list>
+  <app-fish-list [fishes]="fishes" (onSelection)="this.fish=$event" (onChange)="onChangeFish(null)"
+                 (onError)="this.onError.emit($event)"></app-fish-list>
 </div>
