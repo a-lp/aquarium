@@ -101,12 +101,42 @@ import {LoginComponent} from './login/login.component';
       },
       {
         path: 'admin',
-        component: AdminComponent
+        component: AdminComponent,
+        children: [
+          {
+            path: 'fishes',
+            component: FishesCreatorComponent,
+          },
+          {
+            path: 'species',
+            component: SpeciesCreatorComponent,
+          },
+          {
+            path: 'pools',
+            component: PoolsCreatorComponent,
+          },
+          {
+            path: 'sectors',
+            component: SectorsCreatorComponent,
+          },
+          {
+            path: 'staffs',
+            component: StaffsCreatorComponent,
+          },
+          {
+            path: 'schedules',
+            component: SchedulesCreatorComponent,
+          },
+          {
+            path: 'activities',
+            component: ActivitiesCreatorComponent,
+          }
+        ]
       },
       {
         path: 'login',
         component: LoginComponent
-      }
+      },
     ], {useHash: true}),
     FormsModule
   ],

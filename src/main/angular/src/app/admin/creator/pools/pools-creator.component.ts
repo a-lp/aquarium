@@ -1,10 +1,11 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Sector} from '../../../model/Sector';
-import {Pool, WaterCondition} from '../../../model/Pool';
+import {Pool} from '../../../model/Pool';
 import {PoolService} from '../../../service/pool.service';
-import {Specie} from '../../../model/Specie';
 import {Staff} from '../../../model/Staff';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {SectorService} from '../../../service/sector.service';
+import {StaffService} from '../../../service/staff.service';
 
 @Component({
   selector: 'app-pools-creator',
@@ -19,50 +20,58 @@ export class PoolsCreatorComponent implements OnInit {
     responsible: new FormControl('', Validators.required)
   });
 
-  @Input()
-  sectors: Array<Sector>;
-  @Input()
-  staffs: Array<Staff>;
-  @Input()
-  pools: Array<Pool>;
+  sectors: Array<Sector> = [];
+  staffs: Array<Staff> = [];
+  pools: Array<Pool> = [];
 
-  @Output()
-  onChange: EventEmitter<Pool> = new EventEmitter<Pool>();
   pool: Pool;
 
-
-  constructor(private poolService: PoolService) {
+  constructor(private poolService: PoolService, private sectorService: SectorService, private staffService: StaffService) {
   }
 
   ngOnInit() {
-    this.refresh(null);
+    this.refresh();
   }
 
   onSavePool(pool: Pool) {
-    this.refresh(null);
-    this.onChange.emit(pool);
+    this.refresh();
   }
 
-  refresh($event: Specie) {
+  refresh() {
     this.poolService.getAll().subscribe(
       data => {
-        this.pools = data;
+        if (data != null) {
+          this.pools = data;
+        }
+      },
+      error => console.log(error)
+    );
+    this.sectorService.getAll().subscribe(
+      data => {
+        if (data != null) {
+          this.sectors = data;
+        }
+      },
+      error => console.log(error)
+    );
+    this.staffService.getAll().subscribe(
+      data => {
+        if (data != null) {
+          this.staffs = data;
+        }
       },
       error => console.log(error)
     );
   }
 
 
-
   save($event: Event) {
     this.poolService.save(this.form.value).subscribe(pool => {
-        this.onChange.emit(pool);
         if (pool != null) {
           this.form.reset();
+          this.refresh();
         }
       }
     );
   }
-
-
 }

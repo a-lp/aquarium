@@ -1,48 +1,34 @@
 <div class="content">
   <nav class="sidebar">
     <ul>
-      <li [class]="shown==0?'selected':''"><a (click)="showComponent(0)"><img src="../../assets/fish.svg" width="50px"
-                                                                              height="50px">Fishes</a></li>
-      <li [class]="shown==1?'selected':''"><a (click)="showComponent(1)"><img src="../../assets/species.svg"
-                                                                              width="50px"
-                                                                              height="50px">Species</a></li>
-      <li [class]="shown==2?'selected':''"><a (click)="showComponent(2)"><img src="../../assets/pools.svg" width="50px"
-                                                                              height="50px">Pools</a></li>
-      <li [class]="shown==3?'selected':''"><a (click)="showComponent(3)"><img src="../../assets/sector.svg" width="50px"
-                                                                              height="50px">Sectors</a></li>
-      <li [class]="shown==4?'selected':''"><a (click)="showComponent(4)"><img src="../../assets/staff.svg" width="50px"
-                                                                              height="50px">Staff</a></li>
-      <li [class]="shown==5?'selected':''"><a (click)="showComponent(5)"><img src="../../assets/schedule.svg"
-                                                                              width="50px"
-                                                                              height="50px">Schedules</a></li>
-      <li [class]="shown==6?'selected':''"><a (click)="showComponent(6)"><img src="../../assets/activities.svg"
-                                                                              width="50px"
-                                                                              height="50px">Activities</a></li>
+      <li [class]="shown==0?'selected':''"><a (click)="shown=0;" routerLink="fishes"><img src="../../assets/fish.svg"
+                                                                                          width="50px"
+                                                                                          height="50px">Fishes</a></li>
+      <li [class]="shown==1?'selected':''"><a (click)="shown=1;" routerLink="species"><img
+        src="../../assets/species.svg"
+        width="50px"
+        height="50px">Species</a></li>
+      <li [class]="shown==2?'selected':''"><a (click)="shown=2;" routerLink="pools"><img src="../../assets/pools.svg"
+                                                                                         width="50px"
+                                                                                         height="50px">Pools</a></li>
+      <li [class]="shown==3?'selected':''"><a (click)="shown=3;" routerLink="sectors"><img src="../../assets/sector.svg"
+                                                                                           width="50px"
+                                                                                           height="50px">Sectors</a>
+      </li>
+      <li [class]="shown==4?'selected':''"><a (click)="shown=4;" routerLink="staffs"><img src="../../assets/staff.svg"
+                                                                                          width="50px"
+                                                                                          height="50px">Staff</a></li>
+      <li [class]="shown==5?'selected':''"><a (click)="shown=5;" routerLink="schedules"><img
+        src="../../assets/schedule.svg"
+        width="50px"
+        height="50px">Schedules</a></li>
+      <li [class]="shown==6?'selected':''"><a (click)="shown=6;" routerLink="activities"><img
+        src="../../assets/activities.svg"
+        width="50px"
+        height="50px">Activities</a></li>
     </ul>
   </nav>
   <div #components class="creator-content">
-    <div [class]="shown!=0?'hidden':'component'">
-      <app-fishes-creator [fishes]="fishes" [pools]="pools" [species]="species" (onChange)="refresh()"></app-fishes-creator>
-    </div>
-    <div [class]="shown!=1?'hidden':'component'">
-      <app-species-creator [species]="species" (onChange)="refresh()"></app-species-creator>
-    </div>
-    <div [class]="shown!=2?'hidden':'component'">
-      <app-pools-creator [staffs]="managers()" [pools]="pools" [sectors]="sectors" (onChange)="refresh()"></app-pools-creator>
-    </div>
-    <div [class]="shown!=3?'hidden':'component'">
-      <app-sectors-creator [sectors]="sectors" [pools]="pools" [staffs]="managers()" (onChange)="refresh()"></app-sectors-creator>
-    </div>
-    <div [class]="shown!=4?'hidden':'component'">
-      <app-staffs-creator (onChange)="refresh()"></app-staffs-creator>
-    </div>
-    <div [class]="shown!=5?'hidden': 'component'">
-      <app-schedules-creator [schedules]="schedules" [pools]="pools" (onChange)="refresh()"></app-schedules-creator>
-    </div>
-    <div [class]="shown!=6?'hidden': 'component'">
-      <app-activities-creator [schedules]="schedules" [staffs]="workers()" [activities]="activities"
-                              (onChange)="refresh()"></app-activities-creator>
-    </div>
-
+    <router-outlet></router-outlet>
   </div>
 </div>

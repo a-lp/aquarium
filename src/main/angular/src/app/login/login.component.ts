@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {AuthenticationService} from "../service/authentication.service";
-import {StaffRole} from "../model/StaffRole";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {AuthenticationService} from '../service/authentication.service';
+import {StaffRole} from '../model/StaffRole';
 
 @Component({
   selector: 'app-login',
@@ -9,7 +9,7 @@ import {StaffRole} from "../model/StaffRole";
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  registration: boolean = false;
+  registration = false;
   error = '';
   formLogin = new FormGroup({
     username: new FormControl('', Validators.required),
@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.authenticationService.isLogged() != null) {
+    if (this.authenticationService.isLogged()) {
       this.authenticationService.redirect('/');
     }
   }

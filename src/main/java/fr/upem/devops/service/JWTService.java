@@ -21,7 +21,7 @@ public class JWTService {
     public JWTService(
             @Value("jwt.secret") String secret) {
         this.algorithm = Algorithm.HMAC256(secret);
-        this.defaultExpiration = 300000; // 5 minutes
+        this.defaultExpiration = (60 * 5000); // in seconds
 
     }
 

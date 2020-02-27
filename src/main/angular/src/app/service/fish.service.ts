@@ -2,17 +2,19 @@ import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs';
 import {HttpClient} from '@angular/common/http';
 import {Fish} from '../model/Fish';
+import {AuthenticationService} from './authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FishService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private authenticationService: AuthenticationService) {
   }
 
   getAll(): Observable<any> {
-    return this.http.get('/api/fishes');
+    // return this.http.get('/api/fishes');
+    return this.authenticationService.getRequest('/api/fishes');
   }
 
   save(fish: Fish): Observable<any> {
@@ -20,19 +22,19 @@ export class FishService {
     const pool = fish.pool;
     fish.specie = null;
     fish.pool = null;
-    return this.http.post('/api/species/' + specie + '/pools/' + pool + '/fishes', fish);
+    return this.authenticationService.postRequest('/api/species/' + specie + '/pools/' + pool + '/fishes', fish);
   }
 
   delete(fish: Fish): Observable<any> {
-    return this.http.delete('/api/fishes/' + fish.id);
+    return this.authenticationService.deleteRequest('/api/fishes/' + fish.id);
   }
 
   update(id: number, fish: Fish): Observable<any> {
-    return this.http.put('/api/fishes/' + id, fish);
+    return this.authenticationService.putRequest('/api/fishes/' + id, fish);
   }
 
   retireFish(fish: Fish): Observable<any> {
-    return this.http.put('/api/fishes/retire/' + fish.id, fish);
+    return this.authenticationService.putRequest('/api/fishes/retire/' + fish.id, fish);
   }
 
   sort(fishes: Array<Fish>, field: number, ascendent: boolean) {

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges} from '@angular/core';
+import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {SpeciesService} from '../../../service/species.service';
 import {Specie} from '../../../model/Specie';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
@@ -10,36 +10,31 @@ import {Alimentation} from '../../../model/Alimentation';
   styleUrls: ['./species-creator.component.css']
 })
 export class SpeciesCreatorComponent implements OnInit, OnChanges {
-  @Input()
-  species: Array<Specie>;
+  species: Array<Specie> = [];
   specie: Specie;
-  @Output()
-  onChange: EventEmitter<Specie> = new EventEmitter<Specie>();
+
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     lifeSpan: new FormControl(''),
     extinctionLevel: new FormControl(''),
     alimentation: new FormControl('')
   });
-
   alimentations = Object.values(Alimentation);
 
   constructor(private speciesService: SpeciesService) {
   }
 
   ngOnInit() {
-    this.refresh(null);
+    this.refresh();
   }
 
-  refresh($event: Specie) {
+  refresh() {
     this.speciesService.getAll().subscribe(
       data => {
-        this.species = data;
-        if (this.specie != null) {
-          this.specie = this.species.find(x => x.id == this.specie.id);
+        if (data != null) {
+          this.specie = data.find(x => x.id == this.specie.id);
         }
-      }
-      ,
+      },
       error => console.log(error)
     );
   }
@@ -55,8 +50,7 @@ export class SpeciesCreatorComponent implements OnInit, OnChanges {
   removeSpecie(specie: Specie) {
     this.speciesService.delete(specie).subscribe(
       removedSpecie => {
-        this.refresh(removedSpecie);
-        this.onChange.emit(removedSpecie);
+        this.refresh();
       }, error => {
         console.log(error);
       }
@@ -67,13 +61,12 @@ export class SpeciesCreatorComponent implements OnInit, OnChanges {
     this.speciesService.save(this.form.value).subscribe(specie => {
       if (specie != null) {
         this.form.reset();
-        this.refresh(specie);
-        this.onChange.emit();
+        this.refresh();
       }
     });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.refresh(null);
+    this.refresh();
   }
 }

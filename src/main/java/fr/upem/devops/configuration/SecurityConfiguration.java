@@ -30,10 +30,11 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final RequestMatcher PROTECTED_URLS = new OrRequestMatcher(
-            new AntPathRequestMatcher("/**", "POST"),
-            new AntPathRequestMatcher("/**", "DELETE"),
-            new AntPathRequestMatcher("/**", "PUT"),
-            new AntPathRequestMatcher("/api/staff**")
+            new AntPathRequestMatcher("/api/**", "POST"),
+            new AntPathRequestMatcher("/api/**", "DELETE"),
+            new AntPathRequestMatcher("/api/**", "PUT"),
+            new AntPathRequestMatcher("/api/staff"),
+            new AntPathRequestMatcher("/api/staff/**")
     );
     private static final RequestMatcher PUBLIC_URLS = new NegatedRequestMatcher(PROTECTED_URLS);
 

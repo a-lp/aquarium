@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {Fish} from '../../../model/Fish';
 import {FishService} from '../../../service/fish.service';
@@ -7,7 +7,7 @@ import {PoolService} from '../../../service/pool.service';
 import {DatePipe} from '@angular/common';
 import {Specie} from '../../../model/Specie';
 import {Pool} from '../../../model/Pool';
-import {FishGender} from "../../../model/FishGender";
+import {FishGender} from '../../../model/FishGender';
 
 
 @Component({
@@ -16,13 +16,8 @@ import {FishGender} from "../../../model/FishGender";
   styleUrls: ['./fishes-creator.component.css']
 })
 export class FishesCreatorComponent implements OnInit {
-  @Input()
-  species: Array<Specie>;
-  @Input()
-  pools: Array<Pool>;
-  @Output()
-  onChange: EventEmitter<Fish> = new EventEmitter<Fish>();
-  @Input()
+  species: Array<Specie> = [];
+  pools: Array<Pool> = [];
   fishes: Array<Fish>;
   genders = Object.values(FishGender);
 
@@ -40,9 +35,25 @@ export class FishesCreatorComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.refresh();
   }
 
-  refresh($event: Fish) {
+  refresh() {
+    this.speciesService.getAll().subscribe(
+      data => {
+        if (data != null) {
+          this.species = data;
+        }
+      },
+      error => console.log(error)
+    );
+    this.poolService.getAll().subscribe(
+      data => {
+        if (data != null) {
+          this.pools = data;
+        }
+      },
+      error => console.log(error));
     this.fishService.getAll().subscribe(
       data => {
         if (data != null) {
@@ -54,14 +65,11 @@ export class FishesCreatorComponent implements OnInit {
   }
 
   onChangeFish(fish: Fish) {
-    this.refresh(fish);
-    this.onChange.emit(fish);
+    this.refresh();
   }
-
 
   save($event: Event) {
     this.fishService.save(this.form.value).subscribe(fish => {
-      this.onChange.emit(fish);
       this.form.reset();
     });
   }

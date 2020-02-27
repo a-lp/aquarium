@@ -1,8 +1,9 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {ScheduleService} from '../../../service/schedule.service';
 import {Schedule} from '../../../model/Schedule';
 import {Pool} from '../../../model/Pool';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {PoolService} from '../../../service/pool.service';
 
 @Component({
   selector: 'app-schedules-creator',
@@ -10,11 +11,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./schedules-creator.component.css']
 })
 export class SchedulesCreatorComponent implements OnInit {
-  @Input()
-  pools: Array<Pool>
-  @Output()
-  onChange: EventEmitter<Schedule> = new EventEmitter<Schedule>();
-  @Input()
+  pools: Array<Pool> = [];
   schedules: Array<Schedule> = [];
 
   schedule: Schedule;
@@ -25,7 +22,7 @@ export class SchedulesCreatorComponent implements OnInit {
     pool: new FormControl(null, Validators.required)
   });
 
-  constructor(private scheduleService: ScheduleService) {
+  constructor(private scheduleService: ScheduleService, private poolService: PoolService) {
   }
 
   ngOnInit() {
@@ -35,7 +32,17 @@ export class SchedulesCreatorComponent implements OnInit {
   refresh() {
     this.scheduleService.getAll().subscribe(
       data => {
-        this.schedules = data;
+        if (data != null) {
+          this.schedules = data;
+        }
+      },
+      error => console.log(error)
+    );
+    this.poolService.getAll().subscribe(
+      data => {
+        if (data != null) {
+          this.pools = data;
+        }
       },
       error => console.log(error)
     );
@@ -43,9 +50,9 @@ export class SchedulesCreatorComponent implements OnInit {
 
   save() {
     this.scheduleService.save(this.form.value).subscribe(schedule => {
-      this.onChange.emit(schedule);
       if (schedule != null) {
         this.form.reset();
+        this.refresh();
       }
     });
   }

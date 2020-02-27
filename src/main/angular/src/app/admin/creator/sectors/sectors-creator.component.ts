@@ -1,10 +1,12 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {SectorService} from '../../../service/sector.service';
 import {Sector} from '../../../model/Sector';
 import {Pool} from '../../../model/Pool';
 import {Staff} from '../../../model/Staff';
 import {PoolService} from '../../../service/pool.service';
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {FormControl, FormGroup, Validators} from '@angular/forms';
+import {StaffService} from '../../../service/staff.service';
+import {StaffRole} from '../../../model/StaffRole';
 
 @Component({
   selector: 'app-sectors-creator',
@@ -12,14 +14,9 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
   styleUrls: ['./sectors-creator.component.css']
 })
 export class SectorsCreatorComponent implements OnInit {
-  @Input()
   pools: Array<Pool> = [];
-  @Input()
   staffs: Array<Staff> = [];
-  @Output()
-  onChange: EventEmitter<Sector> = new EventEmitter<Sector>();
-  @Input()
-  sectors: Array<Sector>;
+  sectors: Array<Sector> = [];
 
   sector: Sector;
   form = new FormGroup({
@@ -30,7 +27,7 @@ export class SectorsCreatorComponent implements OnInit {
   selectedStaff: Array<Staff> = [];
 
 
-  constructor(private sectorService: SectorService, private poolService: PoolService) {
+  constructor(private sectorService: SectorService, private poolService: PoolService, private staffService: StaffService) {
   }
 
   ngOnInit() {
@@ -46,13 +43,28 @@ export class SectorsCreatorComponent implements OnInit {
       },
       error => console.log(error)
     );
+    this.poolService.getAll().subscribe(
+      data => {
+        if (data != null) {
+          this.pools = data;
+        }
+      },
+      error => console.log(error)
+    );
+    this.staffService.getAll().subscribe(
+      data => {
+        if (data != null) {
+          this.staffs = data.filter(staff => staff.role === StaffRole.MANAGER);
+        }
+      },
+      error => console.log(error)
+    );
   }
 
   removeSector(sector: Sector) {
     this.sectorService.delete(sector).subscribe(
       removedSector => {
         this.refresh();
-        this.onChange.emit(removedSector);
       }, error => {
         console.log(error);
       }
@@ -63,7 +75,6 @@ export class SectorsCreatorComponent implements OnInit {
     this.form.value.staffList = this.selectedStaff.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
     this.sectorService.save(this.form.value).subscribe(sector => {
         this.refresh();
-        this.onChange.emit(sector);
         if (sector != null) {
           this.form.reset();
           this.selectedStaff = [];

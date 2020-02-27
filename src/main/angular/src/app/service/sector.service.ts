@@ -2,42 +2,43 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Sector} from '../model/Sector';
 import {Observable} from 'rxjs';
+import {AuthenticationService} from './authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SectorService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private authenticationService: AuthenticationService) {
   }
 
   save(sector: Sector): Observable<any> {
     const resp = sector.staffList;
     sector.staffList = [];
-    return this.http.post('/api/sectors/responsible/' + resp, sector);
+    return this.authenticationService.postRequest('/api/sectors/responsible/' + resp, sector);
   }
 
   getAll(): Observable<any> {
-    return this.http.get('/api/sectors');
+    return this.authenticationService.getRequest('/api/sectors');
   }
 
   delete(sector: Sector): Observable<any> {
-    return this.http.delete('/api/sectors/' + sector.name);
+    return this.authenticationService.deleteRequest('/api/sectors/' + sector.name);
   }
 
   getSector(name: string): Observable<any> {
-    return this.http.get('/api/sectors/' + name);
+    return this.authenticationService.getRequest('/api/sectors/' + name);
   }
 
   update(id: number, sector: Sector): Observable<any> {
-    return this.http.put('/api/sectors/' + id, sector);
+    return this.authenticationService.putRequest('/api/sectors/' + id, sector);
   }
 
   getStaffList(name: string): Observable<any> {
-    return this.http.get('/api/sectors/' + name + '/staffs');
+    return this.authenticationService.getRequest('/api/sectors/' + name + '/staffs');
   }
 
   getPools(name: string): Observable<any> {
-    return this.http.get('/api/sectors/' + name + '/pools');
+    return this.authenticationService.getRequest('/api/sectors/' + name + '/pools');
   }
 }

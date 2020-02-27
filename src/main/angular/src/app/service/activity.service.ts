@@ -2,21 +2,22 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {PoolActivity} from '../model/PoolActivity';
+import {AuthenticationService} from './authentication.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActivityService {
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private authenticationService: AuthenticationService) {
   }
 
   getAll(): Observable<any> {
-    return this.http.get('/api/activities');
+    return this.authenticationService.getRequest('/api/activities');
   }
 
   getById(id: number): Observable<any> {
-    return this.http.get('/api/activities/' + id);
+    return this.authenticationService.getRequest('/api/activities/' + id);
   }
 
   save(activity: PoolActivity): Observable<any> {
@@ -24,15 +25,15 @@ export class ActivityService {
     const scheduleId = activity.schedule;
     activity.schedule = null;
     activity.staffList = [];
-    return this.http.post('/api/schedule/' + scheduleId + '/activities/staff/' + resp, activity);
+    return this.authenticationService.postRequest('/api/schedule/' + scheduleId + '/activities/staff/' + resp, activity);
   }
 
   delete(activity: PoolActivity): Observable<any> {
-    return this.http.delete('/api/activities/' + activity.id);
+    return this.authenticationService.deleteRequest('/api/activities/' + activity.id);
   }
 
   update(id: number, activity: PoolActivity): Observable<any> {
-    return this.http.put('/api/activities/' + id, activity);
+    return this.authenticationService.putRequest('/api/activities/' + id, activity);
   }
 
 

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {StaffService} from '../../../service/staff.service';
 import {Staff} from '../../../model/Staff';
 import {FormControl, FormGroup, Validators} from "@angular/forms";
@@ -10,8 +10,6 @@ import {StaffRole} from "../../../model/StaffRole";
   styleUrls: ['./staffs-creator.component.css']
 })
 export class StaffsCreatorComponent implements OnInit {
-  @Output()
-  onChange: EventEmitter<Staff> = new EventEmitter<Staff>();
   staffs: Array<Staff> = [];
   staff: Staff = null;
   form = new FormGroup({
@@ -33,14 +31,15 @@ export class StaffsCreatorComponent implements OnInit {
 
   private refresh() {
     this.staffService.getAll().subscribe(staffs => {
-      this.staffs = staffs;
+      if (staffs != null) {
+        this.staffs = staffs;
+      }
     });
   }
 
   save() {
     this.staffService.addStaff(this.form.value).subscribe(staff => {
       if (staff != null) {
-        this.onChange.emit(staff);
         this.refresh();
         this.form.reset();
       }
