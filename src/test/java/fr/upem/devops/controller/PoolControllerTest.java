@@ -23,11 +23,21 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class PoolControllerTest {
-    private User user;
-    private String token = "tokenTest";
-    private Staff profile;
-    private HashMap<String, Object> tokenParameters = new HashMap<>();
-    private HttpHeaders headers = new HttpHeaders();
+    private User userAdmin;
+    private String tokenAdmin = "tokenAdminTest";
+    private Staff profileAdmin;
+    private HttpHeaders headersAdmin = new HttpHeaders();
+    private HashMap<String, Object> tokenAdminParameters = new HashMap<>();
+    private User userManager;
+    private String tokenManager = "tokenManagerTest";
+    private Staff profileManager;
+    private HttpHeaders headersManager = new HttpHeaders();
+    private HashMap<String, Object> tokenManagerParameters = new HashMap<>();
+    private User userWorker;
+    private String tokenWorker = "tokenWorkerTest";
+    private Staff profileWorker;
+    private HttpHeaders headersWorker = new HttpHeaders();
+    private HashMap<String, Object> tokenWorkerParameters = new HashMap<>();
     @MockBean
     private JWTService jwtService;
     @MockBean
@@ -51,6 +61,7 @@ public class PoolControllerTest {
         Pool p1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
         Pool p2 = new Pool(2L, 20L, 20.5, Pool.WaterCondition.CLEAN, new HashSet<>());
         Pool p3 = new Pool(3L, 30L, 30.5, Pool.WaterCondition.DIRTY, new HashSet<>());
+        p3.setResponsible(this.profileManager);
         Sector s1 = new Sector(1L, "Sector1", "Location1");
         Sector s2 = new Sector(2L, "Sector2", "Location2");
         Sector s3 = new Sector(3L, "Sector3", "Location3");
@@ -78,23 +89,61 @@ public class PoolControllerTest {
         Mockito.when(sectorService.getByName("Sector2")).thenReturn(s2);
         Mockito.when(sectorService.getByName("Sector3")).thenReturn(s3);
         /* Spring Security */
-        this.user = new User();
-        user.setUsername("testUsername");
-        user.setPassword("testPassword");
-        this.profile = new Staff();
-        this.profile.setCredentials(this.user);
-        this.profile.setId(100L);
-        this.profile.setRole(Staff.StaffRole.ADMIN);
-        this.user.setProfile(this.profile);
-        this.tokenParameters.put("iat", new Date().getTime());
-        this.tokenParameters.put("exp", Date.from(Instant.now().plusSeconds(60 * 5000)).getTime());
-        this.tokenParameters.put("username", this.user.getUsername());
-        this.tokenParameters.put("id", this.user.getProfile().getId());
-        this.tokenParameters.put("role", this.user.getProfile().getRole().name());
-        this.headers.add("Authorization", "Bearer " + this.token);
-        Mockito.when(jwtService.create(this.user.getUsername(), this.user.getProfile())).thenReturn(this.token);
-        Mockito.when(jwtService.verify(this.token)).thenReturn(this.tokenParameters);
-        Mockito.when(authenticationService.authenticateByToken("tokenTest")).thenReturn(this.user);
+        userAdmin = new User();
+        userAdmin.setUsername("testUsername");
+        userAdmin.setPassword("testPassword");
+        profileAdmin = new Staff();
+        profileAdmin.setCredentials(userAdmin);
+        profileAdmin.setId(100L);
+        profileAdmin.setRole(Staff.StaffRole.ADMIN);
+        userAdmin.setProfile(profileAdmin);
+        tokenAdminParameters.put("iat", new Date().getTime());
+        tokenAdminParameters.put("exp", Date.from(Instant.now().plusSeconds(60 * 5000)).getTime());
+        tokenAdminParameters.put("username", userAdmin.getUsername());
+        tokenAdminParameters.put("id", userAdmin.getProfile().getId());
+        tokenAdminParameters.put("role", userAdmin.getProfile().getRole().name());
+        headersAdmin.add("Authorization", "Bearer " + tokenAdmin);
+        Mockito.when(jwtService.create(userAdmin.getUsername(), userAdmin.getProfile())).thenReturn(tokenAdmin);
+        Mockito.when(jwtService.verify(tokenAdmin)).thenReturn(tokenAdminParameters);
+        Mockito.when(authenticationService.authenticateByToken(tokenAdmin)).thenReturn(userAdmin);
+
+        userManager = new User();
+        userManager.setUsername("userManager");
+        userManager.setPassword("userManager");
+        profileManager = new Staff();
+        profileManager.setCredentials(userManager);
+        profileManager.setId(101L);
+        profileManager.setRole(Staff.StaffRole.MANAGER);
+        userManager.setProfile(profileManager);
+        tokenManagerParameters = new HashMap<>();
+        tokenManagerParameters.put("iat", new Date().getTime());
+        tokenManagerParameters.put("exp", Date.from(Instant.now().plusSeconds(60 * 5000)).getTime());
+        tokenManagerParameters.put("username", userManager.getUsername());
+        tokenManagerParameters.put("id", userManager.getProfile().getId());
+        tokenManagerParameters.put("role", userManager.getProfile().getRole().name());
+        headersManager.add("Authorization", "Bearer " + tokenManager);
+        Mockito.when(jwtService.create(userManager.getUsername(), userManager.getProfile())).thenReturn(tokenManager);
+        Mockito.when(jwtService.verify(tokenManager)).thenReturn(tokenManagerParameters);
+        Mockito.when(authenticationService.authenticateByToken(tokenManager)).thenReturn(userManager);
+
+        userWorker = new User();
+        userWorker.setUsername("userWorker");
+        userWorker.setPassword("userWorker");
+        profileWorker = new Staff();
+        profileWorker.setCredentials(userWorker);
+        profileWorker.setId(102L);
+        profileWorker.setRole(Staff.StaffRole.WORKER);
+        userWorker.setProfile(profileWorker);
+        tokenWorkerParameters = new HashMap<>();
+        tokenWorkerParameters.put("iat", new Date().getTime());
+        tokenWorkerParameters.put("exp", Date.from(Instant.now().plusSeconds(60 * 5000)).getTime());
+        tokenWorkerParameters.put("username", userWorker.getUsername());
+        tokenWorkerParameters.put("id", userWorker.getProfile().getId());
+        tokenWorkerParameters.put("role", userWorker.getProfile().getRole().name());
+        headersWorker.add("Authorization", "Bearer " + tokenWorker);
+        Mockito.when(jwtService.create(userWorker.getUsername(), userWorker.getProfile())).thenReturn(tokenWorker);
+        Mockito.when(jwtService.verify(tokenWorker)).thenReturn(tokenWorkerParameters);
+        Mockito.when(authenticationService.authenticateByToken(tokenWorker)).thenReturn(userWorker);
     }
 
     @Test
@@ -126,7 +175,7 @@ public class PoolControllerTest {
         pool_new.setResponsible(s1);
         Mockito.when(staffService.getById(1L)).thenReturn(s1);
         Mockito.when(poolService.save(pool)).thenReturn(pool_new);
-        HttpEntity<Pool> httpEntity = new HttpEntity<>(pool, this.headers);
+        HttpEntity<Pool> httpEntity = new HttpEntity<>(pool, this.headersAdmin);
         HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/api/sectors/1/responsible/1/pools", httpEntity,
                 HashMap.class);
         assertEquals(pool.getId().toString(), request.get("id").toString());
@@ -146,7 +195,7 @@ public class PoolControllerTest {
         parameters.put("maxCapacity", pool.getMaxCapacity().toString());
         parameters.put("volume", pool.getVolume().toString());
         parameters.put("condition", pool.getCondition().name());
-        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters, this.headers);
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters, this.headersAdmin);
         HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
         assertEquals(pool.getId().toString(), request.get("id").toString());
         assertEquals(pool.getCondition().name(), request.get("condition"));
@@ -157,7 +206,7 @@ public class PoolControllerTest {
         Pool pool = new Pool(4L, 30L, 30.5, Pool.WaterCondition.DIRTY, new HashSet<>());
         Mockito.when(poolService.getById(4L)).thenReturn(pool);
         Mockito.when(poolService.remove(pool)).thenReturn(pool);
-        HttpEntity<Pool> httpEntity = new HttpEntity<>(null, this.headers);
+        HttpEntity<Pool> httpEntity = new HttpEntity<>(null, this.headersAdmin);
         HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/4", HttpMethod.DELETE, httpEntity, HashMap.class).getBody();
         assertEquals(pool.getId().toString(), request.get("id").toString());
     }
@@ -180,7 +229,7 @@ public class PoolControllerTest {
     @Test
     public void addPoolSectorNotFound() {
         Mockito.when(sectorService.getById(2L)).thenReturn(null);
-        HttpEntity<Pool> httpEntity = new HttpEntity<>(new Pool(), this.headers);
+        HttpEntity<Pool> httpEntity = new HttpEntity<>(new Pool(), this.headersAdmin);
         ResponseEntity<Pool> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/2/responsible/2/pools", httpEntity,
                 Pool.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -190,7 +239,7 @@ public class PoolControllerTest {
     public void addPoolResponsibleNotFound() {
         Mockito.when(sectorService.getById(1L)).thenReturn(this.sectors.get(0));
         Mockito.when(staffService.getById(2L)).thenReturn(null);
-        HttpEntity<Pool> httpEntity = new HttpEntity<>(new Pool(), this.headers);
+        HttpEntity<Pool> httpEntity = new HttpEntity<>(new Pool(), this.headersAdmin);
         ResponseEntity<Pool> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/1/responsible/2/pools", httpEntity,
                 Pool.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -200,14 +249,14 @@ public class PoolControllerTest {
     public void updateBadRequest() {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("maxCapacity", "wow");
-        HttpEntity<HashMap> updated = new HttpEntity<>(parameters, this.headers);
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters, this.headersAdmin);
         ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("maxCapacity value '" + parameters.get("maxCapacity") + "' cannot be converted in Long!", response.getBody().get("message"));
         parameters.remove("maxCapacity");
         parameters.put("condition", "a,2");
-        updated = new HttpEntity<>(parameters, this.headers);
+        updated = new HttpEntity<>(parameters, this.headersAdmin);
         response = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -216,7 +265,7 @@ public class PoolControllerTest {
 
     @Test
     public void deleteBadRequest() {
-        HttpEntity<HashMap> httpEntity = new HttpEntity<>(null, this.headers);
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(null, this.headersAdmin);
         ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/1", HttpMethod.DELETE, httpEntity, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Impossible to delete the pool! Fishes assigned to pool '1' must be moved to another pool before removing!", response.getBody().get("message"));
@@ -231,6 +280,7 @@ public class PoolControllerTest {
         ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/1/responsible/1/pools", httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+
     @Test
     public void invalidTokenPut() {
         Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
@@ -241,6 +291,7 @@ public class PoolControllerTest {
                 .exchange("http://localhost:" + port + "/api/pools/3", HttpMethod.PUT, httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+
     @Test
     public void invalidTokenDelete() {
         Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
@@ -249,6 +300,53 @@ public class PoolControllerTest {
         HttpEntity<Pool> httpEntity = new HttpEntity<>(new Pool(), corruptedHeader);
         ResponseEntity<String> response = this.restTemplate
                 .exchange("http://localhost:" + port + "/api/pools/3", HttpMethod.DELETE, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    public void invalidRoleAdd() {
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer " + this.tokenManager);
+        HttpEntity<Pool> httpEntity = new HttpEntity<>(new Pool(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/1/responsible/1/pools", httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    public void invalidRoleDelete() {
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer " + this.tokenManager);
+        HttpEntity<Pool> httpEntity = new HttpEntity<>(new Pool(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/pools/3", HttpMethod.DELETE, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    public void invalidRolePut() {
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer " + this.tokenWorker);
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(new HashMap<>(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/pools/3", HttpMethod.PUT, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    public void invalidUpdateNotOwningPoolManager() {
+        Pool pool = new Pool(4L, 10L, 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+        pool.setResponsible(this.profileManager);
+        Mockito.when(poolService.getById(4L)).thenReturn(pool);
+        tokenManagerParameters.put("id", userManager.getProfile().getId() + 1);
+        System.out.println(tokenManagerParameters);
+        Mockito.when(jwtService.verify(tokenManager)).thenReturn(tokenManagerParameters);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer " + tokenManager);
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("maxCapacity", pool.getMaxCapacity().toString());
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters, corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/pools/4", HttpMethod.PUT, httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 }

@@ -1,6 +1,7 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.model.*;
+import fr.upem.devops.service.JWTService;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.SectorService;
 import fr.upem.devops.service.StaffService;
@@ -20,10 +21,17 @@ public class PoolController {
     private SectorService sectorService;
     @Autowired
     private StaffService staffService;
+    @Autowired
+    private JWTService jwtService;
 
     @GetMapping("/api/pools")
     public Iterable<Pool> getAll() {
         return poolService.getAll();
+    }
+
+    @GetMapping("/api/staff/{id}/pools")
+    public Iterable<Pool> getPoolsByResponsible(@PathVariable String id) {
+        return poolService.getByResponsible(Long.parseLong(id));
     }
 
     @GetMapping("/api/pools/{id}")
@@ -53,7 +61,9 @@ public class PoolController {
 
     @PostMapping("/api/sectors/{sectorId}/responsible/{staffId}/pools")
     @ResponseBody
-    public Pool addPool(@RequestBody Pool pool, @PathVariable String sectorId, @PathVariable String staffId) {
+    public Pool addPool(@RequestBody Pool pool, @PathVariable String sectorId, @PathVariable String staffId, @RequestHeader("Authorization") String token) {
+        if (!checkRole(token, Staff.StaffRole.ADMIN))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins can add new pools!");
         Sector sector = getSector(sectorId);
         Staff staff = getStaff(staffId);
         pool.setCondition(Pool.WaterCondition.CLEAN);
@@ -64,8 +74,16 @@ public class PoolController {
 
     @PutMapping("/api/pools/{id}")
     @ResponseBody
-    public Pool updatePool(@PathVariable String id, @RequestBody Map<String, String> parameters) {
+    public Pool updatePool(@PathVariable String id, @RequestBody Map<String, String> parameters, @RequestHeader("Authorization") String token) {
+        if (!checkRole(token, Staff.StaffRole.ADMIN) && !checkRole(token, Staff.StaffRole.MANAGER))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins or managers can update pools!");
         Pool p = getById(id);
+        if (checkRole(token, Staff.StaffRole.MANAGER) &&
+                !p.getResponsible().getId()
+                        .equals(Long.parseLong(jwtService.verify(token.replace("Bearer", "").trim()).get("id")
+                                .toString()))) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only the responsible can update this pool!");
+        }
         if (parameters.containsKey("volume"))
             p.setVolume(Double.parseDouble(parameters.get("volume")));
         try {
@@ -74,23 +92,25 @@ public class PoolController {
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "maxCapacity value '" + parameters.get("maxCapacity") + "' cannot be converted in Long!");
         }
-        try {
-            if (parameters.containsKey("condition"))
-                p.setCondition(Pool.WaterCondition.valueOf(parameters.get("condition")));
-        } catch (IllegalArgumentException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "condition value '" + parameters.get("condition") + "' cannot be converted in WaterCondition!");
-        }
         if (parameters.containsKey("responsible")) {
             p.setResponsible(getStaff(parameters.get("responsible")));
         }
         if (parameters.containsKey("sector")) {
             p.setSector(getSector(parameters.get("sector")));
         }
+        if (parameters.containsKey("condition"))
+            try {
+                p.setCondition(Pool.WaterCondition.valueOf(parameters.get("condition")));
+            } catch (IllegalArgumentException e) {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "condition value '" + parameters.get("condition") + "' cannot be converted in WaterCondition!");
+            }
         return poolService.save(p);
     }
 
     @DeleteMapping("/api/pools/{id}")
-    public Pool deletePool(@PathVariable String id) {
+    public Pool deletePool(@PathVariable String id, @RequestHeader("Authorization") String token) {
+        if (!checkRole(token, Staff.StaffRole.ADMIN))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins can add new pools!");
         Pool pool = getById(id);
         if (!pool.getFishes().isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Impossible to delete the pool! Fishes assigned to pool '" + pool.getId() + "' must be moved to another pool before removing!");
@@ -125,5 +145,10 @@ public class PoolController {
         if (staff == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff with id '" + id + "' not found!");
         return staff;
+    }
+
+    private boolean checkRole(String token, Staff.StaffRole role) {
+        token = token.replace("Bearer", "").trim();
+        return Staff.StaffRole.valueOf((String) jwtService.verify(token).get("role")).equals(role);
     }
 }

@@ -1,15 +1,20 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.*;
+import fr.upem.devops.model.PoolActivity;
+import fr.upem.devops.model.Sector;
+import fr.upem.devops.model.Staff;
+import fr.upem.devops.model.User;
 import fr.upem.devops.service.StaffService;
-import fr.upem.devops.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @RestController
 public class StaffController {
@@ -39,16 +44,15 @@ public class StaffController {
         return service.getProfiles();
     }
 
-    @GetMapping("/api/staff/{id}/pools")
-    public List<Pool> getPools(@PathVariable String id) {
-        Staff staff = getById(id);
-        return staff.getPoolsResponsabilities();
-    }
-
     @GetMapping("/api/staff/{id}/sectors")
     public List<Sector> getSectors(@PathVariable String id) {
         Staff staff = getById(id);
         return staff.getSectors();
+    }
+
+    @GetMapping("/api/staff/role/{role}")
+    public Iterable<Staff> getByRole(@PathVariable String role) {
+        return service.getByRole(Staff.StaffRole.valueOf(role));
     }
 
     @GetMapping("/api/staff/{id}/activities")

@@ -1,5 +1,6 @@
 package fr.upem.devops.service;
 
+import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.model.User;
 import fr.upem.devops.repository.StaffRepository;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 @Service
 public class StaffService {
@@ -45,5 +47,9 @@ public class StaffService {
 
     public Iterable<User> getProfiles() {
         return userRepository.findAll();
+    }
+
+    public Iterable<Staff> getByRole(Staff.StaffRole role) {
+        return staffRepository.findByRole(role);
     }
 }

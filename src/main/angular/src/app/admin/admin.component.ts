@@ -36,10 +36,6 @@ export class AdminComponent implements OnInit {
   }
 
   closeErrorPage() {
-    if (this.error.status == 401) {
-      this.authenticationService.redirect('/');
-      this.authenticationService.logout();
-    }
     this.error = null;
   }
 

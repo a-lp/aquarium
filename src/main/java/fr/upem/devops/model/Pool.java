@@ -146,7 +146,7 @@ public class Pool implements Serializable {
                 ", volume=" + volume +
                 ", condition=" + condition +
                 ", sector=" + (sector == null ? "null" : sector.getName()) +
-                ", responsible=" + (responsible == null ? "null" : responsible.getName()) +
+                ", responsible=" + (responsible == null ? "null" : responsible.getId()) +
                 '}';
     }
 
