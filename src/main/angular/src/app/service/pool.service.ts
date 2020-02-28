@@ -24,6 +24,17 @@ export class PoolService {
     return this.authenticationService.getRequest('/api/pools');
   }
 
+  getAllByResponsible(): Observable<any> {
+    if (this.authenticationService.isAdmin()) {
+      return this.getAll();
+    }
+    if (!this.authenticationService.isLogged()) {
+      return new Observable<any>(null);
+    } else {
+      return this.authenticationService.getRequest('/api/staff/' + this.authenticationService.user.id + '/pools');
+    }
+  }
+
   getPool(id: string): Observable<any> {
     return this.authenticationService.getRequest('/api/pools/' + id);
   }

@@ -41,4 +41,8 @@ export class SectorService {
   getPools(name: string): Observable<any> {
     return this.authenticationService.getRequest('/api/sectors/' + name + '/pools');
   }
+
+  getAllByResponsible(id: number) {
+    return this.authenticationService.getRequest('/api/sectors/' + name + '/pools');
+  }
 }

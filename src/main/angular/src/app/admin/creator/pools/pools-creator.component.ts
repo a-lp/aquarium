@@ -1,4 +1,4 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit} from '@angular/core';
 import {Sector} from '../../../model/Sector';
 import {Pool} from '../../../model/Pool';
 import {PoolService} from '../../../service/pool.service';
@@ -6,7 +6,8 @@ import {Staff} from '../../../model/Staff';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {SectorService} from '../../../service/sector.service';
 import {StaffService} from '../../../service/staff.service';
-import {HttpErrorResponse} from '@angular/common/http';
+import {StaffRole} from "../../../model/StaffRole";
+import {AuthenticationService} from "../../../service/authentication.service";
 
 @Component({
   selector: 'app-pools-creator',
@@ -27,8 +28,13 @@ export class PoolsCreatorComponent implements OnInit {
 
   pool: Pool;
 
+  filters = new FormGroup({
+    responsible: new FormControl({value: '', disabled: !this.authenticationService.isAdmin()}),
+    sector: new FormControl('')
+  })
 
-  constructor(private poolService: PoolService, private sectorService: SectorService, private staffService: StaffService) {
+  constructor(private poolService: PoolService, private sectorService: SectorService,
+              private staffService: StaffService, private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -40,7 +46,7 @@ export class PoolsCreatorComponent implements OnInit {
   }
 
   refresh() {
-    this.poolService.getAll().subscribe(
+    this.poolService.getAllByResponsible().subscribe(
       data => {
         if (data != null) {
           this.pools = data;
@@ -54,7 +60,7 @@ export class PoolsCreatorComponent implements OnInit {
         }
       }, error => this.onError.emit(error)
     );
-    this.staffService.getAll().subscribe(
+    this.staffService.getByRole(StaffRole.MANAGER).subscribe(
       data => {
         if (data != null) {
           this.staffs = data;
@@ -73,4 +79,30 @@ export class PoolsCreatorComponent implements OnInit {
       }, error => this.onError.emit(error)
     );
   }
+
+  filterPools() {
+    this.poolService.getAllByResponsible().subscribe(
+      data => {
+        if (data != null) {
+          this.pools = data;
+          for (const key of Object.keys(this.filters.value))
+            if (this.filters.value[key] != '')
+              this.pools = this.pools.filter(x => x[key] == this.filters.value[key]);
+        }
+      }, error => this.onError.emit(error)
+    );
+
+  }
+
+  resetFilters() {
+    this.filters.reset();
+    this.poolService.getAllByResponsible().subscribe(
+      data => {
+        if (data != null) {
+          this.pools = data;
+        }
+      }, error => this.onError.emit(error)
+    );
+  }
+
 }

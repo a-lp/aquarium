@@ -29,14 +29,14 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (this.authenticationService.isLogged()) {
+    if (this.authenticationService.isStaffLogged()) {
       this.authenticationService.redirect('/');
     }
   }
 
   login() {
-    this.authenticationService.login(this.formLogin.value).subscribe(
-      token => this.authenticationService.setToken(token),
+    this.authenticationService.loginRequest(this.formLogin.value).subscribe(
+      token => this.authenticationService.login(token),
       error => {
         this.error = error.error;
       }
@@ -60,8 +60,8 @@ export class LoginComponent implements OnInit {
 
   save() {
     this.formLogin.addControl('profile', this.form);
-    this.authenticationService.register(this.formLogin.value).subscribe(
-      token => this.authenticationService.setToken(token),
+    this.authenticationService.registerRequest(this.formLogin.value).subscribe(
+      token => this.authenticationService.login(token),
       error => this.error = error.error
     );
   }

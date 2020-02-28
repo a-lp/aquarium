@@ -7,6 +7,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ScheduleService} from '../../../service/schedule.service';
 import {StaffService} from '../../../service/staff.service';
 import {StaffRole} from '../../../model/StaffRole';
+import {AuthenticationService} from "../../../service/authentication.service";
 
 @Component({
   selector: 'app-activities-creator',
@@ -31,7 +32,8 @@ export class ActivitiesCreatorComponent implements OnInit {
     staffList: new FormControl('')
   });
 
-  constructor(private activityService: ActivityService, private scheduleService: ScheduleService, private staffService: StaffService) {
+  constructor(private activityService: ActivityService, private scheduleService: ScheduleService,
+              private staffService: StaffService, private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {

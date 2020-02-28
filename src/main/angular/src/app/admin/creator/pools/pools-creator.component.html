@@ -31,6 +31,27 @@
       </tbody>
     </table>
   </form>
+  <form class="filters" [formGroup]="filters">
+    <div>
+      <label>Staff
+        <select (change)="filterPools()" formControlName="responsible">
+          <option value=""></option>
+          <option *ngFor="let i of staffs" [value]="i.id">{{i.surname + " " + i.name}}</option>
+        </select>
+      </label>
+    </div>
+    <div>
+      <label>Sector
+        <select (change)="filterPools()" formControlName="sector">
+          <option value=""></option>
+          <option *ngFor="let i of sectors" [value]="i.name">{{i.name}}</option>
+        </select>
+      </label>
+    </div>
+    <div>
+      <button (click)="resetFilters()">Reset</button>
+    </div>
+  </form>
   <app-pool-list [pools]="pools" (onChange)="refresh()" (onSelect)="this.pool = $event"
                  (onError)="this.onError.emit($event)"></app-pool-list>
 </div>

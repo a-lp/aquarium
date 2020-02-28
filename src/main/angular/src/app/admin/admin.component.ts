@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthenticationService} from '../service/authentication.service';
 import {Router} from '@angular/router';
-import {HttpErrorResponse} from "@angular/common/http";
+import {HttpErrorResponse} from '@angular/common/http';
 
 @Component({
   selector: 'app-admin',
@@ -16,7 +16,7 @@ export class AdminComponent implements OnInit {
   }
 
   ngOnInit() {
-    if (!this.authenticationService.isLogged()) {
+    if (!this.authenticationService.isStaffLogged()) {
       this.authenticationService.redirect('/login');
     }
     const url = this.router.url.split('/');
@@ -42,4 +42,5 @@ export class AdminComponent implements OnInit {
     }
     this.error = null;
   }
+
 }

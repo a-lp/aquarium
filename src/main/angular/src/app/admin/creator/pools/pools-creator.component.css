@@ -19,3 +19,18 @@ table {
 th * {
   width: 95%;
 }
+
+.filters{
+  display: flex;
+  padding: 1em;
+}
+
+.filters *{
+  flex: 1;
+  padding-right: 1em;
+  align-content: center;
+}
+
+.filters select{
+  width: 10em;
+}

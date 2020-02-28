@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Staff} from '../model/Staff';
 import {AuthenticationService} from './authentication.service';
+import {StaffRole} from "../model/StaffRole";
 
 @Injectable({
   providedIn: 'root'
@@ -42,5 +43,9 @@ export class StaffService {
 
   getActivities(id: number): Observable<any> {
     return this.authenticationService.getRequest('/api/staff/' + id + '/activities');
+  }
+
+  getByRole(role: StaffRole) {
+    return this.authenticationService.getRequest('/api/staff/role/' + role);
   }
 }

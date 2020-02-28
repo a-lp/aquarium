@@ -5,8 +5,8 @@ import {Sector} from '../../../../model/Sector';
 import {PoolService} from '../../../../service/pool.service';
 import {Staff} from '../../../../model/Staff';
 import {Fish} from '../../../../model/Fish';
-import {DatePipe} from '@angular/common';
 import {Schedule} from '../../../../model/Schedule';
+import {AuthenticationService} from "../../../../service/authentication.service";
 
 @Component({
   selector: 'app-pool-creator',
@@ -15,12 +15,13 @@ import {Schedule} from '../../../../model/Schedule';
 })
 export class PoolCreatorComponent implements OnInit {
   form = new FormGroup({
-    maxCapacity: new FormControl('', Validators.required),
-    volume: new FormControl('', Validators.required),
-    condition: new FormControl('', Validators.required),
-    sector: new FormControl('', Validators.required),
-    responsible: new FormControl('', Validators.required)
+    maxCapacity: new FormControl({value: '', disabled: !this.authenticationService.isAdmin()}, Validators.required),
+    volume: new FormControl({value: '', disabled: !this.authenticationService.isAdmin()}, Validators.required),
+    condition: new FormControl({value: '', disabled: (!this.authenticationService.isManager())}, Validators.required),
+    sector: new FormControl({value: '', disabled: !this.authenticationService.isAdmin()}, Validators.required),
+    responsible: new FormControl({value: '', disabled: !this.authenticationService.isAdmin()}, Validators.required)
   });
+
   conditions = Object.values(WaterCondition);
   @Output()
   onChange: EventEmitter<Pool> = new EventEmitter<Pool>();
@@ -38,7 +39,7 @@ export class PoolCreatorComponent implements OnInit {
   fishList: Array<Fish> = [];
   schedules: Array<Schedule> = [];
 
-  constructor(private poolService: PoolService, private datePipe: DatePipe) {
+  constructor(private poolService: PoolService, private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -65,7 +66,6 @@ export class PoolCreatorComponent implements OnInit {
 
   getSchedules() {
     this.poolService.getSchedules(this.pool.id).subscribe(schedules => {
-      console.log(schedules)
       this.schedules = schedules;
     }, error => this.onError.emit(error));
   }

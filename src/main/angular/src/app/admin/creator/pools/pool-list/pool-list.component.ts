@@ -24,7 +24,6 @@ export class PoolListComponent implements OnInit {
   }
 
   removePool(pool: Pool) {
-    //TODO: gestire errore di costraint
     this.poolService.remove(pool).subscribe(
       removedPool => {
         this.onChange.emit(removedPool);

@@ -4,11 +4,11 @@
       <li><a routerLink="/fishes">Fishes</a></li>
       <li><a routerLink="/species">Species</a></li>
       <li><a routerLink="/pools">Pools</a></li>
-      <li *ngIf="!authenticationService.isLogged()"><a routerLink="/login">Login</a></li>
-      <li *ngIf="authenticationService.isLogged()"><a (click)="this.authenticationService.logout()"
-                                                      routerLink="/login">Logout</a>
+      <li *ngIf="!authenticationService.isStaffLogged()"><a routerLink="/login">Login</a></li>
+      <li *ngIf="authenticationService.isStaffLogged()"><a (click)="this.authenticationService.logout()"
+                                                           routerLink="/login">Logout</a>
       </li>
-      <li *ngIf="authenticationService.isLogged()"><a routerLink="/admin">Admin</a></li>
+      <li *ngIf="authenticationService.isStaffLogged()"><a routerLink="/admin">{{this.authenticationService.user.role}} space</a></li>
     </ul>
   </nav>
   <main class="content">
