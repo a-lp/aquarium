@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
@@ -216,6 +217,36 @@ public class FishControllerTest {
         ResponseEntity<Fish> response = this.restTemplate.exchange("http://localhost:" + port + "/api/fishes/3", HttpMethod.PUT,
                 updated, Fish.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void invalidTokenPost() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Fish> httpEntity = new HttpEntity<>(new Fish(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/species/Specie1/pools/1/fishes", httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+    @Test
+    public void invalidTokenPut() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Fish> httpEntity = new HttpEntity<>(new Fish(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/fishes/3", HttpMethod.PUT, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+    @Test
+    public void invalidTokenDelete() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Fish> httpEntity = new HttpEntity<>(new Fish(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/fishes/3", HttpMethod.DELETE, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 }
 

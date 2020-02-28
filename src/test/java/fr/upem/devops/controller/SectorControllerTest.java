@@ -1,9 +1,6 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.Sector;
-import fr.upem.devops.model.Staff;
-import fr.upem.devops.model.User;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.JWTAuthenticationService;
 import fr.upem.devops.service.JWTService;
 import fr.upem.devops.service.SectorService;
@@ -19,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
@@ -221,6 +219,36 @@ public class SectorControllerTest {
         ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/sectors/Sector1", HttpMethod.DELETE, httpEntity, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Cannot delete sector! There are pools in this sector.", response.getBody().get("message"));
+    }
+
+    @Test
+    public void invalidTokenPost() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Sector> httpEntity = new HttpEntity<>(new Sector(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port +  "/api/sectors/responsible/1", httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+    @Test
+    public void invalidTokenPut() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Sector> httpEntity = new HttpEntity<>(new Sector(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/sectors/3", HttpMethod.PUT, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+    @Test
+    public void invalidTokenDelete() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Sector> httpEntity = new HttpEntity<>(new Sector(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/sectors/3", HttpMethod.DELETE, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 }
 

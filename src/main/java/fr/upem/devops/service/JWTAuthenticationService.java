@@ -6,7 +6,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,7 +20,6 @@ public class JWTAuthenticationService implements UserAuthenticationService {
 
     @Override
     public String login(String username, String password) throws BadCredentialsException {
-
         return userService
                 .getByUsername(username)
                 .filter(user -> user.checkPassword(password))

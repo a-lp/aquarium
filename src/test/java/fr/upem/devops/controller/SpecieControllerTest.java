@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
@@ -182,5 +183,35 @@ public class SpecieControllerTest {
                 HashMap.class);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals("Another specie named '" + specie.getName() + "' found!", response.getBody().get("message"));
+    }
+
+    @Test
+    public void invalidTokenPost() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Specie> httpEntity = new HttpEntity<>(new Specie(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/species", httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+    @Test
+    public void invalidTokenPut() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Specie> httpEntity = new HttpEntity<>(new Specie(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/species/3", HttpMethod.PUT, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+    @Test
+    public void invalidTokenDelete() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Specie> httpEntity = new HttpEntity<>(new Specie(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/species/3", HttpMethod.DELETE, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 }

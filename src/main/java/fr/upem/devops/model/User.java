@@ -87,7 +87,7 @@ public class User implements Serializable {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", token='" + token + '\'' +
-                ", profile=" + profile.getId() +
+                ", profile=" + (profile != null ? profile.getId() : "none") +
                 '}';
     }
 

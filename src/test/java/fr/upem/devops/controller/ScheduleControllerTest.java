@@ -1,9 +1,6 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.Schedule;
-import fr.upem.devops.model.Staff;
-import fr.upem.devops.model.User;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,6 +13,7 @@ import org.springframework.boot.test.mock.mockito.MockBeans;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.Instant;
@@ -172,5 +170,35 @@ public class ScheduleControllerTest {
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Error converting startPeriod: '" + parameters.get("startPeriod") + "' into Date!", response.getBody().get("message"));
+    }
+
+    @Test
+    public void invalidTokenPost() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Schedule> httpEntity = new HttpEntity<>(new Schedule(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/pools/1/schedules", httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+    @Test
+    public void invalidTokenPut() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Schedule> httpEntity = new HttpEntity<>(new Schedule(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/schedules/3", HttpMethod.PUT, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+    @Test
+    public void invalidTokenDelete() {
+        Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer not.a.good.token");
+        HttpEntity<Schedule> httpEntity = new HttpEntity<>(new Schedule(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/schedules/3", HttpMethod.DELETE, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 }
