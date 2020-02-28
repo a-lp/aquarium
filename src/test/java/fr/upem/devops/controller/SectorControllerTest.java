@@ -3,6 +3,9 @@ package fr.upem.devops.controller;
 import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
+import fr.upem.devops.model.User;
+import fr.upem.devops.service.JWTAuthenticationService;
+import fr.upem.devops.service.JWTService;
 import fr.upem.devops.service.SectorService;
 import fr.upem.devops.service.StaffService;
 import org.assertj.core.util.Sets;
@@ -15,12 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Instant;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -28,6 +29,15 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SectorControllerTest {
+    private User user;
+    private String token = "tokenTest";
+    private Staff profile;
+    private HashMap<String, Object> tokenParameters = new HashMap<>();
+    private HttpHeaders headers = new HttpHeaders();
+    @MockBean
+    private JWTService jwtService;
+    @MockBean
+    private JWTAuthenticationService authenticationService;
     @MockBean
     private SectorService sectorService;
 
@@ -68,6 +78,24 @@ public class SectorControllerTest {
         Mockito.when(staffService.getById(1L)).thenReturn(st1);
         Mockito.when(staffService.getById(2L)).thenReturn(st2);
         Mockito.when(staffService.getById(3L)).thenReturn(st3);
+        /* Spring Security */
+        this.user = new User();
+        user.setUsername("testUsername");
+        user.setPassword("testPassword");
+        this.profile = new Staff();
+        this.profile.setCredentials(this.user);
+        this.profile.setId(100L);
+        this.profile.setRole(Staff.StaffRole.ADMIN);
+        this.user.setProfile(this.profile);
+        this.tokenParameters.put("iat", new Date().getTime());
+        this.tokenParameters.put("exp", Date.from(Instant.now().plusSeconds(60 * 5000)).getTime());
+        this.tokenParameters.put("username", this.user.getUsername());
+        this.tokenParameters.put("id", this.user.getProfile().getId());
+        this.tokenParameters.put("role", this.user.getProfile().getRole().name());
+        this.headers.add("Authorization", "Bearer " + this.token);
+        Mockito.when(jwtService.create(this.user.getUsername(), this.user.getProfile())).thenReturn(this.token);
+        Mockito.when(jwtService.verify(this.token)).thenReturn(this.tokenParameters);
+        Mockito.when(authenticationService.authenticateByToken("tokenTest")).thenReturn(this.user);
     }
 
     @Test
@@ -91,7 +119,8 @@ public class SectorControllerTest {
         Sector sec_new = new Sector(4L, "Sector4", "Location4");
         sec_new.setStaffList(Sets.newHashSet(this.staff));
         Mockito.when(sectorService.save(sec)).thenReturn(sec_new);
-        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/api/sectors/responsible/1,2,3", sec,
+        HttpEntity<Sector> httpEntity = new HttpEntity<>(sec, this.headers);
+        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/api/sectors/responsible/1,2,3", httpEntity,
                 HashMap.class);
         assertEquals(sec_new.getId().toString(), request.get("id").toString());
         assertEquals(sec_new.getName(), request.get("name").toString());
@@ -109,7 +138,7 @@ public class SectorControllerTest {
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("name", sector.getName());
         parameters.put("location", sector.getLocation());
-        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters, this.headers);
         HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/sectors/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
         assertEquals(sector.getId().toString(), request.get("id").toString());
         assertEquals(sector.getName(), request.get("name"));
@@ -121,7 +150,8 @@ public class SectorControllerTest {
         sector.setId(100L);
         Mockito.when(sectorService.getByName("SectorNew")).thenReturn(sector);
         Mockito.when(sectorService.remove(sector)).thenReturn(sector);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/sectors/SectorNew", HttpMethod.DELETE, null, HashMap.class).getBody();
+        HttpEntity<Sector> httpEntity = new HttpEntity<>(null, this.headers);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/sectors/SectorNew", HttpMethod.DELETE, httpEntity, HashMap.class).getBody();
         assertEquals(sector.getId().toString(), request.get("id").toString());
     }
 
@@ -149,7 +179,8 @@ public class SectorControllerTest {
     @Test
     public void addSectorResponsibleNotFound() {
         Mockito.when(staffService.getById(4L)).thenReturn(null);
-        ResponseEntity<Sector> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/responsible/4", new Sector(),
+        HttpEntity<Sector> httpEntity = new HttpEntity<>(new Sector(), this.headers);
+        ResponseEntity<Sector> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/responsible/4", httpEntity,
                 Sector.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -159,7 +190,8 @@ public class SectorControllerTest {
         Sector sector = this.sectors.get(0);
         sector.setPools(null);
         Mockito.when(sectorService.getByName(sector.getName())).thenReturn(sector);
-        ResponseEntity<HashMap> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/responsible/1", sector,
+        HttpEntity<Sector> httpEntity = new HttpEntity<>(sector, this.headers);
+        ResponseEntity<HashMap> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/sectors/responsible/1", httpEntity,
                 HashMap.class);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals("Duplicate name for sector '" + sector.getName(), response.getBody().get("message"));
@@ -170,13 +202,13 @@ public class SectorControllerTest {
         Mockito.when(sectorService.getById(1L)).thenReturn(this.sectors.get(0));
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("staffList", "a,2");
-        HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters, this.headers);
         ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/sectors/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Error during conversion of staff ids in Long!", response.getBody().get("message"));
         parameters.put("staffList", "");
-        updated = new HttpEntity<>(parameters);
+        updated = new HttpEntity<>(parameters, this.headers);
         response = this.restTemplate.exchange("http://localhost:" + port + "/api/sectors/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -185,7 +217,8 @@ public class SectorControllerTest {
 
     @Test
     public void deleteSectorBadRequest() {
-        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/sectors/Sector1", HttpMethod.DELETE, null, HashMap.class);
+        HttpEntity<Sector> httpEntity = new HttpEntity<>(null, this.headers);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/sectors/Sector1", HttpMethod.DELETE, httpEntity, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Cannot delete sector! There are pools in this sector.", response.getBody().get("message"));
     }

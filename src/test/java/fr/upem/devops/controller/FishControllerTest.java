@@ -1,9 +1,7 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.model.*;
-import fr.upem.devops.service.FishService;
-import fr.upem.devops.service.PoolService;
-import fr.upem.devops.service.SpecieService;
+import fr.upem.devops.service.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,12 +11,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Instant;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +23,16 @@ import static org.junit.Assert.assertNotNull;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class FishControllerTest {
-    Pool pool;
+    private Pool pool;
+    private User user;
+    private String token = "tokenTest";
+    private Staff profile;
+    private HashMap<String, Object> tokenParameters = new HashMap<>();
+    private HttpHeaders headers = new HttpHeaders();
+    @MockBean
+    private JWTService jwtService;
+    @MockBean
+    private JWTAuthenticationService authenticationService;
     @MockBean
     private FishService fishService;
     @MockBean
@@ -64,11 +69,29 @@ public class FishControllerTest {
         Mockito.when(specieService.getByName("Specie2")).thenReturn(s2);
         Mockito.when(specieService.getByName("Specie3")).thenReturn(s3);
         Mockito.when(poolService.getById(1L)).thenReturn(pool);
+        /* Spring Security */
+        this.user = new User();
+        user.setUsername("testUsername");
+        user.setPassword("testPassword");
+        this.profile = new Staff();
+        this.profile.setCredentials(this.user);
+        this.profile.setId(100L);
+        this.profile.setRole(Staff.StaffRole.ADMIN);
+        this.user.setProfile(this.profile);
+        this.tokenParameters.put("iat", new Date().getTime());
+        this.tokenParameters.put("exp", Date.from(Instant.now().plusSeconds(60 * 5000)).getTime());
+        this.tokenParameters.put("username", this.user.getUsername());
+        this.tokenParameters.put("id", this.user.getProfile().getId());
+        this.tokenParameters.put("role", this.user.getProfile().getRole().name());
+        this.headers.add("Authorization", "Bearer " + this.token);
+        Mockito.when(jwtService.create(this.user.getUsername(), this.user.getProfile())).thenReturn(this.token);
+        Mockito.when(jwtService.verify(this.token)).thenReturn(this.tokenParameters);
+        Mockito.when(authenticationService.authenticateByToken("tokenTest")).thenReturn(this.user);
     }
 
     @Test
     public void getAll() {
-        List<Fish> lista = this.restTemplate.getForObject("http://localhost:" + port + "/api/api/fishes", List.class);
+        List<Fish> lista = this.restTemplate.getForObject("http://localhost:" + port + "/api/fishes", List.class);
         assertEquals(3, lista.size());
     }
 
@@ -95,7 +118,8 @@ public class FishControllerTest {
         pool.addFish(fish_new);
         specie.addFish(fish_new);
         Mockito.when(fishService.save(fish)).thenReturn(fish_new);
-        LinkedHashMap request = this.restTemplate.postForObject("http://localhost:" + port + "/api/species/Specie1/pools/1/fishes", fish,
+        HttpEntity<Fish> httpEntity = new HttpEntity(fish, this.headers);
+        LinkedHashMap request = this.restTemplate.postForObject("http://localhost:" + port + "/api/species/Specie1/pools/1/fishes", httpEntity,
                 LinkedHashMap.class);
         assertEquals(fish_new.getName(), request.get("name"));
         assertEquals(fish_new.getDistinctSign(), request.get("distinctSign"));
@@ -108,11 +132,12 @@ public class FishControllerTest {
 
     @Test
     public void retireFish() {
-        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", new Specie(), new Pool());
+        Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", this.species.get(0), this.pool);
         updateP1.setReturnDate(new Date());
         Mockito.when(fishService.save(updateP1)).thenReturn(updateP1);
+        HttpEntity<Fish> httpEntity = new HttpEntity(updateP1, this.headers);
         HashMap<String, String> request = this.restTemplate.exchange("http://localhost:" + port + "/api/fishes/retire/3", HttpMethod.PUT,
-                null, HashMap.class).getBody();
+                httpEntity, HashMap.class).getBody();
         assertNotNull(request.containsKey("returnDate"));
     }
 
@@ -121,7 +146,7 @@ public class FishControllerTest {
         Fish updateP1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", this.species.get(0), new Pool(1L, 1l, 1.0, Pool.WaterCondition.DIRTY, null));
         Mockito.when(fishService.save(updateP1)).thenReturn(new Fish(3L, "MauriceColdfish", FishGender.FEMALE, "in padella panato", null, null));
         updateP1.setName("MauriceColdfish");
-        HttpEntity<Fish> updated = new HttpEntity<>(updateP1);
+        HttpEntity<Fish> updated = new HttpEntity<>(updateP1, this.headers);
         HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/fishes/3", HttpMethod.PUT,
                 updated, HashMap.class).getBody();
         assertEquals(updateP1.getId().toString(), request.get("id").toString());
@@ -132,8 +157,9 @@ public class FishControllerTest {
     public void deleteFish() {
         Fish p1 = new Fish(3L, "Swordfish", FishGender.FEMALE, "in padella panato", this.species.get(0), pool);
         Mockito.when(fishService.remove(p1)).thenReturn(p1);
+        HttpEntity<Fish> httpEntity = new HttpEntity(null, this.headers);
         HashMap<String, Object> response = this.restTemplate
-                .exchange("http://localhost:" + port + "/api/fishes/3", HttpMethod.DELETE, null, HashMap.class)
+                .exchange("http://localhost:" + port + "/api/fishes/3", HttpMethod.DELETE, httpEntity, HashMap.class)
                 .getBody();
         assertEquals("3", response.get("id").toString());
     }
@@ -151,7 +177,8 @@ public class FishControllerTest {
     public void addFishSpecieNotFound() {
         Mockito.when(specieService.getByName("Specie4")).thenReturn(null);
         Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
-        ResponseEntity<Fish> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/species/Specie4/pools/2/fishes", fish,
+        HttpEntity<Fish> httpEntity = new HttpEntity(fish, this.headers);
+        ResponseEntity<Fish> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/species/Specie4/pools/2/fishes", httpEntity,
                 Fish.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -160,7 +187,8 @@ public class FishControllerTest {
     public void addFishPoolNotFound() {
         Mockito.when(poolService.getById(2L)).thenReturn(null);
         Fish fish = new Fish("Lesso", FishGender.HERMAPHRODITE, "buono da fare al forno con le patate", null, null);
-        ResponseEntity<Fish> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/species/Specie1/pools/2/fishes", fish,
+        HttpEntity<Fish> httpEntity = new HttpEntity(fish, this.headers);
+        ResponseEntity<Fish> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/species/Specie1/pools/2/fishes", httpEntity,
                 Fish.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
@@ -184,7 +212,7 @@ public class FishControllerTest {
         Mockito.when(fishService.save(updateP1)).thenReturn(null);
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("gender", "wow");
-        HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters, this.headers);
         ResponseEntity<Fish> response = this.restTemplate.exchange("http://localhost:" + port + "/api/fishes/3", HttpMethod.PUT,
                 updated, Fish.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());

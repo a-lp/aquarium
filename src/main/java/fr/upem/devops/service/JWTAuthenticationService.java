@@ -6,6 +6,8 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -31,8 +33,9 @@ public class JWTAuthenticationService implements UserAuthenticationService {
     @Override
     public User authenticateByToken(String token) {
         try {
-            Object username = jwtService.verify(token).get("username");
-            Object profile = jwtService.verify(token).get("id");
+            Map<String, Object> tokenParameters = jwtService.verify(token);
+            Object username = tokenParameters.get("username");
+            Object profile = tokenParameters.get("id");
             if (profile == null || staffService.getById(Long.parseLong(profile.toString())) == null) {
                 throw new BadCredentialsException("No profile associated!");
             }

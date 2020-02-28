@@ -1,6 +1,8 @@
 package fr.upem.devops.controller;
 
 import fr.upem.devops.model.*;
+import fr.upem.devops.service.JWTAuthenticationService;
+import fr.upem.devops.service.JWTService;
 import fr.upem.devops.service.SpecieService;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,22 +13,26 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.time.Instant;
+import java.util.*;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SpecieControllerTest {
+    private User user;
+    private String token = "tokenTest";
+    private Staff profile;
+    private HashMap<String, Object> tokenParameters = new HashMap<>();
+    private HttpHeaders headers = new HttpHeaders();
+    @MockBean
+    private JWTService jwtService;
+    @MockBean
+    private JWTAuthenticationService authenticationService;
     @MockBean
     private SpecieService specieService;
     @LocalServerPort
@@ -58,6 +64,24 @@ public class SpecieControllerTest {
         Mockito.when(specieService.getByName("Specie1")).thenReturn(s1);
         Mockito.when(specieService.getByName("Specie2")).thenReturn(s2);
         Mockito.when(specieService.getByName("Specie3")).thenReturn(s3);
+        /* Spring Security */
+        this.user = new User();
+        user.setUsername("testUsername");
+        user.setPassword("testPassword");
+        this.profile = new Staff();
+        this.profile.setCredentials(this.user);
+        this.profile.setId(100L);
+        this.profile.setRole(Staff.StaffRole.ADMIN);
+        this.user.setProfile(this.profile);
+        this.tokenParameters.put("iat", new Date().getTime());
+        this.tokenParameters.put("exp", Date.from(Instant.now().plusSeconds(60 * 5000)).getTime());
+        this.tokenParameters.put("username", this.user.getUsername());
+        this.tokenParameters.put("id", this.user.getProfile().getId());
+        this.tokenParameters.put("role", this.user.getProfile().getRole().name());
+        this.headers.add("Authorization", "Bearer " + this.token);
+        Mockito.when(jwtService.create(this.user.getUsername(), this.user.getProfile())).thenReturn(this.token);
+        Mockito.when(jwtService.verify(this.token)).thenReturn(this.tokenParameters);
+        Mockito.when(authenticationService.authenticateByToken("tokenTest")).thenReturn(this.user);
     }
 
     @Test
@@ -83,7 +107,8 @@ public class SpecieControllerTest {
         short lf = 1;
         Specie specie = new Specie("Specie5", lf, lf, Alimentation.OMNIVORE, new HashSet<>());
         Mockito.when(specieService.save(specie)).thenReturn(new Specie(5L, "Specie5", lf, lf, Alimentation.OMNIVORE, new HashSet<>()));
-        Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/api/species", specie,
+        HttpEntity<Specie> httpEntity = new HttpEntity<>(specie, this.headers);
+        Specie request = this.restTemplate.postForObject("http://localhost:" + port + "/api/species", httpEntity,
                 Specie.class);
         assertEquals(request.getId(), Long.valueOf(5l));
         assertEquals(request.getName(), specie.getName());
@@ -106,7 +131,7 @@ public class SpecieControllerTest {
         parameters.put("lifeSpan", specie.getLifeSpan().toString());
         parameters.put("extinctionLevel", specie.getExtinctionLevel().toString());
         parameters.put("alimentation", specie.getAlimentation().name());
-        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters, this.headers);
         HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/species/Specie1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
         assertEquals(specie.getId().toString(), request.get("id").toString());
         assertEquals(specie.getAlimentation().name(), request.get("alimentation"));
@@ -120,7 +145,8 @@ public class SpecieControllerTest {
         specie.setName("SpecieNew");
         Mockito.when(specieService.getByName(specie.getName())).thenReturn(specie);
         Mockito.when(specieService.remove(specie)).thenReturn(specie);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/species/SpecieNew", HttpMethod.DELETE, null, HashMap.class).getBody();
+        HttpEntity<Specie> httpEntity = new HttpEntity<>(null, this.headers);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/species/SpecieNew", HttpMethod.DELETE, httpEntity, HashMap.class).getBody();
         assertEquals(specie.getId().toString(), request.get("id").toString());
         assertEquals(specie.getName(), request.get("name").toString());
     }
@@ -151,7 +177,8 @@ public class SpecieControllerTest {
         Specie specie = this.species.get(0);
         specie.setFishList(new HashSet<>());
         Mockito.when(specieService.getByName(specie.getName())).thenReturn(specie);
-        ResponseEntity<HashMap> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/species", specie,
+        HttpEntity<Specie> httpEntity = new HttpEntity<>(specie, this.headers);
+        ResponseEntity<HashMap> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/species", httpEntity,
                 HashMap.class);
         assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals("Another specie named '" + specie.getName() + "' found!", response.getBody().get("message"));

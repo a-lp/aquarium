@@ -1,9 +1,8 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Sector;
-import fr.upem.devops.model.Staff;
+import fr.upem.devops.model.*;
+import fr.upem.devops.service.JWTAuthenticationService;
+import fr.upem.devops.service.JWTService;
 import fr.upem.devops.service.StaffService;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.time.Instant;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -27,6 +24,15 @@ import static org.junit.Assert.assertEquals;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StaffControllerTest {
+    private User user;
+    private String token = "tokenTest";
+    private Staff profile;
+    private HashMap<String, Object> tokenParameters = new HashMap<>();
+    private HttpHeaders headers = new HttpHeaders();
+    @MockBean
+    private JWTService jwtService;
+    @MockBean
+    private JWTAuthenticationService authenticationService;
     @MockBean
     private StaffService staffService;
     @LocalServerPort
@@ -62,18 +68,38 @@ public class StaffControllerTest {
         Mockito.when(staffService.getById(1l)).thenReturn(s1);
         Mockito.when(staffService.getById(2l)).thenReturn(s2);
         Mockito.when(staffService.getById(3l)).thenReturn(s3);
+        /* Spring Security */
+        this.user = new User();
+        user.setUsername("testUsername");
+        user.setPassword("testPassword");
+        this.profile = new Staff();
+        this.profile.setCredentials(this.user);
+        this.profile.setId(100L);
+        this.profile.setRole(Staff.StaffRole.ADMIN);
+        this.user.setProfile(this.profile);
+        this.tokenParameters.put("iat", new Date().getTime());
+        this.tokenParameters.put("exp", Date.from(Instant.now().plusSeconds(60 * 5000)).getTime());
+        this.tokenParameters.put("username", this.user.getUsername());
+        this.tokenParameters.put("id", this.user.getProfile().getId());
+        this.tokenParameters.put("role", this.user.getProfile().getRole().name());
+        this.headers.add("Authorization", "Bearer " + this.token);
+        Mockito.when(jwtService.create(this.user.getUsername(), this.user.getProfile())).thenReturn(this.token);
+        Mockito.when(jwtService.verify(this.token)).thenReturn(this.tokenParameters);
+        Mockito.when(authenticationService.authenticateByToken("tokenTest")).thenReturn(this.user);
     }
 
     @Test
     public void getAll() {
-        List lista = this.restTemplate.getForObject("http://localhost:" + port + "/api/staff", List.class);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
+        List lista = this.restTemplate.exchange("http://localhost:" + port + "/api/staff", HttpMethod.GET, httpEntity, List.class).getBody();
         assertEquals(3, lista.size());
     }
 
     @Test
     public void getById() {
-        List<HashMap> lista = this.restTemplate.getForObject("http://localhost:" + port + "/api/staff", List.class);
-        HashMap<String, Object> output = this.restTemplate.getForObject("http://localhost:" + port + "/api/staff/1", HashMap.class);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
+        List<HashMap> lista = this.restTemplate.exchange("http://localhost:" + port + "/api/staff", HttpMethod.GET, httpEntity, List.class).getBody();
+        HashMap<String, Object> output = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/1", HttpMethod.GET, httpEntity, HashMap.class).getBody();
         assertEquals(lista.get(0).get("id").toString(), output.get("id").toString());
         assertEquals(lista.get(0).get("name").toString(), output.get("name"));
         assertEquals(lista.get(0).get("surname"), output.get("surname"));
@@ -89,8 +115,8 @@ public class StaffControllerTest {
         Date date = new Date();
         Staff staff = new Staff(4L, "Nome4", "Cognome4", "Address4", date, "SocSec4", Staff.StaffRole.WORKER);
         Mockito.when(staffService.save(staff)).thenReturn(new Staff(4L, "Nome4", "Cognome4", "Address4", date, "SocSec4", Staff.StaffRole.WORKER));
-
-        Staff request = this.restTemplate.postForObject("http://localhost:" + port + "/api/staff", staff,
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(staff, this.headers);
+        Staff request = this.restTemplate.postForObject("http://localhost:" + port + "/api/staff", httpEntity,
                 Staff.class);
         assertEquals(request.getId(), staff.getId());
         assertEquals(request.getName(), staff.getName());
@@ -110,7 +136,7 @@ public class StaffControllerTest {
         staff.setSocialSecurity("New SeocialSec");
         parameters.put("surname", staff.getSurname());
         parameters.put("socialSecurity", staff.getSocialSecurity());
-        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters);
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters, this.headers);
         HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/1", HttpMethod.PUT, httpEntity, HashMap.class).getBody();
         assertEquals(staff.getId().toString(), request.get("id").toString());
         assertEquals(staff.getSurname(), request.get("surname"));
@@ -121,7 +147,8 @@ public class StaffControllerTest {
     public void deleteStaff() {
         Staff staff = this.staffList.get(0);
         Mockito.when(staffService.remove(staff)).thenReturn(staff);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/1", HttpMethod.DELETE, null, HashMap.class).getBody();
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/1", HttpMethod.DELETE, httpEntity, HashMap.class).getBody();
         assertEquals(staff.getId().toString(), request.get("id").toString());
     }
 
@@ -129,13 +156,15 @@ public class StaffControllerTest {
     @Test
     public void getByIdNotFound() {
         Mockito.when(staffService.getById(10L)).thenReturn(null);
-        ResponseEntity<Staff> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/staff/10", Staff.class);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
+        ResponseEntity<Staff> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/10", HttpMethod.GET, httpEntity, Staff.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     public void getByIdBadRequest() {
-        ResponseEntity<Staff> response = this.restTemplate.getForEntity("http://localhost:" + port + "/api/staff/asdf", Staff.class);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
+        ResponseEntity<Staff> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/asdf", HttpMethod.GET, httpEntity, Staff.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
@@ -144,14 +173,14 @@ public class StaffControllerTest {
         Mockito.when(staffService.getById(1L)).thenReturn(this.staffList.get(0));
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("birthday", "ww");
-        HttpEntity<HashMap> updated = new HttpEntity<>(parameters);
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters, this.headers);
         ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("'" + parameters.get("birthday") + "' is not a valid value to be converted in date. Insert a Long representing the time in milliseconds", response.getBody().get("message"));
         parameters.remove("birthday");
         parameters.put("role", "zxcv");
-        updated = new HttpEntity<>(parameters);
+        updated = new HttpEntity<>(parameters, this.headers);
         response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
@@ -166,7 +195,8 @@ public class StaffControllerTest {
         activity.assignStaff(staff);
         staff.assignActivity(activity);
         Mockito.when(staffService.getById(10L)).thenReturn(staff);
-        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/10", HttpMethod.DELETE, null, HashMap.class);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/10", HttpMethod.DELETE, httpEntity, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Activities must have at least one responsible! Removing this staff, will also remove the only one responsible", response.getBody().get("message"));
     }
@@ -180,7 +210,8 @@ public class StaffControllerTest {
         staff.assignSector(sector);
         Mockito.when(staffService.getById(10L)).thenReturn(staff);
         staff.setActivities(new HashSet<>());
-        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/10", HttpMethod.DELETE, null, HashMap.class);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/10", HttpMethod.DELETE, httpEntity, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Sectors must have at least one responsible! Removing this staff, will also remove the only one responsible", response.getBody().get("message"));
     }
