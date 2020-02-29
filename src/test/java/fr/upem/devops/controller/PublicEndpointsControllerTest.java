@@ -1,5 +1,7 @@
 package fr.upem.devops.controller;
 
+import com.fasterxml.jackson.databind.util.ArrayIterator;
+import fr.upem.devops.WebApplication;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.model.User;
 import fr.upem.devops.service.JWTAuthenticationService;
@@ -15,9 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -38,6 +41,10 @@ public class PublicEndpointsControllerTest {
     private JWTAuthenticationService authenticationService;
     @MockBean
     private JWTService jwtService;
+    @MockBean
+    private WebApplication webApplication;
+
+    private HttpHeaders headers = new HttpHeaders();
     private String username;
     private String password;
     private String token;
@@ -71,6 +78,7 @@ public class PublicEndpointsControllerTest {
         userNew.setId(1L);
         userNew.setProfile(staffNew);
         token = jwtService.create(username, staffNew);
+        headers.add("Authorization", "Bearer " + this.token);
         Map<String, Object> result = jwtService.verify(token);
         Mockito.when(staffService.save(staff)).thenReturn(staffNew);
         Mockito.when(userService.save(user)).thenReturn(userNew);
@@ -80,15 +88,42 @@ public class PublicEndpointsControllerTest {
     }
 
     @Test
-    public void register() {
-        ResponseEntity<String> request = this.restTemplate.postForEntity("http://localhost:" + port + "/register", user, String.class);
+    public void registerByStaff() {
+        HttpEntity<User> httpEntity = new HttpEntity(user, this.headers);
+        ResponseEntity<String> request = this.restTemplate.postForEntity("http://localhost:" + port + "/register", httpEntity, String.class);
         assertEquals(token, request.getBody());
     }
 
     @Test
+    public void registerByToken() {
+        Mockito.when(staffService.getByRole(Staff.StaffRole.ADMIN)).thenReturn(new ArrayIterator<>(new Staff[0]));
+        ResponseEntity<String> request = this.restTemplate.postForEntity("http://localhost:" + port + "/register?token=testingOnly", user, String.class);
+        assertEquals(token, request.getBody());
+    }
+
+    @Test
+    public void registerByTokenUnauthorized() {
+        Staff[] staffs = {staff};
+        Mockito.when(staffService.getByRole(Staff.StaffRole.ADMIN)).thenReturn(new ArrayIterator<>(staffs));
+        ResponseEntity<String> request = this.restTemplate.postForEntity("http://localhost:" + port + "/register?token=testingOnly", user, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, request.getStatusCode());
+        assertEquals("Ask the administrator for the registration of a new staff component!", request.getBody());
+    }
+
+    @Test
+    public void registerByBadTokenUnauthorized() {
+        Staff[] staffs = {staff};
+        Mockito.when(staffService.getByRole(Staff.StaffRole.ADMIN)).thenReturn(new ArrayIterator<>(staffs));
+        ResponseEntity<String> request = this.restTemplate.postForEntity("http://localhost:" + port + "/register?token=badToken", user, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, request.getStatusCode());
+        assertEquals("Ask the administrator for the registration of a new staff component!", request.getBody());
+    }
+
+    @Test
     public void registerDuplicate() {
+        HttpEntity<User> httpEntity = new HttpEntity(user, this.headers);
         Mockito.when(userService.getByUsername(user.getUsername())).thenReturn(Optional.of(user));
-        ResponseEntity<String> request = this.restTemplate.postForEntity("http://localhost:" + port + "/register", user, String.class);
+        ResponseEntity<String> request = this.restTemplate.postForEntity("http://localhost:" + port + "/register", httpEntity, String.class);
         assertEquals("Username already in use.", request.getBody());
     }
 
@@ -118,7 +153,7 @@ public class PublicEndpointsControllerTest {
     @Test
     public void loginBadCredentials() {
         Mockito.when(userService.getByUsername(user.getUsername())).thenReturn(Optional.of(user));
-        Mockito.when(authenticationService.login(username, "not correct password")).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND,"Invalid username or password."));
+        Mockito.when(authenticationService.login(username, "not correct password")).thenThrow(new ResponseStatusException(HttpStatus.NOT_FOUND, "Invalid username or password."));
         HashMap<String, String> parameters = new HashMap<>();
         parameters.put("username", username);
         parameters.put("password", "not correct password");

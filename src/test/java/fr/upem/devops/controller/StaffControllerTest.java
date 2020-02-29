@@ -169,11 +169,29 @@ public class StaffControllerTest {
 
     @Test
     public void deleteStaff() {
-        Staff staff = this.staffList.get(0);
+        Staff staff = new Staff(10L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
+        List<Staff> adminList = new ArrayList<>();
+        adminList.add(staff);
+        adminList.add(new Staff(11L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN));
+        Mockito.when(staffService.getById(10L)).thenReturn(staff);
         Mockito.when(staffService.remove(staff)).thenReturn(staff);
+        Mockito.when(staffService.getByRole(Staff.StaffRole.ADMIN)).thenReturn(adminList);
         HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
-        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/1", HttpMethod.DELETE, httpEntity, HashMap.class).getBody();
+        HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/10", HttpMethod.DELETE, httpEntity, HashMap.class).getBody();
         assertEquals(staff.getId().toString(), request.get("id").toString());
+    }
+    @Test
+    public void deleteLastStaffBadRequest() {
+        Staff staff = new Staff(10L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
+        List<Staff> adminList = new ArrayList<>();
+        adminList.add(staff);
+        Mockito.when(staffService.getById(10L)).thenReturn(staff);
+        Mockito.when(staffService.remove(staff)).thenReturn(staff);
+        Mockito.when(staffService.getByRole(Staff.StaffRole.ADMIN)).thenReturn(adminList);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/10", HttpMethod.DELETE, httpEntity, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("There must be at least one ADMIN! Removing this one, will remove all the admins from the database.", response.getBody().get("message"));
     }
 
 
@@ -238,6 +256,20 @@ public class StaffControllerTest {
         ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/10", HttpMethod.DELETE, httpEntity, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Sectors must have at least one responsible! Removing this staff, will also remove the only one responsible", response.getBody().get("message"));
+    }
+
+    @Test
+    public void deleteStaffWithPoolsBadRequest() {
+        Staff staff = new Staff();
+        staff.setId(10L);
+        Pool p1 = new Pool(1L, 10L, 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+        staff.assignPool(p1);
+        Mockito.when(staffService.getById(10L)).thenReturn(staff);
+        staff.setActivities(new HashSet<>());
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(null, this.headers);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/staff/10", HttpMethod.DELETE, httpEntity, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Pools must have at least one responsible! Removing this staff, will also remove the only one responsible", response.getBody().get("message"));
     }
 
     @Test

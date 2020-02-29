@@ -30,7 +30,6 @@ public class PublicEndpointsController {
     @PostMapping("/register")
     public Object register(@RequestBody User user, @RequestParam(value = "token", required = false) String token, @RequestHeader(value = "Authorization", required = false) String staffToken) {
         // Missing staff token
-        System.out.println(staffToken);
         if (staffToken != null) {
             try {
                 jwtService.verify(staffToken.replace("Bearer", "").trim());
@@ -40,7 +39,11 @@ public class PublicEndpointsController {
         }
         // Missing firstGenerationToken
         else {
-            if (!firstGenerationToken.equals(token)) {
+            int size = 0;
+            for (Staff s : staffService.getByRole(Staff.StaffRole.ADMIN)) {
+                size++;
+            }
+            if (!firstGenerationToken.equals(token) || size > 0) {
                 return ResponseEntity.status(UNAUTHORIZED).body("Ask the administrator for the registration of a new staff component!");
             } else {
                 firstGenerationToken = null;

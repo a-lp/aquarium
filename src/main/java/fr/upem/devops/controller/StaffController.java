@@ -131,8 +131,9 @@ public class StaffController {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sectors must have at least one responsible! Removing this staff, will also remove the only one responsible");
             sector.removeStaff(staff);
         }
-        if (staff.getPoolsResponsabilities().size() > 0)
+        if (staff.getPoolsResponsabilities().size() > 0) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pools must have at least one responsible! Removing this staff, will also remove the only one responsible");
+        }
         return service.remove(staff);
     }
 

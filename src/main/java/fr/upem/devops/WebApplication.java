@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @SpringBootApplication
 public class WebApplication {
-    public static String firstGenerationToken;
+    public static String firstGenerationToken = "testingOnly";
 
     public static void main(String[] args) {
         firstGenerationToken = UUID.randomUUID().toString();
