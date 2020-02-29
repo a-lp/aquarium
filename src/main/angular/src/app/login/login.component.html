@@ -11,6 +11,9 @@
   </form>
   <form *ngIf="isRegistration()" [formGroup]="form">
     <div>
+      <label>Token: <input type="text" formControlName="token"></label>
+    </div>
+    <div>
       <label>Name: <input type="text" formControlName="name"></label>
     </div>
     <div>
@@ -35,7 +38,7 @@
     </div>
   </form>
   <div class="buttons">
-    <button (click)="login()" [disabled]="!formLogin.valid">Login</button>
-    <button id="register" (click)="register()">Register</button>
+    <button *ngIf="!isRegistration()" (click)="login()" [disabled]="!formLogin.valid">Login</button>
+    <button id="register" (click)="register()">{{isRegistration()?'Login':'Register'}}</button>
   </div>
 </div>

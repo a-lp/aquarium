@@ -45,7 +45,7 @@ export class StaffsCreatorComponent implements OnInit {
   }
 
   save() {
-    this.authenticationService.registerRequest(this.form.value).subscribe(
+    this.authenticationService.registerRequest(this.form.value, null).subscribe(
       token => {
         this.refresh();
         this.form.reset();

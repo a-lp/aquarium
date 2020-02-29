@@ -67,9 +67,19 @@ export class AuthenticationService {
     return this.http.post('/login', parameters, {headers: head, responseType: 'text'});
   }
 
-  registerRequest(parameters: any): Observable<any> {
-    const head = new HttpHeaders().set('Content-Type', 'application/json');
-    return this.http.post('/register', parameters, {headers: head, responseType: 'text'});
+  registerRequest(parameters: any, registrationToken: string): Observable<any> {
+    let head = new HttpHeaders().set('Content-Type', 'application/json');
+    let path: string;
+    if (registrationToken == null) {
+      head = head.set('Authorization', 'Bearer ' + this.token);
+      path = '/register';
+    } else {
+      path = '/register?token=' + registrationToken;
+    }
+    return this.http.post(path, parameters, {
+      headers: head,
+      responseType: 'text'
+    });
   }
 
   getRequest(path: string): Observable<any> {

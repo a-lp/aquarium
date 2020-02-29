@@ -113,6 +113,14 @@ public class StaffController {
         if (!checkRole(token, Staff.StaffRole.ADMIN))
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins can delete staffs!");
         Staff staff = getById(id);
+        if (Staff.StaffRole.ADMIN.equals(staff.getRole())) {
+            int size = 0;
+            for (Staff s : getByRole(Staff.StaffRole.ADMIN.name())) {
+                size++;
+            }
+            if (size == 1)
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "There must be at least one ADMIN! Removing this one, will remove all the admins from the database.");
+        }
         for (PoolActivity activity : staff.getActivities()) {
             if (activity.getStaffList().size() == 1)
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Activities must have at least one responsible! Removing this staff, will also remove the only one responsible");
@@ -123,6 +131,8 @@ public class StaffController {
                 throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Sectors must have at least one responsible! Removing this staff, will also remove the only one responsible");
             sector.removeStaff(staff);
         }
+        if (staff.getPoolsResponsabilities().size() > 0)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Pools must have at least one responsible! Removing this staff, will also remove the only one responsible");
         return service.remove(staff);
     }
 

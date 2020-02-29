@@ -2,19 +2,15 @@ package fr.upem.devops.controller;
 
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.model.User;
-import fr.upem.devops.service.StaffService;
-import fr.upem.devops.service.UserAuthenticationService;
-import fr.upem.devops.service.UserRegistrationService;
-import fr.upem.devops.service.UserService;
+import fr.upem.devops.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
+import static fr.upem.devops.WebApplication.firstGenerationToken;
 import static org.springframework.http.HttpStatus.UNAUTHORIZED;
 
 @RestController
@@ -27,10 +23,29 @@ public class PublicEndpointsController {
     private UserAuthenticationService authenticationService;
     @Autowired
     private StaffService staffService;
+    @Autowired
+    private JWTService jwtService;
 
 
     @PostMapping("/register")
-    public Object register(@RequestBody User user) {
+    public Object register(@RequestBody User user, @RequestParam(value = "token", required = false) String token, @RequestHeader(value = "Authorization", required = false) String staffToken) {
+        // Missing staff token
+        System.out.println(staffToken);
+        if (staffToken != null) {
+            try {
+                jwtService.verify(staffToken.replace("Bearer", "").trim());
+            } catch (TokenVerificationException e) {
+                return ResponseEntity.status(UNAUTHORIZED).body("Ask the administrator for the correct token!");
+            }
+        }
+        // Missing firstGenerationToken
+        else {
+            if (!firstGenerationToken.equals(token)) {
+                return ResponseEntity.status(UNAUTHORIZED).body("Ask the administrator for the registration of a new staff component!");
+            } else {
+                firstGenerationToken = null;
+            }
+        }
         try {
             userService.getByUsername(user.getUsername())
                     .ifPresent(u -> {

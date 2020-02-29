@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from '../service/authentication.service';
 import {StaffRole} from '../model/StaffRole';
-import {StaffService} from "../service/staff.service";
+import {StaffService} from '../service/staff.service';
 
 @Component({
   selector: 'app-login',
@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
     password: new FormControl('', Validators.required)
   });
   form = new FormGroup({
+    token: new FormControl('', Validators.required),
     name: new FormControl('', Validators.required),
     surname: new FormControl('', Validators.required),
     address: new FormControl('', Validators.required),
@@ -36,7 +37,11 @@ export class LoginComponent implements OnInit {
   }
 
   login() {
-    this.authenticationService.loginRequest(this.formLogin.value).subscribe(
+    const credentials = Object.assign({}, {
+      username: this.formLogin.value.username,
+      password: this.formLogin.value.password,
+    })
+    this.authenticationService.loginRequest(credentials).subscribe(
       token => this.authenticationService.login(token),
       error => {
         this.error = error.error;
@@ -45,7 +50,7 @@ export class LoginComponent implements OnInit {
   }
 
   register() {
-    this.registration = true;
+    this.registration = !this.registration;
   }
 
   isRegistration() {
@@ -60,10 +65,16 @@ export class LoginComponent implements OnInit {
   }
 
   save() {
+    const firstToken = this.form.value.token;
+    delete this.form.value.token;
     this.formLogin.addControl('profile', this.form);
-    this.authenticationService.registerRequest(this.formLogin.value).subscribe(
+    console.log(this.formLogin.value);
+    this.authenticationService.registerRequest(this.formLogin.value, firstToken).subscribe(
       token => this.authenticationService.login(token),
-      error => this.error = error.error
+      error => {
+        console.log(error);
+        this.error = error.error;
+      }
     );
   }
 }
