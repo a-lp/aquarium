@@ -3,7 +3,7 @@
                     (onChange)="onSavePool($event)" (onError)="this.onError.emit($event)"></app-pool-creator>
 </div>
 <div *ngIf="this.pool==null">
-  <form [formGroup]="form">
+  <form *ngIf="this.authenticationService.isAdmin()" [formGroup]="form">
     <table>
       <thead>
       <tr>

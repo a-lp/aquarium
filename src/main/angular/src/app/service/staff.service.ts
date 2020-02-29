@@ -48,4 +48,8 @@ export class StaffService {
   getByRole(role: StaffRole) {
     return this.authenticationService.getRequest('/api/staff/role/' + role);
   }
+
+  getBySchedulesFromPoolSector(id: number) {
+    return this.authenticationService.getRequest('/api/schedules/' + id + '/staff');
+  }
 }

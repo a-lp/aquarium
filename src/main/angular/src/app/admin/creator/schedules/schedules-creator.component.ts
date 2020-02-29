@@ -5,6 +5,7 @@ import {Pool} from '../../../model/Pool';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {PoolService} from '../../../service/pool.service';
 
+
 @Component({
   selector: 'app-schedules-creator',
   templateUrl: './schedules-creator.component.html',
@@ -61,5 +62,9 @@ export class SchedulesCreatorComponent implements OnInit {
     const today = new Date();
     return (today.getFullYear() + '-' + ((today.getMonth() + 1) < 10 ? '0' + (today.getMonth() + 1) : today.getMonth() + 1) +
       '-' + (today.getDate() < 10 ? '0' + today.getDate() : today.getDate()));
+  }
+
+  isValid() {
+    return !(this.form.valid && this.form.value.startPeriod <= this.form.value.endPeriod);
   }
 }

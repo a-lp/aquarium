@@ -6,7 +6,6 @@ import {ActivityService} from '../../../service/activity.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ScheduleService} from '../../../service/schedule.service';
 import {StaffService} from '../../../service/staff.service';
-import {StaffRole} from '../../../model/StaffRole';
 import {AuthenticationService} from "../../../service/authentication.service";
 
 @Component({
@@ -28,12 +27,26 @@ export class ActivitiesCreatorComponent implements OnInit {
     endActivity: new FormControl('', Validators.required),
     openToPublic: new FormControl(false),
     repeated: new FormControl(false),
-    schedule: new FormControl('', Validators.required),
+    schedule: new FormControl(null, Validators.required),
     staffList: new FormControl('')
   });
 
+  timeValidator(start: FormControl) {
+    return start.value < this.form.value.endActivity;
+  }
+
   constructor(private activityService: ActivityService, private scheduleService: ScheduleService,
               private staffService: StaffService, private authenticationService: AuthenticationService) {
+    this.form.valueChanges.subscribe(changes => {
+        if (this.form.value.schedule != null) {
+          this.staffService.getBySchedulesFromPoolSector(this.form.value.schedule).subscribe(data => {
+            if (data != null) {
+              this.staffs = data;
+            }
+          }, error => this.onError.emit(error.error.message));
+        }
+      }
+    );
   }
 
   ngOnInit() {
@@ -51,11 +64,7 @@ export class ActivitiesCreatorComponent implements OnInit {
         this.schedules = data;
       }
     }, error => this.onError.emit(error.error.message));
-    this.staffService.getAll().subscribe(data => {
-      if (data != null) {
-        this.staffs = data.filter(staff => staff.role == StaffRole.WORKER);
-      }
-    }, error => this.onError.emit(error.error.message));
+
   }
 
   removeActivity(activity: PoolActivity) {
@@ -69,13 +78,14 @@ export class ActivitiesCreatorComponent implements OnInit {
     this.activityService.save(this.form.value).subscribe(activity => {
         if (activity != null) {
           this.form.reset();
+          this.refresh();
         }
       }, error => this.onError.emit(error.error.message)
     );
   }
 
   isDisabled() {
-    return !(this.form.valid && this.selectedStaff.length > 0);
+    return !(this.form.valid && this.selectedStaff.length > 0) || (this.form.value.startActivity >= this.form.value.endActivity);
   }
 
   selectStaff(staff: Staff) {

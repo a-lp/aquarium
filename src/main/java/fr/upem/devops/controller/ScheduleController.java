@@ -1,10 +1,9 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Schedule;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.ScheduleService;
+import fr.upem.devops.service.SectorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +19,8 @@ public class ScheduleController {
     private ScheduleService service;
     @Autowired
     private PoolService poolService;
+    @Autowired
+    private SectorService sectorService;
 
     @GetMapping("/api/schedules")
     public Iterable<Schedule> getAll() {
@@ -43,6 +44,14 @@ public class ScheduleController {
     public Set<PoolActivity> getActivities(@PathVariable String id) {
         Schedule schedule = getById(id);
         return schedule.getScheduledActivities();
+    }
+
+    @GetMapping("/api/schedules/{id}/staff")
+    public Set<Staff> getStaffBySectorFromPool(@PathVariable String id){
+        Schedule schedule = getById(id);
+        Pool pool = poolService.getById(schedule.getPool().getId());
+        Sector sector = sectorService.getByName(pool.getSector().getName());
+        return sector.getStaffList();
     }
 
     @PostMapping("/api/pools/{poolId}/schedules")

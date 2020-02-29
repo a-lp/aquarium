@@ -20,7 +20,7 @@
           <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
         </select></th>
         <th>
-          <button (click)="save()" [disabled]="!form.valid">Save</button>
+          <button (click)="save()" [disabled]="isValid()">Save</button>
         </th>
       </tr>
       </tbody>

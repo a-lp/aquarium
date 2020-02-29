@@ -7,6 +7,7 @@ import {PoolService} from '../../../service/pool.service';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {StaffService} from '../../../service/staff.service';
 import {StaffRole} from '../../../model/StaffRole';
+import {AuthenticationService} from '../../../service/authentication.service';
 
 @Component({
   selector: 'app-sectors-creator',
@@ -29,7 +30,8 @@ export class SectorsCreatorComponent implements OnInit {
   selectedStaff: Array<Staff> = [];
 
 
-  constructor(private sectorService: SectorService, private poolService: PoolService, private staffService: StaffService) {
+  constructor(private sectorService: SectorService, private poolService: PoolService,
+              private staffService: StaffService, private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -54,7 +56,7 @@ export class SectorsCreatorComponent implements OnInit {
     this.staffService.getAll().subscribe(
       data => {
         if (data != null) {
-          this.staffs = data.filter(staff => staff.role === StaffRole.MANAGER);
+          this.staffs = data.filter(staff => staff.role !== StaffRole.ADMIN);
         }
       }, error => this.onError.emit(error.error.message)
     );

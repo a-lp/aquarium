@@ -1,5 +1,5 @@
 <div *ngIf="this.sector==null">
-  <form [formGroup]="form">
+  <form *ngIf="this.authenticationService.isAdmin()" [formGroup]="form">
     <div class="single-choice">
       <div>
         <label>Sector Name: </label><input type="text" formControlName="name">
