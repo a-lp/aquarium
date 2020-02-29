@@ -39,6 +39,9 @@ public class PublicEndpointsController {
         }
         // Missing firstGenerationToken
         else {
+            if (firstGenerationToken == null) {
+                return ResponseEntity.status(UNAUTHORIZED).body("Ask the administrator for the registration of a new staff component!");
+            }
             int size = 0;
             for (Staff s : staffService.getByRole(Staff.StaffRole.ADMIN)) {
                 size++;
