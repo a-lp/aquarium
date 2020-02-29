@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {AuthenticationService} from '../service/authentication.service';
 import {StaffRole} from '../model/StaffRole';
+import {StaffService} from "../service/staff.service";
 
 @Component({
   selector: 'app-login',
@@ -25,7 +26,7 @@ export class LoginComponent implements OnInit {
   });
   roles: Array<StaffRole> = Object.values(StaffRole);
 
-  constructor(private authenticationService: AuthenticationService) {
+  constructor(private authenticationService: AuthenticationService, private staffService: StaffService) {
   }
 
   ngOnInit() {

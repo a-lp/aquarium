@@ -28,11 +28,13 @@ public class PoolControllerTest {
     private Staff profileAdmin;
     private HttpHeaders headersAdmin = new HttpHeaders();
     private HashMap<String, Object> tokenAdminParameters = new HashMap<>();
+
     private User userManager;
     private String tokenManager = "tokenManagerTest";
     private Staff profileManager;
     private HttpHeaders headersManager = new HttpHeaders();
     private HashMap<String, Object> tokenManagerParameters = new HashMap<>();
+
     private User userWorker;
     private String tokenWorker = "tokenWorkerTest";
     private Staff profileWorker;

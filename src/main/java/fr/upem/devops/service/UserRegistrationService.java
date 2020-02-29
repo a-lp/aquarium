@@ -17,11 +17,6 @@ public class UserRegistrationService {
     private UserAuthenticationService authenticationService;
 
     public String register(String username, String password, Staff profile) throws IllegalArgumentException {
-        userService.getByUsername(username)
-                .ifPresent(u -> {
-                    throw new IllegalArgumentException("Username already in use.");
-                });
-
         User user = new User();
         user.setUsername(username);
         user.setPassword(user.hashPassword(password));

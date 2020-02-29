@@ -5,6 +5,7 @@ import fr.upem.devops.model.User;
 import fr.upem.devops.service.StaffService;
 import fr.upem.devops.service.UserAuthenticationService;
 import fr.upem.devops.service.UserRegistrationService;
+import fr.upem.devops.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -21,6 +22,8 @@ public class PublicEndpointsController {
     @Autowired
     private UserRegistrationService registrationService;
     @Autowired
+    private UserService userService;
+    @Autowired
     private UserAuthenticationService authenticationService;
     @Autowired
     private StaffService staffService;
@@ -28,8 +31,12 @@ public class PublicEndpointsController {
 
     @PostMapping("/register")
     public Object register(@RequestBody User user) {
-        Staff profile = staffService.save(user.getProfile());
         try {
+            userService.getByUsername(user.getUsername())
+                    .ifPresent(u -> {
+                        throw new IllegalArgumentException("Username already in use.");
+                    });
+            Staff profile = staffService.save(user.getProfile());
             return registrationService
                     .register(user.getUsername(), user.getPassword(), profile);
         } catch (Exception e) {

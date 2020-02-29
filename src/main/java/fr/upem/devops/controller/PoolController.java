@@ -110,7 +110,7 @@ public class PoolController {
     @DeleteMapping("/api/pools/{id}")
     public Pool deletePool(@PathVariable String id, @RequestHeader("Authorization") String token) {
         if (!checkRole(token, Staff.StaffRole.ADMIN))
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins can add new pools!");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins can delete pools!");
         Pool pool = getById(id);
         if (!pool.getFishes().isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Impossible to delete the pool! Fishes assigned to pool '" + pool.getId() + "' must be moved to another pool before removing!");

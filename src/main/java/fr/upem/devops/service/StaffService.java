@@ -45,6 +45,7 @@ public class StaffService {
         return staff;
     }
 
+    //TODO: TO REMOVE
     public Iterable<User> getProfiles() {
         return userRepository.findAll();
     }

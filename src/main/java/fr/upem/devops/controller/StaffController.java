@@ -4,6 +4,7 @@ import fr.upem.devops.model.PoolActivity;
 import fr.upem.devops.model.Sector;
 import fr.upem.devops.model.Staff;
 import fr.upem.devops.model.User;
+import fr.upem.devops.service.JWTService;
 import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,8 @@ import java.util.Set;
 public class StaffController {
     @Autowired
     private StaffService service;
+    @Autowired
+    private JWTService jwtService;
 
     @GetMapping("/api/staff")
     public Iterable<Staff> getAll() {
@@ -39,6 +42,7 @@ public class StaffController {
         return staff;
     }
 
+    //TODO: to remove
     @GetMapping("/api/staff/profiles")
     public Iterable<User> profiles() {
         return service.getProfiles();
@@ -64,13 +68,18 @@ public class StaffController {
     @PostMapping("/api/staff")
     @ResponseStatus(HttpStatus.CREATED)
     @ResponseBody
-    public Staff addStaff(@RequestBody Staff staff) {
+    public Staff addStaff(@RequestBody Staff staff, @RequestHeader("Authorization") String token) {
+        if (!checkRole(token, Staff.StaffRole.ADMIN))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins can save new staff!");
+
         return service.save(staff);
     }
 
     @PutMapping("/api/staff/{id}")
     @ResponseBody
-    public Staff updateStaff(@PathVariable String id, @RequestBody Map<String, String> parameters) {
+    public Staff updateStaff(@PathVariable String id, @RequestBody Map<String, String> parameters, @RequestHeader("Authorization") String token) {
+        if (!checkRole(token, Staff.StaffRole.ADMIN))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins can update other staffs!");
         Staff p = getById(id);
 
         if (parameters.containsKey("name"))
@@ -100,7 +109,9 @@ public class StaffController {
     }
 
     @DeleteMapping("/api/staff/{id}")
-    public Staff deleteStaff(@PathVariable String id) {
+    public Staff deleteStaff(@PathVariable String id, @RequestHeader("Authorization") String token) {
+        if (!checkRole(token, Staff.StaffRole.ADMIN))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Only admins can delete staffs!");
         Staff staff = getById(id);
         for (PoolActivity activity : staff.getActivities()) {
             if (activity.getStaffList().size() == 1)
@@ -113,6 +124,11 @@ public class StaffController {
             sector.removeStaff(staff);
         }
         return service.remove(staff);
+    }
+
+    private boolean checkRole(String token, Staff.StaffRole role) {
+        token = token.replace("Bearer", "").trim();
+        return Staff.StaffRole.valueOf((String) jwtService.verify(token).get("role")).equals(role);
     }
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST, reason = "Error during conversione of the input request!")

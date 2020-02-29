@@ -4,7 +4,6 @@ import fr.upem.devops.model.*;
 import fr.upem.devops.service.JWTAuthenticationService;
 import fr.upem.devops.service.JWTService;
 import fr.upem.devops.service.StaffService;
-import fr.upem.devops.service.TokenVerificationException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +30,11 @@ public class StaffControllerTest {
     private Staff profile;
     private HashMap<String, Object> tokenParameters = new HashMap<>();
     private HttpHeaders headers = new HttpHeaders();
+    private User userManager;
+    private String tokenManager = "tokenManagerTest";
+    private Staff profileManager;
+    private HttpHeaders headersManager = new HttpHeaders();
+    private HashMap<String, Object> tokenManagerParameters = new HashMap<>();
     @MockBean
     private JWTService jwtService;
     @MockBean
@@ -88,6 +92,24 @@ public class StaffControllerTest {
         Mockito.when(jwtService.create(this.user.getUsername(), this.user.getProfile())).thenReturn(this.token);
         Mockito.when(jwtService.verify(this.token)).thenReturn(this.tokenParameters);
         Mockito.when(authenticationService.authenticateByToken("tokenTest")).thenReturn(this.user);
+        userManager = new User();
+        userManager.setUsername("userManager");
+        userManager.setPassword("userManager");
+        profileManager = new Staff();
+        profileManager.setCredentials(userManager);
+        profileManager.setId(101L);
+        profileManager.setRole(Staff.StaffRole.MANAGER);
+        userManager.setProfile(profileManager);
+        tokenManagerParameters = new HashMap<>();
+        tokenManagerParameters.put("iat", new Date().getTime());
+        tokenManagerParameters.put("exp", Date.from(Instant.now().plusSeconds(60 * 5000)).getTime());
+        tokenManagerParameters.put("username", userManager.getUsername());
+        tokenManagerParameters.put("id", userManager.getProfile().getId());
+        tokenManagerParameters.put("role", userManager.getProfile().getRole().name());
+        headersManager.add("Authorization", "Bearer " + tokenManager);
+        Mockito.when(jwtService.create(userManager.getUsername(), userManager.getProfile())).thenReturn(tokenManager);
+        Mockito.when(jwtService.verify(tokenManager)).thenReturn(tokenManagerParameters);
+        Mockito.when(authenticationService.authenticateByToken(tokenManager)).thenReturn(userManager);
     }
 
     @Test
@@ -237,6 +259,7 @@ public class StaffControllerTest {
         ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/staff", httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+
     @Test
     public void invalidTokenPut() {
         Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
@@ -247,6 +270,7 @@ public class StaffControllerTest {
                 .exchange("http://localhost:" + port + "/api/staff/3", HttpMethod.PUT, httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+
     @Test
     public void invalidTokenDelete() {
         Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
@@ -255,6 +279,35 @@ public class StaffControllerTest {
         HttpEntity<Staff> httpEntity = new HttpEntity<>(new Staff(), corruptedHeader);
         ResponseEntity<String> response = this.restTemplate
                 .exchange("http://localhost:" + port + "/api/staff/3", HttpMethod.DELETE, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    public void invalidRoleAdd() {
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer " + this.tokenManager);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(new Staff(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/staff", httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    public void invalidRoleDelete() {
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer " + this.tokenManager);
+        HttpEntity<Staff> httpEntity = new HttpEntity<>(new Staff(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/staff/3", HttpMethod.DELETE, httpEntity, String.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
+    }
+
+    @Test
+    public void invalidRolePut() {
+        HttpHeaders corruptedHeader = new HttpHeaders();
+        corruptedHeader.add("Authorization", "Bearer " + this.tokenManager);
+        HttpEntity<HashMap<String, String>> httpEntity = new HttpEntity<>(new HashMap<>(), corruptedHeader);
+        ResponseEntity<String> response = this.restTemplate
+                .exchange("http://localhost:" + port + "/api/staff/3", HttpMethod.PUT, httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
 }
