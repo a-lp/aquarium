@@ -19,7 +19,7 @@
           <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
         </select>
           <div>
-            <button (click)="update()" [disabled]="!form.valid">Update</button>
+            <button (click)="update()" [disabled]="isValid()">Update</button>
           </div>
         </div>
       </div>

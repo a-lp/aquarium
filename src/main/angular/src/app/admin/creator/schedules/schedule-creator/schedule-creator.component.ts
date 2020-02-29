@@ -64,4 +64,9 @@ export class ScheduleCreatorComponent implements OnInit {
       }, error => this.onError.emit(error)
     );
   }
+
+
+  isValid() {
+    return !(this.form.valid && this.form.value.startPeriod <= this.form.value.endPeriod);
+  }
 }

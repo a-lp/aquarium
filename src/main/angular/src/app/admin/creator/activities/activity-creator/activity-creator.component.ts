@@ -65,7 +65,7 @@ export class ActivityCreatorComponent implements OnInit {
   }
 
   isDisabled() {
-    return !(this.form.valid && this.selectedStaff.length > 0);
+    return !(this.form.valid && this.selectedStaff.length > 0) || (this.form.value.startActivity >= this.form.value.endActivity);
   }
 
   isIncluded(i: Staff) {
