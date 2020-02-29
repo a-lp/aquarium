@@ -35,7 +35,7 @@ export class SpeciesCreatorComponent implements OnInit, OnChanges {
         if (data != null) {
           this.species = data;
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 
@@ -52,7 +52,7 @@ export class SpeciesCreatorComponent implements OnInit, OnChanges {
       removedSpecie => {
         this.refresh();
       }, error => {
-        this.onError.emit(error);
+        this.onError.emit(error.error.message);
       }
     );
   }
@@ -63,7 +63,7 @@ export class SpeciesCreatorComponent implements OnInit, OnChanges {
         this.form.reset();
         this.refresh();
       }
-    }, error => this.onError.emit(error));
+    }, error => this.onError.emit(error.error.message));
   }
 
   ngOnChanges(changes: SimpleChanges): void {

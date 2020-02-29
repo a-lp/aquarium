@@ -3,6 +3,8 @@
     <table>
       <thead>
       <tr>
+        <th>Username</th>
+        <th>Password</th>
         <th>Name</th>
         <th>Surname</th>
         <th>Address</th>
@@ -14,12 +16,14 @@
       </thead>
       <tbody>
       <tr>
-        <th><input type="text" formControlName="name"></th>
-        <th><input type="text" formControlName="surname"></th>
-        <th><input type="text" formControlName="address"></th>
-        <th><input type="date" [max]="today()" formControlName="birthday"></th>
-        <th><input type="text" formControlName="socialSecurity"></th>
-        <th><select formControlName="role">
+        <th><input type="text" formControlName="username"/></th>
+        <th><input type="text" formControlName="password"/></th>
+        <th formGroupName="profile"><input type="text" formControlName="name"></th>
+        <th formGroupName="profile"><input type="text" formControlName="surname"></th>
+        <th formGroupName="profile"><input type="text" formControlName="address"></th>
+        <th formGroupName="profile"><input type="date" [max]="today()" formControlName="birthday"></th>
+        <th formGroupName="profile"><input type="text" formControlName="socialSecurity"></th>
+        <th formGroupName="profile"><select formControlName="role">
           <option *ngFor="let i of roles" [value]="i">{{i}}</option>
         </select></th>
         <th>
@@ -29,10 +33,10 @@
       </tbody>
     </table>
   </form>
-  <app-staff-list (onError)="this.onError.emit($event)" [staffs]="staffs" (onChange)="refresh();"
+  <app-staff-list (onError)="this.onError.emit($event.error.message)" [staffs]="staffs" (onChange)="refresh();"
                   (onSelect)="this.staff=$event"></app-staff-list>
 </div>
 <div *ngIf="staff!=null">
   <app-staff-creator [staff]="this.staff" (onHide)="this.staff=null;"
-                     (onChange)="refresh();" (onError)="this.onError.emit($event)"></app-staff-creator>
+                     (onChange)="refresh();" (onError)="this.onError.emit($event.error.message)"></app-staff-creator>
 </div>

@@ -51,21 +51,21 @@ export class PoolsCreatorComponent implements OnInit {
         if (data != null) {
           this.pools = data;
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
     this.sectorService.getAll().subscribe(
       data => {
         if (data != null) {
           this.sectors = data;
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
     this.staffService.getByRole(StaffRole.MANAGER).subscribe(
       data => {
         if (data != null) {
           this.staffs = data;
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 
@@ -76,7 +76,7 @@ export class PoolsCreatorComponent implements OnInit {
           this.form.reset();
           this.refresh();
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 
@@ -89,7 +89,7 @@ export class PoolsCreatorComponent implements OnInit {
             if (this.filters.value[key] != '')
               this.pools = this.pools.filter(x => x[key] == this.filters.value[key]);
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
 
   }
@@ -101,7 +101,7 @@ export class PoolsCreatorComponent implements OnInit {
         if (data != null) {
           this.pools = data;
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 

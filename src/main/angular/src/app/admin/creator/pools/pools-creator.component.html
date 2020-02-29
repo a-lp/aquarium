@@ -53,5 +53,5 @@
     </div>
   </form>
   <app-pool-list [pools]="pools" (onChange)="refresh()" (onSelect)="this.pool = $event"
-                 (onError)="this.onError.emit($event)"></app-pool-list>
+                 (onError)="this.onError.emit($event.error.message)"></app-pool-list>
 </div>

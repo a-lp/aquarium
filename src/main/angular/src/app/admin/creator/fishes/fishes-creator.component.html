@@ -1,6 +1,6 @@
 <div *ngIf="fish!=null">
   <app-fish-creator [fish]="this.fish" [species]="species" [pools]="pools" (onSave)="onChangeFish($event)"
-                    (onHide)="this.fish=null;" (onError)="this.onError.emit($event)"></app-fish-creator>
+                    (onHide)="this.fish=null;" (onError)="this.onError.emit($event.error.message)"></app-fish-creator>
 </div>
 <div *ngIf="fish==null">
   <form [formGroup]="form">
@@ -36,5 +36,5 @@
     </table>
   </form>
   <app-fish-list [fishes]="fishes" (onSelection)="this.fish=$event" (onChange)="onChangeFish(null)"
-                 (onError)="this.onError.emit($event)"></app-fish-list>
+                 (onError)="this.onError.emit($event.error.message)"></app-fish-list>
 </div>

@@ -45,23 +45,23 @@ export class ActivitiesCreatorComponent implements OnInit {
       if (data != null) {
         this.activities = data;
       }
-    }, error => this.onError.emit(error));
+    }, error => this.onError.emit(error.error.message));
     this.scheduleService.getAll().subscribe(data => {
       if (data != null) {
         this.schedules = data;
       }
-    }, error => this.onError.emit(error));
+    }, error => this.onError.emit(error.error.message));
     this.staffService.getAll().subscribe(data => {
       if (data != null) {
         this.staffs = data.filter(staff => staff.role == StaffRole.WORKER);
       }
-    }, error => this.onError.emit(error));
+    }, error => this.onError.emit(error.error.message));
   }
 
   removeActivity(activity: PoolActivity) {
     this.activityService.delete(activity).subscribe(removedActivity => {
       this.refresh();
-    }, error => this.onError.emit(error));
+    }, error => this.onError.emit(error.error.message));
   }
 
   save() {
@@ -70,7 +70,7 @@ export class ActivitiesCreatorComponent implements OnInit {
         if (activity != null) {
           this.form.reset();
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 

@@ -42,21 +42,21 @@ export class SectorsCreatorComponent implements OnInit {
         if (data != null) {
           this.sectors = data;
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
     this.poolService.getAll().subscribe(
       data => {
         if (data != null) {
           this.pools = data;
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
     this.staffService.getAll().subscribe(
       data => {
         if (data != null) {
           this.staffs = data.filter(staff => staff.role === StaffRole.MANAGER);
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 
@@ -64,7 +64,7 @@ export class SectorsCreatorComponent implements OnInit {
     this.sectorService.delete(sector).subscribe(
       removedSector => {
         this.refresh();
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 
@@ -76,7 +76,7 @@ export class SectorsCreatorComponent implements OnInit {
           this.form.reset();
           this.selectedStaff = [];
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 

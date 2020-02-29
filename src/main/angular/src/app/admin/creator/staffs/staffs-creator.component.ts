@@ -3,6 +3,7 @@ import {StaffService} from '../../../service/staff.service';
 import {Staff} from '../../../model/Staff';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {StaffRole} from '../../../model/StaffRole';
+import {AuthenticationService} from "../../../service/authentication.service";
 
 @Component({
   selector: 'app-staffs-creator',
@@ -12,18 +13,23 @@ import {StaffRole} from '../../../model/StaffRole';
 export class StaffsCreatorComponent implements OnInit {
   staffs: Array<Staff> = [];
   staff: Staff = null;
+
   form = new FormGroup({
-    name: new FormControl('', Validators.required),
-    surname: new FormControl('', Validators.required),
-    address: new FormControl('', Validators.required),
-    birthday: new FormControl('', Validators.required),
-    socialSecurity: new FormControl('', Validators.required),
-    role: new FormControl('', Validators.required),
+    profile: new FormGroup({
+      name: new FormControl('', Validators.required),
+      surname: new FormControl('', Validators.required),
+      address: new FormControl('', Validators.required),
+      birthday: new FormControl('', Validators.required),
+      socialSecurity: new FormControl('', Validators.required),
+      role: new FormControl('', Validators.required),
+    }),
+    username: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
   });
   roles: Array<StaffRole> = Object.values(StaffRole);
   onError = new EventEmitter<string>();
 
-  constructor(private staffService: StaffService) {
+  constructor(private staffService: StaffService, private authenticationService: AuthenticationService) {
   }
 
   ngOnInit() {
@@ -35,16 +41,19 @@ export class StaffsCreatorComponent implements OnInit {
       if (staffs != null) {
         this.staffs = staffs;
       }
-    }, error => this.onError.emit(error));
+    }, error => this.onError.emit(error.error.message));
   }
 
   save() {
-    this.staffService.addStaff(this.form.value).subscribe(staff => {
-      if (staff != null) {
+    this.authenticationService.registerRequest(this.form.value).subscribe(
+      token => {
         this.refresh();
         this.form.reset();
+      },
+      error => {
+        this.onError.emit(error.error);
       }
-    }, error => this.onError.emit(error));
+    );
   }
 
   today() {

@@ -37,14 +37,14 @@ export class SchedulesCreatorComponent implements OnInit {
         if (data != null) {
           this.schedules = data;
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
     this.poolService.getAll().subscribe(
       data => {
         if (data != null) {
           this.pools = data;
         }
-      }, error => this.onError.emit(error)
+      }, error => this.onError.emit(error.error.message)
     );
   }
 
@@ -54,7 +54,7 @@ export class SchedulesCreatorComponent implements OnInit {
         this.form.reset();
         this.refresh();
       }
-    }, error => this.onError.emit(error));
+    }, error => this.onError.emit(error.error.message));
   }
 
   today() {

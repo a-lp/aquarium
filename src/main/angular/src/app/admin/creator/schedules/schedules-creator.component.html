@@ -27,9 +27,9 @@
     </table>
   </form>
   <app-schedule-list (onSelect)="this.schedule = $event" [schedules]="schedules"
-                     (onChange)="refresh()" (onError)="this.onError.emit($event)"></app-schedule-list>
+                     (onChange)="refresh()" (onError)="this.onError.emit($event.error.message)"></app-schedule-list>
 </div>
 <div *ngIf="schedule!=null">
   <app-schedule-creator [schedule]="schedule" [pools]="pools" (onHide)="this.schedule=null;"
-                        (onChange)="refresh()" (onError)="this.onError.emit($event)"></app-schedule-creator>
+                        (onChange)="refresh()" (onError)="this.onError.emit($event.error.message)"></app-schedule-creator>
 </div>

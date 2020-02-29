@@ -77,6 +77,6 @@
   </div>
   <div *ngIf="specie!=null" class="single-element">
     <app-specie-creator (onUpdate)="refresh();" (onHide)="hideSpecie()"
-                        [specie]="specie" (onError)="this.onError.emit($event)"></app-specie-creator>
+                        [specie]="specie" (onError)="this.onError.emit($event.error.message)"></app-specie-creator>
   </div>
 </div>

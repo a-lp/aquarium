@@ -85,6 +85,6 @@
   <app-activity-creator [activity]="activity" [schedules]="schedules" [staffs]="staffs"
                         [selectedStaff]="activity.staffList"
                         (onHide)="this.activity=null" (onUpdate)="refresh()"
-                        (onError)="this.onError.emit($event)"></app-activity-creator>
+                        (onError)="this.onError.emit($event.error.message)"></app-activity-creator>
 </div>
 

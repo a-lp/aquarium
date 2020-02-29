@@ -22,6 +22,7 @@ export class StaffCreatorComponent implements OnInit {
   onHide: EventEmitter<Staff> = new EventEmitter<Staff>();
   @Input()
   staff: Staff = null;
+
   form = new FormGroup({
     name: new FormControl('', Validators.required),
     surname: new FormControl('', Validators.required),
