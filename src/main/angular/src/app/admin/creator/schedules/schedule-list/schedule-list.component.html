@@ -20,8 +20,8 @@
   <tbody>
   <tr *ngFor=" let schedule of schedules">
     <td>{{schedule.id}}</td>
-    <td>{{this.datePipe.transform(schedule.startPeriod, 'dd/MM/yyyy, HH:mm')}}</td>
-    <td>{{this.datePipe.transform(schedule.endPeriod, 'dd/MM/yyyy, HH:mm')}}</td>
+    <td>{{this.datePipe.transform(schedule.startPeriod, 'dd/MM/yyyy')}}</td>
+    <td>{{this.datePipe.transform(schedule.endPeriod, 'dd/MM/yyyy')}}</td>
     <td>{{schedule.pool}}</td>
     <td>
       <button (click)="selectSchedule(schedule)">Show</button>

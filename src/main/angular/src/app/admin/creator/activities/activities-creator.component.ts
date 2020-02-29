@@ -7,6 +7,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ScheduleService} from '../../../service/schedule.service';
 import {StaffService} from '../../../service/staff.service';
 import {AuthenticationService} from "../../../service/authentication.service";
+import {DatePipe} from "@angular/common";
 
 @Component({
   selector: 'app-activities-creator',
@@ -17,7 +18,8 @@ export class ActivitiesCreatorComponent implements OnInit {
   activities: Array<PoolActivity> = [];
   schedules: Array<Schedule> = [];
   staffs: Array<Staff> = [];
-
+  startPeriod: string;
+  endPeriod: string;
   activity: PoolActivity = null;
   selectedStaff: Array<Staff> = [];
   onError = new EventEmitter<any>();
@@ -25,23 +27,28 @@ export class ActivitiesCreatorComponent implements OnInit {
     description: new FormControl('', Validators.required),
     startActivity: new FormControl('', Validators.required),
     endActivity: new FormControl('', Validators.required),
+    day: new FormControl('', Validators.required),
     openToPublic: new FormControl(false),
     repeated: new FormControl(false),
     schedule: new FormControl(null, Validators.required),
     staffList: new FormControl('')
   });
 
-  timeValidator(start: FormControl) {
-    return start.value < this.form.value.endActivity;
-  }
-
   constructor(private activityService: ActivityService, private scheduleService: ScheduleService,
-              private staffService: StaffService, private authenticationService: AuthenticationService) {
+              private staffService: StaffService, private authenticationService: AuthenticationService,
+              private datePipe: DatePipe) {
     this.form.valueChanges.subscribe(changes => {
         if (this.form.value.schedule != null) {
+          this.scheduleService.getById(this.form.value.schedule).subscribe(
+            schedule => {
+              this.startPeriod = this.convertDate(schedule.startPeriod);
+              this.endPeriod = this.convertDate(schedule.endPeriod);
+            }
+          )
           this.staffService.getBySchedulesFromPoolSector(this.form.value.schedule).subscribe(data => {
             if (data != null) {
               this.staffs = data;
+              this.selectedStaff = [];
             }
           }, error => this.onError.emit(error.error.message));
         }
@@ -85,7 +92,8 @@ export class ActivitiesCreatorComponent implements OnInit {
   }
 
   isDisabled() {
-    return !(this.form.valid && this.selectedStaff.length > 0) || (this.form.value.startActivity >= this.form.value.endActivity);
+    return !(this.form.valid && this.selectedStaff.length > 0) || (this.form.value.startActivity >= this.form.value.endActivity) ||
+      !(this.form.value.day >= this.startPeriod && this.form.value.day <= this.endPeriod);
   }
 
   selectStaff(staff: Staff) {
@@ -99,4 +107,9 @@ export class ActivitiesCreatorComponent implements OnInit {
   selectActivity(activity: PoolActivity) {
     this.activity = activity;
   }
+
+  private convertDate(date: string) {
+    return date.substr(0, 10);
+  }
+
 }

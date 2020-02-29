@@ -8,6 +8,7 @@ export class PoolActivity {
   endActivity: string;
   openToPublic: boolean;
   repeated: boolean;
+  day: Date;
   staffList: Array<Staff> = [];
-  schedule: Schedule;
+  schedule: number;
 }

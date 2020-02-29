@@ -4,6 +4,8 @@ import {Schedule} from '../../../../model/Schedule';
 import {Staff} from '../../../../model/Staff';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivityService} from '../../../../service/activity.service';
+import {ScheduleService} from "../../../../service/schedule.service";
+import {StaffService} from "../../../../service/staff.service";
 
 @Component({
   selector: 'app-activity-creator',
@@ -19,27 +21,50 @@ export class ActivityCreatorComponent implements OnInit {
   onHide = new EventEmitter();
   @Input()
   schedules: Array<Schedule>;
-  @Input()
-  staffs: Array<Staff>;
+  staffs: Array<Staff> = [];
   @Input()
   activity: PoolActivity;
   @Input()
-  selectedStaff: Array<number>;
-
+  selectedStaff: Array<any>;
+  startPeriod: string;
+  endPeriod: string;
   form = new FormGroup({
     description: new FormControl('', Validators.required),
     startActivity: new FormControl('', Validators.required),
     endActivity: new FormControl('', Validators.required),
     openToPublic: new FormControl(false),
+    day: new FormControl('', Validators.required),
     repeated: new FormControl(false),
-    schedule: new FormControl('', Validators.required),
+    schedule: new FormControl(null, Validators.required),
     staffList: new FormControl('')
   });
 
-  constructor(private activityService: ActivityService) {
+  constructor(private activityService: ActivityService, private scheduleService: ScheduleService,
+              private staffService: StaffService) {
+    this.form.get('schedule').valueChanges.subscribe(changes => {
+        if (this.form.value.schedule != null) {
+          this.scheduleService.getById(changes).subscribe(
+            schedule => {
+              this.startPeriod = this.convertDate(schedule.startPeriod);
+              this.endPeriod = this.convertDate(schedule.endPeriod);
+            }
+          );
+          this.staffService.getBySchedulesFromPoolSector(changes).subscribe(data => {
+            if (data != null) {
+              this.staffs = data;
+            }
+          }, error => this.onError.emit(error.error.message));
+        }
+      }
+    );
   }
 
   ngOnInit() {
+    this.staffService.getBySchedulesFromPoolSector(this.activity.schedule).subscribe(data => {
+      if (data != null) {
+        this.staffs = data;
+      }
+    }, error => this.onError.emit(error.error.message));
   }
 
 
@@ -57,10 +82,10 @@ export class ActivityCreatorComponent implements OnInit {
 
 
   selectStaff(staff: Staff) {
-    if (this.selectedStaff.includes(staff.id)) {
+    if (this.isIncluded(staff)) {
       this.selectedStaff.splice(this.selectedStaff.findIndex(element => staff.id == element), 1);
     } else {
-      this.selectedStaff.push(staff.id);
+      this.selectedStaff.push(staff);
     }
   }
 
@@ -76,4 +101,9 @@ export class ActivityCreatorComponent implements OnInit {
     }
     return false;
   }
+
+  private convertDate(date: any) {
+    return date.substr(0, 10);
+  }
+
 }

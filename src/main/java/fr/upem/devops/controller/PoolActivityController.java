@@ -68,6 +68,12 @@ public class PoolActivityController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting startActivity: '" + parameters.get("startActivity") + "' into LocalTime!");
         }
         try {
+            if (parameters.containsKey("day"))
+                poolActivity.setDay(new Date(Long.parseLong(parameters.get("day"))));
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting day: '" + parameters.get("day") + "' into Date!");
+        }
+        try {
             if (parameters.containsKey("endActivity"))
                 poolActivity.setEndActivity(LocalTime.parse(parameters.get("endActivity")));
         } catch (Exception e) {

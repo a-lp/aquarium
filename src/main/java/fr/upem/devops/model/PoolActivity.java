@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ public class PoolActivity implements Serializable {
     private String description;
     private LocalTime startActivity;
     private LocalTime endActivity;
+    private Date day;
     private Boolean openToPublic;
     private Boolean repeated;
     @ManyToMany(cascade = {
@@ -30,10 +32,10 @@ public class PoolActivity implements Serializable {
             joinColumns = @JoinColumn(name = "activity_id"),
             inverseJoinColumns = @JoinColumn(name = "staff_id")
     )
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityReference(alwaysAsId = true)
     private Set<Staff> staffList = new HashSet<>();
     @ManyToOne
-    @JsonIdentityReference(alwaysAsId=true)
+    @JsonIdentityReference(alwaysAsId = true)
     private Schedule schedule;
 
     public PoolActivity() {
@@ -124,6 +126,14 @@ public class PoolActivity implements Serializable {
         this.openToPublic = openToPublic;
     }
 
+    public Date getDay() {
+        return day;
+    }
+
+    public void setDay(Date day) {
+        this.day = day;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (getClass() != obj.getClass())
@@ -153,6 +163,7 @@ public class PoolActivity implements Serializable {
                 ", startActivity=" + startActivity +
                 ", endActivity=" + endActivity +
                 ", openToPublic=" + openToPublic +
+                ", day=" + day +
                 ", schedule=" + (schedule == null ? "null" : schedule.getId()) +
                 '}';
     }

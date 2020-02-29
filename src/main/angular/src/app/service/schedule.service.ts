@@ -2,7 +2,6 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Schedule} from '../model/Schedule';
-import {PoolActivity} from '../model/PoolActivity';
 import {AuthenticationService} from './authentication.service';
 
 @Injectable({
@@ -26,11 +25,6 @@ export class ScheduleService {
     const poolId = schedule.pool;
     schedule.pool = null;
     return this.authenticationService.postRequest('/api/pools/' + poolId + '/schedules', schedule);
-  }
-
-  assignAPoolActivityToSchedule(id: number, activity: PoolActivity): Observable<any> {
-    // TODO: gestire la persistenza di staff.
-    return this.authenticationService.postRequest('/api/schedules/' + id + '/assign-activity', activity);
   }
 
   delete(schedule: Schedule): Observable<any> {

@@ -4,6 +4,7 @@
       <thead>
       <tr>
         <th>Description</th>
+        <th>Day</th>
         <th>Start Activity</th>
         <th>End Activity</th>
         <th>Open to public</th>
@@ -14,6 +15,7 @@
       <tbody>
       <tr>
         <th><input type="text" formControlName="description"></th>
+        <th><input type="date" [min]="this.startPeriod" [max]="this.endPeriod" formControlName="day"></th>
         <th><input type="time" formControlName="startActivity"></th>
         <th><input type="time" [min]="form.value.startActivity" formControlName="endActivity"></th>
         <th><input type="checkbox" formControlName="openToPublic"></th>
@@ -47,6 +49,9 @@
         Description
       </th>
       <th>
+        Day
+      </th>
+      <th>
         Start Activity
       </th>
       <th>
@@ -66,6 +71,7 @@
     <tr *ngFor=" let activity of activities">
       <td>{{activity.id}}</td>
       <td>{{activity.description}}</td>
+      <td>{{this.datePipe.transform(activity.day, 'dd/MM/yyyy')}}</td>
       <td>{{activity.startActivity}}</td>
       <td>{{activity.endActivity}}</td>
       <td><input disabled type="checkbox" [checked]="activity.openToPublic"></td>
@@ -82,7 +88,7 @@
   </table>
 </div>
 <div *ngIf="this.activity!=null">
-  <app-activity-creator [activity]="activity" [schedules]="schedules" [staffs]="staffs"
+  <app-activity-creator [activity]="activity" [schedules]="schedules"
                         [selectedStaff]="activity.staffList"
                         (onHide)="this.activity=null" (onUpdate)="refresh()"
                         (onError)="this.onError.emit($event.error.message)"></app-activity-creator>
