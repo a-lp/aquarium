@@ -14,7 +14,11 @@ export class ScheduleService {
 
 
   getAll(): Observable<any> {
-    return this.authenticationService.getRequest('/api/schedules');
+    if (this.authenticationService.isAdmin()) {
+      return this.authenticationService.getRequest('/api/schedules');
+    } else {
+      return this.authenticationService.getRequest('/api/schedules/staff/' + this.authenticationService.user.id);
+    }
   }
 
   getById(id: number): Observable<any> {

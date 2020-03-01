@@ -4,6 +4,7 @@ import fr.upem.devops.model.*;
 import fr.upem.devops.service.PoolService;
 import fr.upem.devops.service.ScheduleService;
 import fr.upem.devops.service.SectorService;
+import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 @RestController
@@ -21,6 +23,8 @@ public class ScheduleController {
     private PoolService poolService;
     @Autowired
     private SectorService sectorService;
+    @Autowired
+    private StaffService staffService;
 
     @GetMapping("/api/schedules")
     public Iterable<Schedule> getAll() {
@@ -46,8 +50,18 @@ public class ScheduleController {
         return schedule.getScheduledActivities();
     }
 
+    @GetMapping("/api/schedules/staff/{id}")
+    public Set<Schedule> getSchedulesByResponsible(@PathVariable String id) {
+        Staff staff = staffService.getById(Long.parseLong(id));
+        Set<Schedule> schedules = new HashSet<>();
+        for (Pool pool : staff.getPoolsResponsabilities()) {
+            schedules.addAll(pool.getSchedules());
+        }
+        return schedules;
+    }
+
     @GetMapping("/api/schedules/{id}/staff")
-    public Set<Staff> getStaffBySectorFromPool(@PathVariable String id){
+    public Set<Staff> getStaffBySectorFromPool(@PathVariable String id) {
         Schedule schedule = getById(id);
         Pool pool = poolService.getById(schedule.getPool().getId());
         Sector sector = sectorService.getByName(pool.getSector().getName());

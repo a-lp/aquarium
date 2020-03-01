@@ -1,8 +1,10 @@
 package fr.upem.devops.controller;
 
+import fr.upem.devops.model.Pool;
 import fr.upem.devops.model.PoolActivity;
 import fr.upem.devops.model.Schedule;
 import fr.upem.devops.model.Staff;
+import fr.upem.devops.service.JWTService;
 import fr.upem.devops.service.PoolActivityService;
 import fr.upem.devops.service.ScheduleService;
 import fr.upem.devops.service.StaffService;
@@ -26,6 +28,9 @@ public class PoolActivityController {
     @Autowired
     private ScheduleService scheduleService;
 
+    @Autowired
+    private JWTService jwtService;
+
     @GetMapping("/api/activities")
     public Iterable<PoolActivity> getAll() {
         return service.getAll();
@@ -42,6 +47,26 @@ public class PoolActivityController {
         if (activity == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Activity with id: '" + id + "' not found!");
         return activity;
+    }
+
+    @GetMapping("/api/activities/staff/{id}")
+    public Set<PoolActivity> getByStaff(@PathVariable String id) {
+        Staff staff = null;
+        Set<PoolActivity> activities = new HashSet<>();
+        try {
+            staff = staffService.getById(Long.parseLong(id));
+            activities.addAll(staff.getActivities());
+            if (staff.getRole().equals(Staff.StaffRole.MANAGER)) {
+                for (Pool pool : staff.getPoolsResponsabilities()) {
+                    for (Schedule schedule : pool.getSchedules()) {
+                        activities.addAll(schedule.getScheduledActivities());
+                    }
+                }
+            }
+        } catch (NumberFormatException e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot convert id: '" + id + "' into Long");
+        }
+        return activities;
     }
 
     @PostMapping("/api/schedule/{scheduleId}/activities/staff/{staffResponsible}")
@@ -61,7 +86,9 @@ public class PoolActivityController {
 
     @PutMapping("/api/activities/{id}")
     @ResponseBody
-    public PoolActivity updatePoolActivity(@PathVariable String id, @RequestBody HashMap<String, String> parameters) {
+    public PoolActivity updatePoolActivity(@PathVariable String id, @RequestBody HashMap<String, String> parameters, @RequestHeader("Authorization") String token) {
+        if(checkRole(token, Staff.StaffRole.WORKER))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only administrators or managers can modify an activity.");
         PoolActivity poolActivity = getById(id);
         if (parameters.containsKey("description"))
             poolActivity.setDescription(parameters.get("description"));
@@ -131,7 +158,9 @@ public class PoolActivityController {
 
 
     @DeleteMapping("/api/activities/{id}")
-    public PoolActivity deleteActivity(@PathVariable String id) {
+    public PoolActivity deleteActivity(@PathVariable String id, @RequestHeader("Authorization") String token) {
+        if(checkRole(token, Staff.StaffRole.WORKER))
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only administrators or managers can modify an activity.");
         PoolActivity poolActivity = getById(id);
         for (Staff staff : poolActivity.getStaffList())
             staff.removeActivity(poolActivity);
@@ -170,5 +199,10 @@ public class PoolActivityController {
         if (staff == null)
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Staff with id '" + id + "' not found!");
         return staff;
+    }
+
+    private boolean checkRole(String token, Staff.StaffRole role) {
+        token = token.replace("Bearer", "").trim();
+        return Staff.StaffRole.valueOf((String) jwtService.verify(token).get("role")).equals(role);
     }
 }

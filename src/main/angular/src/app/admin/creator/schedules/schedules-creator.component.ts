@@ -40,7 +40,7 @@ export class SchedulesCreatorComponent implements OnInit {
         }
       }, error => this.onError.emit(error.error.message)
     );
-    this.poolService.getAll().subscribe(
+    this.poolService.getAllByResponsible().subscribe(
       data => {
         if (data != null) {
           this.pools = data;

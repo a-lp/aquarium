@@ -6,6 +6,7 @@ import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivityService} from '../../../../service/activity.service';
 import {ScheduleService} from '../../../../service/schedule.service';
 import {StaffService} from '../../../../service/staff.service';
+import {AuthenticationService} from "../../../../service/authentication.service";
 
 @Component({
   selector: 'app-activity-creator',
@@ -40,7 +41,7 @@ export class ActivityCreatorComponent implements OnInit {
   });
 
   constructor(private activityService: ActivityService, private scheduleService: ScheduleService,
-              private staffService: StaffService) {
+              private staffService: StaffService, private authenticationService: AuthenticationService) {
     this.form.get('schedule').valueChanges.subscribe(changes => {
         if (this.form.value.schedule != null) {
           this.scheduleService.getById(changes).subscribe(
@@ -84,6 +85,9 @@ export class ActivityCreatorComponent implements OnInit {
         this.staffs = data;
       }
     }, error => this.onError.emit(error.error.message));
+    if (this.authenticationService.isWorker()) {
+      this.form.disable();
+    }
   }
 
 

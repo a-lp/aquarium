@@ -13,7 +13,11 @@ export class ActivityService {
   }
 
   getAll(): Observable<any> {
-    return this.authenticationService.getRequest('/api/activities');
+    if (this.authenticationService.isAdmin()) {
+      return this.authenticationService.getRequest('/api/activities');
+    } else {
+      return this.authenticationService.getRequest('/api/activities/staff/' + this.authenticationService.user.id);
+    }
   }
 
   getById(id: number): Observable<any> {
