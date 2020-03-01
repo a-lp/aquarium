@@ -12,6 +12,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 public class PoolController {
@@ -51,6 +52,15 @@ public class PoolController {
     public Iterable<Fish> getPoolFishes(@PathVariable String id) {
         Pool pool = getById(id);
         return pool.getFishes();
+    }
+
+    @GetMapping("/api/pools/{id}/activities")
+    public Iterable<PoolActivity> getPoolActivities(@PathVariable String id) {
+        Set<PoolActivity> result = new HashSet<>();
+        for (Schedule schedule : getPoolSchedules(id)) {
+            result.addAll(schedule.getScheduledActivities());
+        }
+        return result;
     }
 
     @GetMapping("/api/pools/{id}/schedules")

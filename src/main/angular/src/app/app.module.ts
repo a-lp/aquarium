@@ -96,6 +96,10 @@ import {LoginComponent} from './login/login.component';
         component: SpeciesComponent
       },
       {
+        path: 'activities',
+        component: ActivitiesComponent
+      },
+      {
         path: 'pools',
         component: PoolsComponent
       },

@@ -32,4 +32,8 @@ public class PoolActivityService {
         poolActivityRepository.delete(poolActivity);
         return poolActivity;
     }
+
+    public Iterable<PoolActivity> getAllOpenToPublic() {
+        return poolActivityRepository.findPoolsOpenToPublic();
+    }
 }

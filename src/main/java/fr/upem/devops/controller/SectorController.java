@@ -1,9 +1,6 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.Fish;
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.Sector;
-import fr.upem.devops.model.Staff;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.SectorService;
 import fr.upem.devops.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +57,18 @@ public class SectorController {
         return sector.getPools();
     }
 
+
+    @GetMapping("/api/sector/{name}/activities")
+    public Set<PoolActivity> getActivitiesBySector(@PathVariable String name) {
+        Set<PoolActivity> activities = new HashSet<>();
+        for (Pool p : getSectorPools(name)) {
+            for (Schedule schedule : p.getSchedules())
+                activities.addAll(schedule.getScheduledActivities());
+        }
+        return activities;
+    }
+
+
     @PostMapping("/api/sectors/responsible/{ids}")
     @ResponseBody
     public Sector addSector(@RequestBody Sector sector, @PathVariable List<String> ids) {
@@ -110,7 +119,7 @@ public class SectorController {
         Sector sector = getByName(name);
         for (Staff staff : sector.getStaffList())
             staff.removeStaff(staff);
-        if(!sector.getPools().isEmpty())
+        if (!sector.getPools().isEmpty())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Cannot delete sector! There are pools in this sector.");
 
         return sectorService.remove(sector);

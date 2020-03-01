@@ -54,4 +54,8 @@ export class PoolService {
   getSchedules(id: number): Observable<any> {
     return this.authenticationService.getRequest('/api/pools/' + id + '/schedules');
   }
+
+  getActivities(id: any) {
+    return this.authenticationService.getRequest('/api/pools/' + id + '/activities');
+  }
 }

@@ -4,6 +4,7 @@
       <li><a routerLink="/fishes">Fishes</a></li>
       <li><a routerLink="/species">Species</a></li>
       <li><a routerLink="/pools">Pools</a></li>
+      <li><a routerLink="/activities">Activities</a></li>
       <li *ngIf="!authenticationService.isStaffLogged()"><a routerLink="/login">Login</a></li>
       <li *ngIf="authenticationService.isStaffLogged()"><a (click)="this.authenticationService.logout()"
                                                            routerLink="/login">Logout</a>

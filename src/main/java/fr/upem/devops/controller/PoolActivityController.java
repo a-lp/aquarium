@@ -1,9 +1,6 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.Pool;
-import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Schedule;
-import fr.upem.devops.model.Staff;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.JWTService;
 import fr.upem.devops.service.PoolActivityService;
 import fr.upem.devops.service.ScheduleService;
@@ -34,6 +31,12 @@ public class PoolActivityController {
     @GetMapping("/api/activities")
     public Iterable<PoolActivity> getAll() {
         return service.getAll();
+    }
+
+
+    @GetMapping("/api/activities/open")
+    public Iterable<PoolActivity> getAllOpenToPublic() {
+        return service.getAllOpenToPublic();
     }
 
     @GetMapping("/api/activities/{id}")

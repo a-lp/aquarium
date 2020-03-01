@@ -41,4 +41,14 @@ export class ActivityService {
   }
 
 
+  getAllOpenToPublic(): Observable<any> {
+    return this.authenticationService.getRequest('/api/activities/open');
+  }
+
+  getAllBySector(name: string): Observable<any> {
+    if (name == null || name == '') {
+      return this.getAllOpenToPublic();
+    }
+    return this.authenticationService.getRequest('/api/sector/' + name + '/activities');
+  }
 }
