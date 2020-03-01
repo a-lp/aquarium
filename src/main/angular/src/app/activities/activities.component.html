@@ -50,7 +50,6 @@
       <th>
         End Activity
       </th>
-      <th></th>
     </tr>
     </thead>
     <tbody>
@@ -59,9 +58,6 @@
       <td>{{activity.day == null ? 'repeated' : this.datePipe.transform(activity.day, 'dd/MM/yyyy')}}</td>
       <td>{{activity.startActivity}}</td>
       <td>{{activity.endActivity}}</td>
-      <td>
-        <button (click)="selectActivity(activity)">Show</button>
-      </td>
     </tr>
     </tbody>
   </table>

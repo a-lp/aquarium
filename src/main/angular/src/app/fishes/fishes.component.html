@@ -1,0 +1,14 @@
+<div class="content">
+  <div class="grid">
+    <div class="fish-card" *ngFor="let fish of fishes.concat(fishes).concat(fishes).concat(fishes)">
+      <h2>{{fish.name}}</h2>
+      <div class="informations">
+        <p>{{"Specie: " + fish.specie}}</p>
+        <p>{{"Gender: " + fish.gender}}</p>
+        <p>{{"Distinct Sign: " + fish.distinctSign}}</p>
+        <p>{{"Arrival Date: " + this.datePipe.transform(fish.arrivalDate, "dd/MM/yyyy")}}</p>
+        <p>{{"Retired: " + (fish.returnDate == null ? 'not yet' : this.datePipe.transform(fish.returnDate, "dd/MM/yyyy"))}}</p>
+      </div>
+    </div>
+  </div>
+</div>

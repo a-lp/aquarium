@@ -12,7 +12,10 @@
       <li *ngIf="authenticationService.isStaffLogged()"><a routerLink="/admin">{{this.authenticationService.user.role}} space</a></li>
     </ul>
   </nav>
-  <main class="content">
+  <main class="grid">
     <router-outlet></router-outlet>
   </main>
+  <footer>
+    Armando La Placa
+  </footer>
 </div>
