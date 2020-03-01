@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {Fish} from "../model/Fish";
-import {FishService} from "../service/fish.service";
-import {DatePipe} from "@angular/common";
-import {Sector} from "../model/Sector";
-import {SectorService} from "../service/sector.service";
+import {Fish} from '../model/Fish';
+import {FishService} from '../service/fish.service';
+import {DatePipe} from '@angular/common';
+import {Sector} from '../model/Sector';
+import {SectorService} from '../service/sector.service';
 
 @Component({
   selector: 'app-fishes',

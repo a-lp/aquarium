@@ -22,11 +22,11 @@ h2 {
   padding: 1em;
 }
 
-.content {
+.fish-grid-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 5em 10em;
+  margin: 2em 10em;
   height: 100%;
 }
