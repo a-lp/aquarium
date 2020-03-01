@@ -71,7 +71,7 @@
     <tr *ngFor=" let activity of activities">
       <td>{{activity.id}}</td>
       <td>{{activity.description}}</td>
-      <td>{{this.datePipe.transform(activity.day, 'dd/MM/yyyy')}}</td>
+      <td>{{activity.day == null ? 'repeated' : this.datePipe.transform(activity.day, 'dd/MM/yyyy')}}</td>
       <td>{{activity.startActivity}}</td>
       <td>{{activity.endActivity}}</td>
       <td><input disabled type="checkbox" [checked]="activity.openToPublic"></td>

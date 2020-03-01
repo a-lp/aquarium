@@ -27,7 +27,7 @@ export class ActivitiesCreatorComponent implements OnInit {
     description: new FormControl('', Validators.required),
     startActivity: new FormControl('', Validators.required),
     endActivity: new FormControl('', Validators.required),
-    day: new FormControl('', Validators.required),
+    day: new FormControl(null),
     openToPublic: new FormControl(false),
     repeated: new FormControl(false),
     schedule: new FormControl(null, Validators.required),
@@ -37,15 +37,15 @@ export class ActivitiesCreatorComponent implements OnInit {
   constructor(private activityService: ActivityService, private scheduleService: ScheduleService,
               private staffService: StaffService, private authenticationService: AuthenticationService,
               private datePipe: DatePipe) {
-    this.form.valueChanges.subscribe(changes => {
-        if (this.form.value.schedule != null) {
-          this.scheduleService.getById(this.form.value.schedule).subscribe(
+    this.form.get('schedule').valueChanges.subscribe(changes => {
+        if (changes != null) {
+          this.scheduleService.getById(changes).subscribe(
             schedule => {
               this.startPeriod = this.convertDate(schedule.startPeriod);
               this.endPeriod = this.convertDate(schedule.endPeriod);
             }
           )
-          this.staffService.getBySchedulesFromPoolSector(this.form.value.schedule).subscribe(data => {
+          this.staffService.getBySchedulesFromPoolSector(changes).subscribe(data => {
             if (data != null) {
               this.staffs = data;
               this.selectedStaff = [];
@@ -92,8 +92,10 @@ export class ActivitiesCreatorComponent implements OnInit {
   }
 
   isDisabled() {
-    return !(this.form.valid && this.selectedStaff.length > 0) || (this.form.value.startActivity >= this.form.value.endActivity) ||
-      !(this.form.value.day >= this.startPeriod && this.form.value.day <= this.endPeriod);
+    const wrongDayPeriod = (this.form.value.day != null ? (this.form.value.day < this.startPeriod || this.form.value.day > this.endPeriod) : (this.form.value.repeated == false));
+    const wrongHours = this.form.value.startActivity >= this.form.value.endActivity;
+    const noStaffChoice = this.selectedStaff.length == 0;
+    return !this.form.valid || wrongHours || wrongDayPeriod || noStaffChoice;
   }
 
   selectStaff(staff: Staff) {

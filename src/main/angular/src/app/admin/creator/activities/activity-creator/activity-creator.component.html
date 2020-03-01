@@ -8,7 +8,7 @@
         <div><Label>Description: </Label><input type="text" formControlName="description"
                                                 [ngModel]="activity.description"></div>
         <div><Label>Day: </Label><input type="date" [min]="this.startPeriod" [max]="this.endPeriod"
-                                        [ngModel]="convertDate(activity.day)"
+                                        [ngModel]="form.value.repeated?null:convertDate(activity.day)"
                                         formControlName="day"></div>
         <div><Label>Start Activity: </Label><input type="time" formControlName="startActivity"
                                                    [ngModel]="activity.startActivity"></div>
@@ -17,7 +17,8 @@
                                                  [ngModel]="activity.endActivity"></div>
         <div><Label>Open to public: </Label><input type="checkbox" [checked]="activity.openToPublic?'checked':''"
                                                    formControlName="openToPublic"></div>
-        <div><Label>Repeated: </Label><input type="checkbox" [checked]="activity.repeated?'checked':''"
+        <div><Label>Repeated: </Label><input type="checkbox"
+                                             [checked]="form.value.day==null?'checked':''"
                                              formControlName="repeated"></div>
         <div><Label>Schedule: </Label><select formControlName="schedule" [ngModel]="activity.schedule">
           <option *ngFor="let i of schedules" [value]="i.id">{{i.id}}</option>

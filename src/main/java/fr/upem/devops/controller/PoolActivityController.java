@@ -47,6 +47,10 @@ public class PoolActivityController {
     @PostMapping("/api/schedule/{scheduleId}/activities/staff/{staffResponsible}")
     @ResponseBody
     public PoolActivity addPoolActivity(@RequestBody PoolActivity activity, @PathVariable String scheduleId, @PathVariable List<String> staffResponsible) {
+        if (activity.getDay() == null && !activity.getRepeated())
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Activities must have a day or need to be repeated!");
+        if (activity.getDay() != null)
+            activity.setRepeated(false);
         Schedule schedule = getSchedule(scheduleId);
         Set<Staff> staffs = assignStaff(activity, staffResponsible);
         activity.setStaffList(staffs);
@@ -62,38 +66,50 @@ public class PoolActivityController {
         if (parameters.containsKey("description"))
             poolActivity.setDescription(parameters.get("description"));
         try {
-            if (parameters.containsKey("startActivity"))
-                poolActivity.setStartActivity(LocalTime.parse(parameters.get("startActivity")));
+            if (parameters.containsKey("startActivity") && parameters.containsKey("endActivity")) {
+                LocalTime start = LocalTime.parse(parameters.get("startActivity"));
+                LocalTime end = LocalTime.parse(parameters.get("endActivity"));
+                if (start.isBefore(end)) {
+                    poolActivity.setStartActivity(start);
+                    poolActivity.setEndActivity(end);
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start activity time cannot be after end activity time!");
+                }
+            }
         } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting startActivity: '" + parameters.get("startActivity") + "' into LocalTime!");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting '" + parameters.get("startActivity") + "' into LocalTime!");
+        }
+        if (parameters.containsKey("schedule")) {
+            Schedule schedule = getSchedule(parameters.get("schedule"));
+            poolActivity.setSchedule(schedule);
         }
         try {
-            if (parameters.containsKey("day"))
-                poolActivity.setDay(new Date(Long.parseLong(parameters.get("day"))));
+            if (parameters.containsKey("repeated")) {
+                poolActivity.setRepeated(Boolean.valueOf(parameters.get("repeated")));
+                if (poolActivity.getRepeated())
+                    poolActivity.setDay(null);
+            }
+        } catch (Exception e) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting repeated: '" + parameters.get("repeated") + "' into Boolean!");
+        }
+        try {
+            if (parameters.containsKey("day")) {
+                Date day = new Date(Long.parseLong(parameters.get("day")));
+                if (day.compareTo(poolActivity.getSchedule().getStartPeriod()) >= 0 && day.compareTo(poolActivity.getSchedule().getEndPeriod()) <= 0) {
+                    poolActivity.setDay(day);
+                    poolActivity.setRepeated(false);
+                } else {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Day must be included between schedule start period (" + poolActivity.getSchedule().getStartPeriod().toString() + ") and end period (" + poolActivity.getSchedule().getEndPeriod().toString() + ")");
+                }
+            }
         } catch (NumberFormatException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting day: '" + parameters.get("day") + "' into Date!");
-        }
-        try {
-            if (parameters.containsKey("endActivity"))
-                poolActivity.setEndActivity(LocalTime.parse(parameters.get("endActivity")));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting endActivity: '" + parameters.get("endActivity") + "' into LocalTime!");
         }
         try {
             if (parameters.containsKey("openToPublic"))
                 poolActivity.setOpenToPublic(Boolean.valueOf(parameters.get("openToPublic")));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting openToPublic: '" + parameters.get("openToPublic") + "' into Boolean!");
-        }
-        try {
-            if (parameters.containsKey("repeated"))
-                poolActivity.setRepeated(Boolean.valueOf(parameters.get("repeated")));
-        } catch (Exception e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting repeated: '" + parameters.get("repeated") + "' into Boolean!");
-        }
-        if (parameters.containsKey("schedule")) {
-            Schedule schedule = getSchedule(parameters.get("schedule"));
-            poolActivity.setSchedule(schedule);
         }
         if (parameters.containsKey("staffList")) {
             if (!parameters.get("staffList").isEmpty()) {

@@ -4,8 +4,8 @@ import {Schedule} from '../../../../model/Schedule';
 import {Staff} from '../../../../model/Staff';
 import {FormControl, FormGroup, Validators} from '@angular/forms';
 import {ActivityService} from '../../../../service/activity.service';
-import {ScheduleService} from "../../../../service/schedule.service";
-import {StaffService} from "../../../../service/staff.service";
+import {ScheduleService} from '../../../../service/schedule.service';
+import {StaffService} from '../../../../service/staff.service';
 
 @Component({
   selector: 'app-activity-creator',
@@ -33,7 +33,7 @@ export class ActivityCreatorComponent implements OnInit {
     startActivity: new FormControl('', Validators.required),
     endActivity: new FormControl('', Validators.required),
     openToPublic: new FormControl(false),
-    day: new FormControl('', Validators.required),
+    day: new FormControl(''),
     repeated: new FormControl(false),
     schedule: new FormControl(null, Validators.required),
     staffList: new FormControl('')
@@ -57,9 +57,28 @@ export class ActivityCreatorComponent implements OnInit {
         }
       }
     );
+    this.form.get('day').valueChanges.subscribe(change => {
+      if (change != null) {
+        this.form.value.day = change;
+        this.form.value.repeated = false;
+      }
+    });
+    this.form.get('repeated').valueChanges.subscribe(change => {
+      if (change != null && change) {
+        this.form.value.repeated = change;
+        this.form.value.day = null;
+        this.form.get('day').reset();
+      }
+    });
   }
 
   ngOnInit() {
+    this.scheduleService.getById(this.activity.schedule).subscribe(
+      schedule => {
+        this.startPeriod = this.convertDate(schedule.startPeriod);
+        this.endPeriod = this.convertDate(schedule.endPeriod);
+      }
+    );
     this.staffService.getBySchedulesFromPoolSector(this.activity.schedule).subscribe(data => {
       if (data != null) {
         this.staffs = data;
@@ -73,8 +92,14 @@ export class ActivityCreatorComponent implements OnInit {
   }
 
   update() {
+    if (this.form.value.repeated) {
+      delete this.form.value.day;
+    } else {
+      this.form.value.day = new Date(this.form.value.day).getTime();
+    }
     this.form.value.staffList = this.selectedStaff.map(x => x.toString()).reduce((x, y) => x + ',' + y);
     this.activityService.update(this.activity.id, this.form.value).subscribe(activity => {
+        this.activity = Object.assign({}, activity);
         this.onUpdate.emit(activity);
       }, error => this.onError.emit(error)
     );
@@ -90,7 +115,10 @@ export class ActivityCreatorComponent implements OnInit {
   }
 
   isDisabled() {
-    return !(this.form.valid && this.selectedStaff.length > 0) || (this.form.value.startActivity >= this.form.value.endActivity);
+    const wrongDayPeriod = (this.form.value.day != null ? (this.form.value.day < this.startPeriod || this.form.value.day > this.endPeriod) : (this.form.value.repeated == false));
+    const wrongHours = this.form.value.startActivity >= this.form.value.endActivity;
+    const noStaffChoice = this.selectedStaff.length == 0;
+    return !this.form.valid || wrongHours || wrongDayPeriod || noStaffChoice;
   }
 
   isIncluded(i: Staff) {
@@ -103,6 +131,9 @@ export class ActivityCreatorComponent implements OnInit {
   }
 
   private convertDate(date: any) {
+    if (date == null) {
+      return null;
+    }
     return date.substr(0, 10);
   }
 
