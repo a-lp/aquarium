@@ -20,7 +20,10 @@ export class ActivitiesComponent implements OnInit {
 
   filters = new FormGroup({
     pool: new FormControl(''),
-    sector: new FormControl('')
+    sector: new FormControl(''),
+    day: new FormControl(''),
+    startActivity: new FormControl(''),
+    endActivity: new FormControl('')
   });
 
   constructor(private activityService: ActivityService, private datePipe: DatePipe,
@@ -51,6 +54,45 @@ export class ActivitiesComponent implements OnInit {
             }
           }
         );
+      }
+    );
+    this.filters.get('day').valueChanges.subscribe(
+      change => {
+        if (change != null && change != '') {
+          this.activityService.getAllOpenToPublic().subscribe(
+            data => {
+              this.activities = data.filter(x => new Date(x.day).getTime() == new Date(change).getTime());
+            }
+          );
+        }
+      }
+    );
+    this.filters.get('startActivity').valueChanges.subscribe(
+      change => {
+        if (change != null && change != '') {
+          this.activityService.getAllOpenToPublic().subscribe(
+            data => {
+
+              this.activities = data.filter(x => {
+                return x.startActivity.substr(0, 5) == change
+              });
+            }
+          );
+        }
+      }
+    );
+    this.filters.get('endActivity').valueChanges.subscribe(
+      change => {
+        if (change != null && change != '') {
+          this.activityService.getAllOpenToPublic().subscribe(
+            data => {
+
+              this.activities = data.filter(x => {
+                return x.endActivity.substr(0, 5) == change
+              });
+            }
+          );
+        }
       }
     );
   }

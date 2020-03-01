@@ -51,4 +51,8 @@ export class ActivityService {
     }
     return this.authenticationService.getRequest('/api/sector/' + name + '/activities');
   }
+
+  getByDay(day: number): Observable<any> {
+    return this.authenticationService.getRequest('/api/activities/date/' + day);
+  }
 }
