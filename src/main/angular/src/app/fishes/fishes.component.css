@@ -18,8 +18,13 @@ h2 {
   text-align: center;
 }
 
+.filter{
+  padding: 1em;
+}
+
 .content {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 5em 10em;

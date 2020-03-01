@@ -91,7 +91,6 @@ export class PoolsCreatorComponent implements OnInit {
         }
       }, error => this.onError.emit(error.error.message)
     );
-
   }
 
   resetFilters() {
