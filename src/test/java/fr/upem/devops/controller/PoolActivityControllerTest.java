@@ -1,6 +1,9 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.*;
+import fr.upem.devops.model.PoolActivity;
+import fr.upem.devops.model.Schedule;
+import fr.upem.devops.model.Staff;
+import fr.upem.devops.model.User;
 import fr.upem.devops.service.*;
 import org.assertj.core.util.Sets;
 import org.junit.Before;
@@ -111,7 +114,9 @@ public class PoolActivityControllerTest {
         Mockito.when(staffService.getById(2L)).thenReturn(s2);
         Mockito.when(staffService.getById(3L)).thenReturn(s3);
         PoolActivity pa = new PoolActivity(LocalTime.of(4, 0), LocalTime.of(8, 0), true, new HashSet<>(), null);
+        pa.setRepeated(true);
         PoolActivity pa_new = new PoolActivity(4L, LocalTime.of(4, 0), LocalTime.of(8, 0), true, Sets.newHashSet(Arrays.asList(s1, s2, s3)), schedule);
+        pa_new.setRepeated(true);
         schedule.assignActivity(pa_new);
         Mockito.when(activityService.save(pa)).thenReturn(pa_new);
         HttpEntity<PoolActivity> httpEntity = new HttpEntity(pa, this.headers);
@@ -153,7 +158,9 @@ public class PoolActivityControllerTest {
     @Test
     public void addPoolActivityScheduleNotFound() {
         Mockito.when(scheduleService.getById(1L)).thenReturn(null);
-        HttpEntity<PoolActivity> httpEntity = new HttpEntity(new PoolActivity(), this.headers);
+        PoolActivity pa = new PoolActivity();
+        pa.setRepeated(true);
+        HttpEntity<PoolActivity> httpEntity = new HttpEntity(pa, this.headers);
         ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/schedule/1/activities/staff/1,2,3", httpEntity,
                 PoolActivity.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -164,7 +171,9 @@ public class PoolActivityControllerTest {
         Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
         Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
         Mockito.when(staffService.getById(1L)).thenReturn(null);
-        HttpEntity<PoolActivity> httpEntity = new HttpEntity(new PoolActivity(), this.headers);
+        PoolActivity pa = new PoolActivity();
+        pa.setRepeated(true);
+        HttpEntity<PoolActivity> httpEntity = new HttpEntity(pa, this.headers);
         ResponseEntity<PoolActivity> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/schedule/1/activities/staff/1,2,3", httpEntity,
                 PoolActivity.class);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -201,7 +210,7 @@ public class PoolActivityControllerTest {
         ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/activities/1", HttpMethod.PUT,
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Error converting startActivity: '" + parameters.get("startActivity") + "' into LocalTime!", response.getBody().get("message"));
+        assertEquals("Error converting '" + parameters.get("startActivity") + "' into LocalTime!", response.getBody().get("message"));
         parameters.remove("startActivity");
         parameters.put("staffList", "a,2");
         updated = new HttpEntity<>(parameters, this.headers);
@@ -227,6 +236,7 @@ public class PoolActivityControllerTest {
         ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/schedule/1/activities/staff/1,2,3", httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+
     @Test
     public void invalidTokenPut() {
         Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
@@ -237,6 +247,7 @@ public class PoolActivityControllerTest {
                 .exchange("http://localhost:" + port + "/api/pools/3", HttpMethod.PUT, httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+
     @Test
     public void invalidTokenDelete() {
         Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);

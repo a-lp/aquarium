@@ -21,8 +21,8 @@ public class PoolActivity implements Serializable {
     private LocalTime startActivity;
     private LocalTime endActivity;
     private Date day;
-    private Boolean openToPublic;
-    private Boolean repeated;
+    private Boolean openToPublic = false;
+    private Boolean repeated = false;
     @ManyToMany(cascade = {
             CascadeType.PERSIST,
             CascadeType.MERGE

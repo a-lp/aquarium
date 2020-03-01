@@ -72,10 +72,11 @@ public class PoolActivityController {
     @PostMapping("/api/schedule/{scheduleId}/activities/staff/{staffResponsible}")
     @ResponseBody
     public PoolActivity addPoolActivity(@RequestBody PoolActivity activity, @PathVariable String scheduleId, @PathVariable List<String> staffResponsible) {
-        if (activity.getDay() == null && !activity.getRepeated())
+        if (activity.getDay() == null &&
+                !activity.getRepeated())
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Activities must have a day or need to be repeated!");
-        if (activity.getDay() != null)
-            activity.setRepeated(false);
+        if (activity.getDay() == null)
+            activity.setRepeated(true);
         Schedule schedule = getSchedule(scheduleId);
         Set<Staff> staffs = assignStaff(activity, staffResponsible);
         activity.setStaffList(staffs);
@@ -87,25 +88,28 @@ public class PoolActivityController {
     @PutMapping("/api/activities/{id}")
     @ResponseBody
     public PoolActivity updatePoolActivity(@PathVariable String id, @RequestBody HashMap<String, String> parameters, @RequestHeader("Authorization") String token) {
-        if(checkRole(token, Staff.StaffRole.WORKER))
+        if (checkRole(token, Staff.StaffRole.WORKER))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only administrators or managers can modify an activity.");
         PoolActivity poolActivity = getById(id);
         if (parameters.containsKey("description"))
             poolActivity.setDescription(parameters.get("description"));
+        LocalTime start = poolActivity.getStartActivity();
+        LocalTime end = poolActivity.getEndActivity();
         try {
-            if (parameters.containsKey("startActivity") && parameters.containsKey("endActivity")) {
-                LocalTime start = LocalTime.parse(parameters.get("startActivity"));
-                LocalTime end = LocalTime.parse(parameters.get("endActivity"));
-                if (start.isBefore(end)) {
-                    poolActivity.setStartActivity(start);
-                    poolActivity.setEndActivity(end);
-                } else {
-                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start activity time cannot be after end activity time!");
-                }
-            }
+            if (parameters.containsKey("startActivity"))
+                start = LocalTime.parse(parameters.get("startActivity"));
+            if (parameters.containsKey("endActivity"))
+                end = LocalTime.parse(parameters.get("endActivity"));
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Error converting '" + parameters.get("startActivity") + "' into LocalTime!");
         }
+        if ((start != null && end != null))
+            if (start.isBefore(end)) {
+                poolActivity.setStartActivity(start);
+                poolActivity.setEndActivity(end);
+            } else {
+                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start activity time cannot be after end activity time!");
+            }
         if (parameters.containsKey("schedule")) {
             Schedule schedule = getSchedule(parameters.get("schedule"));
             poolActivity.setSchedule(schedule);
@@ -159,7 +163,7 @@ public class PoolActivityController {
 
     @DeleteMapping("/api/activities/{id}")
     public PoolActivity deleteActivity(@PathVariable String id, @RequestHeader("Authorization") String token) {
-        if(checkRole(token, Staff.StaffRole.WORKER))
+        if (checkRole(token, Staff.StaffRole.WORKER))
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Only administrators or managers can modify an activity.");
         PoolActivity poolActivity = getById(id);
         for (Staff staff : poolActivity.getStaffList())
