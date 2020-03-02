@@ -16,8 +16,10 @@
 
 form{
   padding-top: 1em;
+  width: 600px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
+  justify-items: center;
 }
 
 label{

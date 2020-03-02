@@ -3,7 +3,7 @@
     <form [formGroup]="form">
       <label>Max Capacity: <input type="number" formControlName="maxCapacity"></label>
       <label>Volume: <input type="number" formControlName="volume"></label>
-      <label>Sector:
+      <label style="grid-area: 2/ span 2;">Sector:
         <select formControlName="sector">
           <option [value]=""></option>
           <option *ngFor="let sector of sectors" [value]="sector.name">{{sector.name}}</option>
@@ -19,6 +19,9 @@
       <thead>
       <tr>
         <th>
+          ID
+        </th>
+        <th>
           Max Capacity
         </th>
         <th>
@@ -31,6 +34,7 @@
       </thead>
       <tbody>
       <tr *ngFor=" let pool of pools">
+        <td>{{pool.id}}</td>
         <td>{{pool.maxCapacity}}</td>
         <td>{{pool.volume}}</td>
         <td>{{pool.sector}}</td>

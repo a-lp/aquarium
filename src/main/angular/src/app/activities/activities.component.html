@@ -13,14 +13,14 @@
           <option *ngFor="let i of sectors" [value]="i.name">{{i.name}}</option>
         </select>
       </label>
-      <label>Day
-        <input type="date" formControlName="day">
-      </label>
       <label>Start Activity
         <input type="time" formControlName="startActivity">
       </label>
       <label>End Activity
         <input type="time" formControlName="endActivity">
+      </label>
+      <label style="grid-area: 3/ span 2;">Day
+        <input type="date" formControlName="day">
       </label>
     </form>
     <div>
@@ -43,6 +43,9 @@
         <th>
           End Activity
         </th>
+        <th>
+          Schedule
+        </th>
       </tr>
       </thead>
       <tbody>
@@ -51,6 +54,7 @@
         <td>{{activity.day == null ? 'repeated' : this.datePipe.transform(activity.day, 'dd/MM/yyyy')}}</td>
         <td>{{activity.startActivity}}</td>
         <td>{{activity.endActivity}}</td>
+        <td>{{activity.schedule}}</td>
       </tr>
       </tbody>
     </table>
