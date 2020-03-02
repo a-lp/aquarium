@@ -19,6 +19,8 @@ export class FishListComponent implements OnInit {
   onSelection = new EventEmitter<Fish>();
   field = 0; // Sorting field
   ascendent = true;
+  @Input()
+  modificable = true;
 
   constructor(private fishService: FishService, private datePipe: DatePipe) {
   }

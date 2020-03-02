@@ -25,9 +25,9 @@
     <th (click)="sort(6)">
       Pool{{this.field == 6 ? (this.ascendent ? "▼" : "▲") : ""}}
     </th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th *ngIf="modificable"></th>
+    <th *ngIf="modificable"></th>
+    <th *ngIf="modificable"></th>
   </tr>
   </thead>
   <tbody>
@@ -40,13 +40,13 @@
     <td>{{(fish.returnDate != null) ? this.datePipe.transform(fish.returnDate, 'dd/MM/yyyy, HH:mm') : "Not yet"}}</td>
     <td>{{(fish.specie != null) ? fish.specie : "Unknown"}}</td>
     <td>{{(fish.pool != null) ? fish.pool : "Not assigned to a pool"}}</td>
-    <th>
+    <td *ngIf="modificable">
       <button (click)="selectFish(fish)">Show</button>
-    </th>
-    <td>
+    </td>
+    <td *ngIf="modificable">
       <button [disabled]="fish.returnDate!=null" (click)="retireAnimal(fish)">Retire</button>
     </td>
-    <td>
+    <td *ngIf="modificable">
       <button (click)="removeFish(fish)">Remove</button>
     </td>
   </tr>

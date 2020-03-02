@@ -1,65 +1,59 @@
-<div class="list">
-  <form class="filters" [formGroup]="filters">
-    <div>
+<div class="activities-content">
+  <div class="activities-filters">
+    <form [formGroup]="filters">
       <label>Pool
         <select formControlName="pool">
           <option value=""></option>
           <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
         </select>
       </label>
-    </div>
-    <div>
       <label>Sector
         <select formControlName="sector">
           <option value=""></option>
           <option *ngFor="let i of sectors" [value]="i.name">{{i.name}}</option>
         </select>
       </label>
-    </div>
-    <div>
       <label>Day
         <input type="date" formControlName="day">
       </label>
-    </div>
-    <div>
       <label>Start Activity
         <input type="time" formControlName="startActivity">
       </label>
-    </div>
-    <div>
       <label>End Activity
         <input type="time" formControlName="endActivity">
       </label>
-    </div>
+    </form>
     <div>
       <button (click)="resetFilters()">Reset</button>
     </div>
-  </form>
-  <table>
-    <thead>
-    <tr>
-      <th>
-        Description
-      </th>
-      <th>
-        Day
-      </th>
-      <th>
-        Start Activity
-      </th>
-      <th>
-        End Activity
-      </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor=" let activity of activities">
-      <td>{{activity.description}}</td>
-      <td>{{activity.day == null ? 'repeated' : this.datePipe.transform(activity.day, 'dd/MM/yyyy')}}</td>
-      <td>{{activity.startActivity}}</td>
-      <td>{{activity.endActivity}}</td>
-    </tr>
-    </tbody>
-  </table>
+  </div>
+  <div class="activities-elements">
+    <table>
+      <thead>
+      <tr>
+        <th>
+          Description
+        </th>
+        <th>
+          Day
+        </th>
+        <th>
+          Start Activity
+        </th>
+        <th>
+          End Activity
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor=" let activity of activities">
+        <td>{{activity.description}}</td>
+        <td>{{activity.day == null ? 'repeated' : this.datePipe.transform(activity.day, 'dd/MM/yyyy')}}</td>
+        <td>{{activity.startActivity}}</td>
+        <td>{{activity.endActivity}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 

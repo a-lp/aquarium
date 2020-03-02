@@ -1,25 +1,31 @@
-<div class="fish-grid-content">
-  <div class="filter">
-    <label>Sector
-      <select (change)="filter($event)">
-        <option value=""></option>
-        <option *ngFor="let i of sectors" [value]="i.pools">{{i.name}}</option>
-      </select>
-    </label>
-  </div>
-  <div class="grid">
-    <div class="fish-card" *ngFor="let fish of fishes.concat(fishes).concat(fishes).concat(fishes)">
-      <h2>{{fish.name}}</h2>
-      <div class="informations">
-        <p><b>{{"Specie: "}}</b>{{fish.specie}}</p>
-        <p><b>{{"Gender: "}}</b>{{ fish.gender}}</p>
-        <p><b>{{"Distinct Sign: "}}</b>{{ fish.distinctSign}}</p>
-        <p><b>{{"Arrival Date: "}}</b>{{ this.datePipe.transform(fish.arrivalDate, "dd/MM/yyyy")}}</p>
-        <p>
-          <b>{{"Retired: "}}</b>{{ (fish.returnDate == null ? 'not yet' : this.datePipe.transform(fish.returnDate, "dd/MM/yyyy"))}}
-        </p>
-        <p><b>{{"Pool: "}}</b>{{ fish.pool}}</p>
-      </div>
+<div class="fish-content">
+  <div class="fish-filters">
+    <form [formGroup]="form">
+      <label>Name
+        <input type="text" formControlName="name"></label>
+      <label>Distinct Sign
+        <input type="text" formControlName="distinctSign"></label>
+      <label>Gender
+        <select formControlName="gender">
+          <option [value]=""></option>
+          <option *ngFor="let i of genders" [value]="i">{{i}}</option>
+        </select></label>
+      <label>Specie
+        <select formControlName="specie">
+          <option [value]=""></option>
+          <option *ngFor="let i of species" [value]="i.name">{{i.name}}</option>
+        </select></label>
+      <label>Pool
+        <select formControlName="pool">
+          <option [value]=""></option>
+          <option *ngFor="let i of pools" [value]="i.id">{{i.id}}</option>
+        </select></label>
+    </form>
+    <div>
+      <button (click)="refresh(); this.form.reset();">Reset</button>
     </div>
+  </div>
+  <div class="fish-elements">
+    <app-fish-list [fishes]="fishes" [modificable]="false"></app-fish-list>
   </div>
 </div>

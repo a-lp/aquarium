@@ -1,32 +1,40 @@
-.grid {
-  width: 100%;
+.fish-content {
   height: 100%;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  grid-template-rows: repeat(auto-fit, 1fr);
-  grid-gap: 2em;
-}
-
-.fish-card {
-  width: 300px;
-  padding: 10px;
-  border: 1px solid black;
-  border-radius: 10px;
-}
-
-h2 {
-  text-align: center;
-}
-
-.filter{
-  padding: 1em;
-}
-
-.fish-grid-content {
+  width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+}
+
+.fish-filters {
+  flex: 0.1;
+  padding-left: 1em;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  margin: 2em 10em;
-  height: 100%;
+  border: 1px solid black;
+}
+
+form{
+  padding-top: 1em;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+label{
+  padding-bottom: 1em;
+}
+
+.fish-elements {
+  flex: 0.9;
+  overflow-y: scroll;
+}
+
+table {
+  padding-top: 1em;
+  width: 600px;
+  margin: 0 auto;
+}
+
+td {
+  text-align: center;
 }
