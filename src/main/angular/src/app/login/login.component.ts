@@ -68,11 +68,9 @@ export class LoginComponent implements OnInit {
     const firstToken = this.form.value.token;
     delete this.form.value.token;
     this.formLogin.addControl('profile', this.form);
-    console.log(this.formLogin.value);
     this.authenticationService.registerRequest(this.formLogin.value, firstToken).subscribe(
       token => this.authenticationService.login(token),
       error => {
-        console.log(error);
         this.error = error.error;
       }
     );

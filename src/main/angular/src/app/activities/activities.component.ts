@@ -125,9 +125,6 @@ export class ActivitiesComponent implements OnInit {
     );
   }
 
-  selectActivity(activity: PoolActivity) {
-    console.log(activity);
-  }
 
   resetFilters() {
     this.filters.reset();

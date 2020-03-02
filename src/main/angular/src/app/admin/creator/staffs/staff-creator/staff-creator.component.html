@@ -49,8 +49,9 @@
       <h3>Activity List</h3>
       <ul>
         <li *ngFor="let activity of activities">
-          {{activity.id}} - Start:{{activity.startActivity}}, End: {{activity.endActivity}}, Open to
-          public: {{activity.openToPublic}}
+          {{activity.id}} - Start:{{activity.startActivity.substr(5, 0)}}, End: {{activity.endActivity.substr(5, 0)}},
+          Open to
+          public: {{activity.openToPublic ? 'yes' : 'no'}}
         </li>
       </ul>
     </div>

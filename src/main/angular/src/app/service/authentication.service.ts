@@ -27,7 +27,6 @@ export class AuthenticationService {
       this.setVariables(this.token);
     }
     if (this.helper.isTokenExpired(this.token)) {
-      console.log('token expired');
       this.logout();
       this.redirect('/login');
       return false;
@@ -84,7 +83,6 @@ export class AuthenticationService {
 
   getRequest(path: string): Observable<any> {
     if (path.includes('api', 0) && path.includes('staff', 0)) {
-      // console.log('auth required', this.token);
       this.header = this.header.set('Authorization', 'Bearer ' + this.token);
     }
     return this.http.get(path, {headers: this.header});

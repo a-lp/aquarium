@@ -105,7 +105,6 @@ export class PoolsCreatorComponent implements OnInit {
   }
 
   emitError(error: any) {
-    console.log(error);
     this.onError.emit(error.error.message);
   }
 }
