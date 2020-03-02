@@ -15,8 +15,10 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.time.Instant;
+import java.time.LocalTime;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -98,6 +100,21 @@ public class ScheduleControllerTest {
         assertEquals(lista.get(0).get("pool").toString(), output.get("pool").toString());
     }
 
+
+    @Test
+    public void getActivities() {
+        PoolActivity pa1 = new PoolActivity(1L, LocalTime.of(1, 0), LocalTime.of(2, 0), true, new HashSet<>(), null);
+        PoolActivity pa2 = new PoolActivity(2L, LocalTime.of(2, 0), LocalTime.of(4, 0), true, new HashSet<>(), null);
+        PoolActivity pa3 = new PoolActivity(3L, LocalTime.of(3, 0), LocalTime.of(6, 0), true, new HashSet<>(), null);
+        Schedule schedule = new Schedule();
+        schedule.assignActivity(pa1);
+        schedule.assignActivity(pa2);
+        schedule.assignActivity(pa3);
+        Mockito.when(scheduleService.getById(10L)).thenReturn(schedule);
+        Set<PoolActivity> request = this.restTemplate.getForObject("http://localhost:" + port + "/api/schedules/10/activities", Set.class);
+        assertEquals(3, request.size());
+    }
+
     @Test
     public void addSchedule() {
         Schedule schedule = new Schedule(new Date(), new Date(), new HashSet<>());
@@ -136,8 +153,6 @@ public class ScheduleControllerTest {
         HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/schedules/1", HttpMethod.DELETE, httpEntity, HashMap.class).getBody();
         assertEquals(schedule.getId().toString(), request.get("id").toString());
     }
-
-    /* HTTP EXCEPTIONS */
 
     @Test
     public void getByIdNotFound() {
@@ -181,6 +196,7 @@ public class ScheduleControllerTest {
         ResponseEntity<String> response = this.restTemplate.postForEntity("http://localhost:" + port + "/api/pools/1/schedules", httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+
     @Test
     public void invalidTokenPut() {
         Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);
@@ -191,6 +207,7 @@ public class ScheduleControllerTest {
                 .exchange("http://localhost:" + port + "/api/schedules/3", HttpMethod.PUT, httpEntity, String.class);
         assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
     }
+
     @Test
     public void invalidTokenDelete() {
         Mockito.when(authenticationService.authenticateByToken("not.a.good.token")).thenThrow(BadCredentialsException.class);

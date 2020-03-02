@@ -1,9 +1,6 @@
 package fr.upem.devops.controller;
 
-import fr.upem.devops.model.PoolActivity;
-import fr.upem.devops.model.Schedule;
-import fr.upem.devops.model.Staff;
-import fr.upem.devops.model.User;
+import fr.upem.devops.model.*;
 import fr.upem.devops.service.*;
 import org.assertj.core.util.Sets;
 import org.junit.Before;
@@ -23,7 +20,7 @@ import java.time.Instant;
 import java.time.LocalTime;
 import java.util.*;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -104,7 +101,43 @@ public class PoolActivityControllerTest {
     }
 
     @Test
-    public void addPoolActivity() {
+    public void getByStaffManager() {
+        Staff staff = new Staff();
+        staff.setRole(Staff.StaffRole.MANAGER);
+        staff.assignActivity(this.activities.get(0));
+        staff.assignActivity(this.activities.get(2));
+        for (long i = 0; i < 3; i++) {
+            Pool pool = new Pool(i, i * 10, i * 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+            Schedule schedule = new Schedule(Long.parseLong((i + 1) + ""), new Date(), new Date(), new HashSet<>());
+            schedule.assignActivity(this.activities.get(Integer.parseInt(i + "")));
+            pool.getSchedules().add(schedule);
+            staff.assignPool(pool);
+        }
+        Mockito.when(staffService.getById(10L)).thenReturn(staff);
+        Set<PoolActivity> result = this.restTemplate.getForObject("http://localhost:" + port + "/api/activities/staff/" + 10, Set.class);
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    public void getByStaffWorker() {
+        Staff staff = new Staff();
+        staff.setRole(Staff.StaffRole.WORKER);
+        staff.assignActivity(this.activities.get(0));
+        staff.assignActivity(this.activities.get(2));
+        for (long i = 0; i < 3; i++) {
+            Pool pool = new Pool(i, i * 10, i * 10.5, Pool.WaterCondition.CLEAN, new HashSet<>());
+            Schedule schedule = new Schedule(Long.parseLong((i + 1) + ""), new Date(), new Date(), new HashSet<>());
+            schedule.assignActivity(this.activities.get(Integer.parseInt(i + "")));
+            pool.getSchedules().add(schedule);
+            staff.assignPool(pool);
+        }
+        Mockito.when(staffService.getById(10L)).thenReturn(staff);
+        Set<PoolActivity> result = this.restTemplate.getForObject("http://localhost:" + port + "/api/activities/staff/" + 10, Set.class);
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    public void addPoolActivityRepeated() {
         Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
         Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
         Staff s1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
@@ -124,6 +157,38 @@ public class PoolActivityControllerTest {
                 HashMap.class);
         assertEquals(pa_new.getId().toString(), request.get("id").toString());
         assertEquals(pa_new.getDescription(), request.get("description"));
+        assertEquals(pa_new.getRepeated(), request.get("repeated"));
+        assertNull(request.get("day"));
+        assertEquals(pa_new.getOpenToPublic(), request.get("openToPublic"));
+        assertEquals(pa_new.getSchedule().getId().toString(), request.get("schedule").toString());
+        assertEquals(pa_new.getEndActivity(), LocalTime.parse(request.get("endActivity").toString()));
+        assertEquals(pa_new.getStartActivity(), LocalTime.parse(request.get("startActivity").toString()));
+        assertEquals(pa_new.getStaffList().size(), ((List) request.get("staffList")).size());
+    }
+
+    @Test
+    public void addPoolActivityWithDay() {
+        Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
+        Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
+        Staff s1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
+        Staff s2 = new Staff(2L, "Nome2", "Cognome2", "Address2", new Date(), "SocSec2", Staff.StaffRole.MANAGER);
+        Staff s3 = new Staff(3L, "Nome3", "Cognome3", "Address3", new Date(), "SocSec3", Staff.StaffRole.WORKER);
+        Mockito.when(staffService.getById(1L)).thenReturn(s1);
+        Mockito.when(staffService.getById(2L)).thenReturn(s2);
+        Mockito.when(staffService.getById(3L)).thenReturn(s3);
+        PoolActivity pa = new PoolActivity(LocalTime.of(4, 0), LocalTime.of(8, 0), true, new HashSet<>(), null);
+        pa.setDay(new Date());
+        PoolActivity pa_new = new PoolActivity(4L, LocalTime.of(4, 0), LocalTime.of(8, 0), true, Sets.newHashSet(Arrays.asList(s1, s2, s3)), schedule);
+        pa_new.setDay(pa.getDay());
+        schedule.assignActivity(pa_new);
+        Mockito.when(activityService.save(pa)).thenReturn(pa_new);
+        HttpEntity<PoolActivity> httpEntity = new HttpEntity(pa, this.headers);
+        HashMap<String, Object> request = this.restTemplate.postForObject("http://localhost:" + port + "/api/schedule/1/activities/staff/1,2,3", httpEntity,
+                HashMap.class);
+        assertEquals(pa_new.getId().toString(), request.get("id").toString());
+        assertEquals(pa_new.getDescription(), request.get("description"));
+        assertEquals(false, request.get("repeated"));
+        assertNotNull(request.get("day"));
         assertEquals(pa_new.getOpenToPublic(), request.get("openToPublic"));
         assertEquals(pa_new.getSchedule().getId().toString(), request.get("schedule").toString());
         assertEquals(pa_new.getEndActivity(), LocalTime.parse(request.get("endActivity").toString()));
@@ -154,7 +219,26 @@ public class PoolActivityControllerTest {
         assertEquals(poolActivity, response);
     }
 
-    /* HTTP EXCEPTIONS */
+    @Test
+    public void addPoolActivityNoDayNoRepeated() {
+        Schedule schedule = new Schedule(1L, new Date(), new Date(), new HashSet<>());
+        Mockito.when(scheduleService.getById(1L)).thenReturn(schedule);
+        Staff s1 = new Staff(1L, "Nome1", "Cognome1", "Address1", new Date(), "SocSec1", Staff.StaffRole.ADMIN);
+        Staff s2 = new Staff(2L, "Nome2", "Cognome2", "Address2", new Date(), "SocSec2", Staff.StaffRole.MANAGER);
+        Staff s3 = new Staff(3L, "Nome3", "Cognome3", "Address3", new Date(), "SocSec3", Staff.StaffRole.WORKER);
+        Mockito.when(staffService.getById(1L)).thenReturn(s1);
+        Mockito.when(staffService.getById(2L)).thenReturn(s2);
+        Mockito.when(staffService.getById(3L)).thenReturn(s3);
+        PoolActivity pa = new PoolActivity(LocalTime.of(4, 0), LocalTime.of(8, 0), true, new HashSet<>(), null);
+        PoolActivity pa_new = new PoolActivity(4L, LocalTime.of(4, 0), LocalTime.of(8, 0), true, Sets.newHashSet(Arrays.asList(s1, s2, s3)), schedule);
+        schedule.assignActivity(pa_new);
+        Mockito.when(activityService.save(pa)).thenReturn(pa_new);
+        HttpEntity<PoolActivity> httpEntity = new HttpEntity(pa, this.headers);
+        ResponseEntity<HashMap> request = this.restTemplate.postForEntity("http://localhost:" + port + "/api/schedule/1/activities/staff/1,2,3", httpEntity,
+                HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, request.getStatusCode());
+    }
+
     @Test
     public void addPoolActivityScheduleNotFound() {
         Mockito.when(scheduleService.getById(1L)).thenReturn(null);
@@ -225,6 +309,19 @@ public class PoolActivityControllerTest {
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Activities must have at least one responsible in charge!", response.getBody().get("message"));
+    }
+
+    @Test
+    public void updateNotManager() {
+        this.tokenParameters.put("role", Staff.StaffRole.WORKER.name());
+        PoolActivity poolActivity = this.activities.get(0);
+        Mockito.when(activityService.save(poolActivity)).thenReturn(poolActivity);
+        HashMap<String, String> parameters = new HashMap<>();
+        parameters.put("description", "false");
+        HttpEntity<HashMap> updated = new HttpEntity<>(parameters, this.headers);
+        ResponseEntity<HashMap> response = this.restTemplate.exchange("http://localhost:" + port + "/api/activities/1", HttpMethod.PUT, updated, HashMap.class);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        this.tokenParameters.put("role", this.user.getProfile().getRole().name());
     }
 
     @Test

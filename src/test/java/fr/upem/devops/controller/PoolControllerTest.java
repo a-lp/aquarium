@@ -166,6 +166,41 @@ public class PoolControllerTest {
     }
 
     @Test
+    public void getPoolFishes() {
+        Set<Fish> result = this.restTemplate.getForObject("http://localhost:" + port + "/api/pools/1/fishes", Set.class);
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    public void getPoolActivities() {
+        Pool pool = new Pool();
+        for (long i = 0; i < 3; i++) {
+            Schedule schedule = new Schedule();
+            schedule.setId(i);
+            PoolActivity pa = new PoolActivity();
+            pa.setId(i);
+            schedule.assignActivity(pa);
+            pool.getSchedules().add(schedule);
+        }
+        Mockito.when(poolService.getById(10L)).thenReturn(pool);
+        Set<PoolActivity> result = this.restTemplate.getForObject("http://localhost:" + port + "/api/pools/10/activities", Set.class);
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    public void getPoolSchedules() {
+        Pool pool = new Pool();
+        for (long i = 0; i < 3; i++) {
+            Schedule schedule = new Schedule();
+            schedule.setId(i);
+            pool.getSchedules().add(schedule);
+        }
+        Mockito.when(poolService.getById(10L)).thenReturn(pool);
+        Set<Schedule> result = this.restTemplate.getForObject("http://localhost:" + port + "/api/pools/10/schedules", Set.class);
+        assertEquals(3, result.size());
+    }
+
+    @Test
     public void addPool() {
         Pool pool = new Pool(4L, 40L, 40.5, Pool.WaterCondition.DIRTY, new HashSet<>());
         Sector sector = sectors.get(0);
@@ -212,8 +247,6 @@ public class PoolControllerTest {
         HashMap<String, Object> request = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/4", HttpMethod.DELETE, httpEntity, HashMap.class).getBody();
         assertEquals(pool.getId().toString(), request.get("id").toString());
     }
-
-    /* HTTP EXCEPTIONS */
 
     @Test
     public void getByIdNotFound() {
@@ -263,6 +296,29 @@ public class PoolControllerTest {
                 updated, HashMap.class);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("condition value '" + parameters.get("condition") + "' cannot be converted in WaterCondition!", response.getBody().get("message"));
+    }
+
+
+    @Test
+    public void updatePoolNotResponsible() {
+        Pool pool = new Pool();
+        pool.setResponsible(this.profileWorker);
+        Mockito.when(poolService.getById(10L)).thenReturn(pool);
+        pool.setCondition(Pool.WaterCondition.DIRTY);
+        HashMap<String, String> parameters = new HashMap<>();
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters, this.headersManager);
+        ResponseEntity<HashMap> request = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/10", HttpMethod.PUT, httpEntity, HashMap.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, request.getStatusCode());
+        assertEquals("Only the responsible can update this pool!", request.getBody().get("message"));
+    }
+
+    @Test
+    public void updatePoolByWorker() {
+        HashMap<String, String> parameters = new HashMap<>();
+        HttpEntity<HashMap> httpEntity = new HttpEntity<>(parameters, this.headersWorker);
+        ResponseEntity<HashMap> request = this.restTemplate.exchange("http://localhost:" + port + "/api/pools/10", HttpMethod.PUT, httpEntity, HashMap.class);
+        assertEquals(HttpStatus.UNAUTHORIZED, request.getStatusCode());
+        assertEquals("Only admins or managers can update pools!", request.getBody().get("message"));
     }
 
     @Test
