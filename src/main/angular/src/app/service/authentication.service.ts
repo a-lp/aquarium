@@ -24,13 +24,13 @@ export class AuthenticationService {
       if (this.token == null) {
         return false;
       }
-      if (this.helper.isTokenExpired(this.token)) {
-        console.log('token expired');
-        this.logout();
-        this.redirect('/login');
-        return false;
-      }
       this.setVariables(this.token);
+    }
+    if (this.helper.isTokenExpired(this.token)) {
+      console.log('token expired');
+      this.logout();
+      this.redirect('/login');
+      return false;
     }
     return true;
   }

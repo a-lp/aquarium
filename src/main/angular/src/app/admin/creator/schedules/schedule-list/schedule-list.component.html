@@ -13,8 +13,8 @@
     <th>
       Pool
     </th>
-    <th></th>
-    <th></th>
+    <th *ngIf="modificable"></th>
+    <th *ngIf="modificable"></th>
   </tr>
   </thead>
   <tbody>
@@ -23,10 +23,10 @@
     <td>{{this.datePipe.transform(schedule.startPeriod, 'dd/MM/yyyy')}}</td>
     <td>{{this.datePipe.transform(schedule.endPeriod, 'dd/MM/yyyy')}}</td>
     <td>{{schedule.pool}}</td>
-    <td>
+    <td *ngIf="modificable">
       <button (click)="selectSchedule(schedule)">Show</button>
     </td>
-    <td (click)="removeSchedule(schedule)">
+    <td *ngIf="modificable" (click)="removeSchedule(schedule)">
       <button>Remove</button>
     </td>
   </tr>

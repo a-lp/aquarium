@@ -1,6 +1,6 @@
 <div *ngIf="this.pool!=null">
   <app-pool-creator (onHide)="this.pool=null;" [pool]="this.pool" [staffs]="staffs" [sectors]="sectors"
-                    (onChange)="onSavePool($event)" (onError)="this.onError.emit($event)"></app-pool-creator>
+                    (onChange)="onSavePool($event)" (onError)="emitError($event)"></app-pool-creator>
 </div>
 <div *ngIf="this.pool==null">
   <form *ngIf="this.authenticationService.isAdmin()" [formGroup]="form">

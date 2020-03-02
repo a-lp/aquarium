@@ -17,6 +17,8 @@ export class ScheduleListComponent implements OnInit {
   onSelect: EventEmitter<Schedule> = new EventEmitter<Schedule>();
   @Output()
   onError: EventEmitter<string> = new EventEmitter<string>();
+  @Input()
+  modificable = true;
 
   constructor(private scheduleService: ScheduleService, private datePipe: DatePipe) {
   }

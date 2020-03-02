@@ -54,6 +54,7 @@ export class FishCreatorComponent implements OnInit {
     this.fishService.update(this.fish.id, this.form.value).subscribe(
       fish => {
         this.onSave.emit();
+        this.onError.emit({error: {message: 'Correctly updated'}});
       }, error => this.onError.emit(error)
     );
   }

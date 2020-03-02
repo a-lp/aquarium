@@ -36,12 +36,12 @@
     <div class="fish-schedule">
       <div id="fish">
         <h3>Fish List</h3>
-        <app-fish-list [fishes]="fishList" (onChange)="getFishes(); onChange.emit(null)"
+        <app-fish-list [modificable]="false" [fishes]="fishList" (onChange)="getFishes(); onChange.emit(null)"
                        (onError)="this.onError.emit($event)"></app-fish-list>
       </div>
       <div id="schedules">
         <h3>Schedule List</h3>
-        <app-schedule-list [schedules]="schedules" (onChange)="getSchedules(); onChange.emit(null)"
+        <app-schedule-list [modificable]="false" [schedules]="schedules" (onChange)="getSchedules(); onChange.emit(null)"
                            (onError)="this.onError.emit($event)"></app-schedule-list>
       </div>
     </div>

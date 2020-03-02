@@ -17,7 +17,7 @@ export class StaffCreatorComponent implements OnInit {
   @Output()
   onChange: EventEmitter<Staff> = new EventEmitter<Staff>();
   @Output()
-  onError: EventEmitter<string> = new EventEmitter<string>();
+  onError: EventEmitter<any> = new EventEmitter<any>();
   @Output()
   onHide: EventEmitter<Staff> = new EventEmitter<Staff>();
   @Input()
@@ -60,6 +60,7 @@ export class StaffCreatorComponent implements OnInit {
     this.staffService.update(this.staff.id, this.form.value).subscribe(
       updateStaff => {
         this.onChange.emit(null);
+        this.onError.emit({error: {message: 'Correctly updated'}});
       }, error => this.onError.emit(error)
     );
   }

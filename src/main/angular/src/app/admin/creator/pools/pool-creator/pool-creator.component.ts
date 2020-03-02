@@ -6,7 +6,7 @@ import {PoolService} from '../../../../service/pool.service';
 import {Staff} from '../../../../model/Staff';
 import {Fish} from '../../../../model/Fish';
 import {Schedule} from '../../../../model/Schedule';
-import {AuthenticationService} from "../../../../service/authentication.service";
+import {AuthenticationService} from '../../../../service/authentication.service';
 
 @Component({
   selector: 'app-pool-creator',
@@ -34,7 +34,7 @@ export class PoolCreatorComponent implements OnInit {
   @Output()
   onHide = new EventEmitter();
   @Output()
-  onError = new EventEmitter<string>();
+  onError = new EventEmitter<any>();
 
   fishList: Array<Fish> = [];
   schedules: Array<Schedule> = [];
@@ -52,8 +52,12 @@ export class PoolCreatorComponent implements OnInit {
   }
 
   update() {
+    this.form.value.sector = this.sectors.filter(x => x.name == this.form.value.sector).map(x => x.id)[0];
     this.poolService.update(this.pool.id, this.form.value).subscribe(
-      updatePool => this.onChange.emit()
+      updatePool => {
+        this.onChange.emit();
+        this.onError.emit({error: {message: 'Correctly updated'}});
+      }
       , error => this.onError.emit(error)
     );
   }

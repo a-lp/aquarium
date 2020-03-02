@@ -21,7 +21,7 @@ export class ScheduleCreatorComponent implements OnInit {
   @Output()
   onChange: EventEmitter<Schedule> = new EventEmitter<Schedule>();
   @Output()
-  onError: EventEmitter<string> = new EventEmitter<string>();
+  onError: EventEmitter<any> = new EventEmitter<any>();
 
   form = new FormGroup({
     startPeriod: new FormControl('', Validators.required),
@@ -47,6 +47,7 @@ export class ScheduleCreatorComponent implements OnInit {
     this.scheduleService.update(this.schedule.id, this.form.value).subscribe(
       updateSchedule => {
         this.onChange.emit();
+        this.onError.emit({error: {message: 'Correctly updated'}});
       }, error => this.onError.emit(error)
     );
   }

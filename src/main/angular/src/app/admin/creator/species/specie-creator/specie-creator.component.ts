@@ -57,6 +57,7 @@ export class SpecieCreatorComponent implements OnInit, OnChanges {
       this.specie = updatedSpecie;
       this.refresh();
       this.onUpdate.emit(updatedSpecie);
+      this.onError.emit({error: {message: 'Correctly updated'}});
     }, error => this.onError.emit(error));
   }
 

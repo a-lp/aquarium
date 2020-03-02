@@ -14,7 +14,7 @@ export class SectorCreatorComponent implements OnInit {
   @Output()
   onHideSector = new EventEmitter();
   @Output()
-  onError = new EventEmitter<string>();
+  onError = new EventEmitter<any>();
   @Output()
   onChange = new EventEmitter();
   @Input()
@@ -55,7 +55,10 @@ export class SectorCreatorComponent implements OnInit {
   update() {
     this.form.value.staffList = this.selectedStaff.map(x => x.id.toString()).reduce((x, y) => x + ',' + y);
     this.sectorService.update(this.sector.id, this.form.value).subscribe(
-      updateSector => this.onChange.emit()
+      updateSector => {
+        this.onChange.emit();
+        this.onError.emit({error: {message: 'Correctly updated'}});
+      }
       , error => this.onError.emit(error)
     );
   }

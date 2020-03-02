@@ -105,6 +105,7 @@ export class ActivityCreatorComponent implements OnInit {
     this.activityService.update(this.activity.id, this.form.value).subscribe(activity => {
         this.activity = Object.assign({}, activity);
         this.onUpdate.emit(activity);
+        this.onError.emit({error: {message: 'Correctly updated'}});
       }, error => this.onError.emit(error)
     );
   }
