@@ -1,0 +1,49 @@
+<div class="specie-content">
+  <div class="specie-filters">
+    <form [formGroup]="form">
+      <label>Name: <input type="text" formControlName="name"></label>
+      <label>Alimentation:
+        <select formControlName="alimentation">
+          <option [value]=""></option>
+          <option *ngFor="let alimentation of alimentations" [value]="alimentation">{{alimentation}}</option>
+        </select>
+      </label>
+      <label>Extinction Level: <select formControlName="extinctionLevel">
+        <option [value]=""></option>
+        <option *ngFor="let i of [1,2,3,4,5,6,7,8,9,10]" [value]="i">{{i}}</option>
+      </select></label>
+      <label>Life Span: <input type="number" formControlName="lifeSpan"></label>
+    </form>
+    <div>
+      <button (click)="refresh(); this.form.reset();">Reset</button>
+    </div>
+  </div>
+  <div class="specie-elements">
+    <table>
+      <thead>
+      <tr>
+        <th>
+          Name
+        </th>
+        <th>
+          Alimentation
+        </th>
+        <th>
+          Extinction Level
+        </th>
+        <th>
+          Life Span
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor=" let specie of species">
+        <td>{{specie.name}}</td>
+        <td>{{specie.alimentation}}</td>
+        <td>{{specie.extinctionLevel}}</td>
+        <td>{{specie.lifeSpan}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
